@@ -66,5 +66,5 @@
   <path fill='url(#r4)' d='M-50 620 L400 760 L720 735 L1650 680 L1650 950 L-50 950 Z'/>
 
   <!-- Paper grain overlay -->
-  <rect fill='url(#grain)' width='1600' height='900' opacity='0.5'/>
+  <rect fill='url(#grain)' width='1600' height='900' opacity='0.1'/>
 </svg>
