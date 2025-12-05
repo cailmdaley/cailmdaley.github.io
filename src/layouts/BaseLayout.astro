@@ -1,0 +1,55 @@
+---
+import RidgeParallax from '../components/RidgeParallax.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  mode?: 'laboratory' | 'illuminated' | 'blended';
+}
+
+const {
+  title,
+  description = "Observational cosmology, AI alignment, philosophy, creative expression.",
+  mode = 'blended'
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title} — Cail Daley</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body class={mode}>
+  <RidgeParallax />
+  <div class="container">
+    <header>
+      <nav>
+        <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
+        <a href="/research" class:list={[{ active: currentPath.startsWith('/research') }]}>Research</a>
+        <a href="/science-ai" class:list={[{ active: currentPath === '/science-ai' }]}>Science & AI</a>
+        <a href="/about" class:list={[{ active: currentPath === '/about' }]}>About</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p class="text-muted">
+        Cail Daley · Observational Patience
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

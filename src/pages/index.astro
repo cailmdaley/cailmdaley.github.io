@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'index');
+const { Content } = await page.render();
+---
+
+<BaseLayout title="Home" mode={page.data.mode}>
+  <section class="hero">
+    <h1>{page.data.title}</h1>
+    <p class="tagline italic">{page.data.subtitle}</p>
+  </section>
+
+  <section class="intro">
+    <Content />
+  </section>
+
+  <section class="current">
+    <h2>Current Work</h2>
+    <ul class="work-list">
+      <li>
+        <a href="/research#cmb-lensing" class="tag">cmb</a>
+        <span class="work-desc">SPT-3G CMB lensing</span>
+      </li>
+      <li>
+        <a href="/research#optical-cosmic-shear" class="tag">optical</a>
+        <span class="work-desc">UNIONS cosmic shear</span>
+      </li>
+      <li>
+        <a href="/research#cmb--galaxy-cross-correlations" class="tag">cross-corr</a>
+        <span class="work-desc">Euclid × CMB cross-correlations</span>
+      </li>
+      <li>
+        <a href="/research#kinematic-lensing" class="tag">spectroscopy</a>
+        <span class="work-desc">Kinematic lensing</span>
+      </li>
+    </ul>
+    <p class="links">
+      <a href="/cv.pdf">CV</a> ·
+      <a href="https://cailmdaley.github.io/talks/">Talks</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: var(--space-md);
+  }
+
+  .hero h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .tagline {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-top: 0;
+  }
+
+  .intro {
+    margin-bottom: var(--space-md);
+  }
+
+  .intro :global(p) {
+    text-indent: 0;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .intro :global(p + p) {
+    margin-top: var(--space-sm);
+  }
+
+  .intro :global(p) {
+    margin-bottom: 0;
+  }
+
+  .current h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .work-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .work-list li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+  }
+
+  .work-list .tag {
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    font-variant-caps: all-petite-caps;
+    letter-spacing: 0.03em;
+    background: var(--bg-secondary);
+    padding: 0.2em 0.5em;
+    border-radius: 2px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .work-list .tag:hover {
+    background: var(--border-light);
+  }
+
+  .work-desc {
+    font-variant-caps: all-petite-caps;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+  }
+
+  .current .links {
+    margin-top: var(--space-md);
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+</style>

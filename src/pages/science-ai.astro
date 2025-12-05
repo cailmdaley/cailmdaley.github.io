@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'science-ai');
+const { Content } = await page.render();
+---
+
+<BaseLayout title={page.data.title} mode={page.data.mode}>
+  <h1 class="page-title">{page.data.title}</h1>
+  <p class="demo-intro" set:html={page.data.demoIntro} />
+
+  <section class="demo">
+    <h2 class="demo-title"><span class="drop-cap" data-letter="E">E</span>pistemic Claims</h2>
+    {page.data.subtitle && <p class="demo-subtitle italic text-muted">{page.data.subtitle}</p>}
+    <div class="demo-frame">
+      <iframe src="/claims-demo/index.html" title="Claims Dashboard Demo" scrolling="no"></iframe>
+    </div>
+  </section>
+
+  <section class="background">
+    <Content />
+  </section>
+</BaseLayout>
+
+<style>
+  @font-face {
+    font-family: 'EBGaramondInitialsF1';
+    src: url('/claims-demo/EBGaramond-InitialsF1.otf') format('opentype');
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'EBGaramondInitialsF2';
+    src: url('/claims-demo/EBGaramond-InitialsF2.otf') format('opentype');
+    font-display: swap;
+  }
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .demo-subtitle {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .demo-intro {
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
+    line-height: 1.65;
+    text-indent: 0;
+  }
+
+  .demo {
+    margin-top: 0;
+  }
+
+  .demo-title {
+    font-size: 1.6rem;
+    font-variant: small-caps;
+    font-style: normal;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .demo-title::after {
+    content: '';
+    display: block;
+    width: 17ch;
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent);
+    margin-top: 0.4rem;
+  }
+
+  .demo-title .drop-cap {
+    font-size: 1.35em;
+  }
+
+  .background {
+    margin-top: var(--space-xl);
+  }
+
+  .background :global(h2) {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 1rem;
+  }
+
+  .background :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .background :global(p) {
+    font-size: 1rem;
+    line-height: 1.7;
+    text-indent: 0;
+  }
+
+  .page-title,
+  .demo-title {
+    margin-top: 0;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .drop-cap {
+    font-family: 'EBGaramondInitialsF2', serif;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    font-size: 1.4em;
+    line-height: 0.75;
+    vertical-align: 0;
+    transform: translateY(0.02em);
+    margin-right: -0.08em;
+    font-style: normal;
+  }
+
+  .drop-cap::before {
+    content: attr(data-letter);
+    font-family: 'EBGaramondInitialsF1', serif;
+    color: var(--accent);
+    opacity: 0.5;
+    text-transform: uppercase;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .demo-frame {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    background: transparent;
+    border-radius: 4px;
+    overflow: visible;
+  }
+
+  .demo-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .demo-frame {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+</style>
+
+<script>
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'resize') {
+      const iframe = document.querySelector('.demo-frame iframe');
+      if (iframe) iframe.style.height = e.data.height + 'px';
+    }
+  });
+</script>

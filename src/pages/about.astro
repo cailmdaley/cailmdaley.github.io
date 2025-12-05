@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'about');
+const { Content } = await page.render();
+---
+
+<BaseLayout title={page.data.title} mode={page.data.mode}>
+  <div class="portrait">
+    <img src="/portrait.jpg" alt="Cail Daley" />
+  </div>
+  <h1>{page.data.title}</h1>
+
+  <section class="bio">
+    <Content />
+  </section>
+
+  <section class="contact">
+    <h2>Contact</h2>
+    <p><a href="mailto:cail.daley@u-paris.fr">cail.daley@u-paris.fr</a></p>
+    <p><a href="https://github.com/cailmdaley">GitHub</a> · <a href="https://cailmdaley.github.io/talks/">Talks</a> · <a href="/cv.pdf">CV</a></p>
+  </section>
+
+  </BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .portrait {
+    float: right;
+    width: 40%;
+    margin: 0 0 var(--space-md) var(--space-lg);
+  }
+
+  .portrait img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .portrait {
+      float: none;
+      width: 60%;
+      margin: 0 auto var(--space-lg);
+    }
+  }
+
+  .bio {
+    margin-bottom: var(--space-xl);
+  }
+
+  .bio :global(p) {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    text-indent: 0;
+  }
+
+  .bio :global(p + p) {
+    margin-top: var(--space-md);
+  }
+
+  .contact {
+    margin-bottom: 0;
+  }
+
+  .contact h2 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .contact p,
+  .contact p + p {
+    margin: 0.25rem 0;
+    margin-bottom: 0;
+    text-indent: 0;
+  }
+
+  </style>

@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Research" mode="laboratory">
+  <h1>Research</h1>
+  <p class="subtitle italic text-muted">Weak gravitational lensing</p>
+
+  <section class="overview">
+    <p>
+      Light bends around all mass, luminous and dark alike. Gravitational lensing exploits this to map cosmic structure directly, without assuming light traces mass. CMB photons accumulate tiny deflections across their journey from recombination, encoding the integrated matter distribution along the line of sight. Galaxy shapes in optical surveys record shear from foreground structure at lower redshift. Together these probes trace how structure grew across cosmic time, providing independent cross-checks and constraints precise enough to test whether ΛCDM—our standard cosmological model—holds.
+    </p>
+  </section>
+
+  <section class="projects">
+    <article class="card" id="cmb-lensing">
+      <h2>CMB Lensing</h2>
+      <p class="collab">SPT-3G</p>
+      <p>
+        Photons from the cosmic microwave background have been traveling for 13.8 billion years, deflected along the way by the gravitational potential wells of large-scale structure. These arcminute-scale deflections are coherent on degree scales, breaking the Gaussian statistics of the primordial CMB and introducing correlations between different angular scales. The quadratic estimator exploits these correlations to reconstruct the projected matter distribution: a map of all the mass between us and the surface of last scattering.
+      </p>
+      <figure>
+        <img src="/cmb-lensing-kappa.png" alt="Wiener-filtered CMB lensing convergence map from SPT-3G" />
+        <figcaption>CMB lensing convergence κ̂ from the SPT-3G 2-year Main field, showing signal-dominated scales.</figcaption>
+      </figure>
+      <p>
+        During my PhD I contributed to CMB lensing with the South Pole Telescope collaboration, whose 10-meter dish and third-generation 16,000-detector camera deliver arcminute resolution at millimeter wavelengths. The SPT-3G 2-year Main analysis produced the deepest CMB lensing maps per-pixel to date. The lensing power spectrum measures the amplitude of cosmic structure and is sensitive to the sum of neutrino masses. Cross-correlations with galaxy surveys like Euclid trace how structure grew across billions of years of cosmic evolution.
+      </p>
+    </article>
+
+    <article class="card" id="cmb--galaxy-cross-correlations">
+      <h2>CMB × Galaxy Cross-correlations</h2>
+      <p class="collab">Euclid + SPT</p>
+      <p>
+        380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
+      </p>
+      <div class="scroll-reveal">
+        <img src="/universe-evolution.png" alt="Evolution of the universe" />
+      </div>
+      <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
+      <p>
+        I'm leading a cross-correlation analysis between SPT-3G CMB lensing and Euclid, ESA's flagship dark matter and dark energy mission. The project covers approximately 1600 square degrees where the surveys overlap, combining CMB lensing with Euclid DR1 galaxy clustering and cosmic shear. These measurements independently calibrate Euclid's shear and tighten constraints on structure growth.
+      </p>
+    </article>
+
+    <article class="card" id="optical-cosmic-shear">
+      <h2>Optical Cosmic Shear</h2>
+      <p class="collab">UNIONS</p>
+      <p>
+        I'm leading a B-mode systematics validation paper for the first UNIONS weak lensing cosmology release. UNIONS is mapping the largest deep weak-lensing survey of the northern sky: over 4,300 square degrees with depth comparable to the Rubin Observatory's first-year data.
+      </p>
+      <p>
+        Before extracting cosmology, the measured signal must be shown to be genuinely astrophysical. Gravitational lensing produces only E-mode (gradient-like) shear patterns; detected B-modes (curl-like) indicate residual contamination from telescope optics, atmosphere, or data processing. We decompose the UNIONS shear measurements into E and B components using three independent methods. B-modes are consistent with zero after PSF corrections, validating systematics control and informing the angular scale cuts for cosmological inference.
+      </p>
+      <figure>
+        <img src="/unions-eb-modes.png" alt="UNIONS E/B mode decomposition" />
+        <figcaption>Total ξ± (gray), pure E-mode (teal), B-mode (crimson), and ambiguous mode contributions. B-modes consistent with zero validate systematics control.</figcaption>
+      </figure>
+    </article>
+
+    <article class="card" id="kinematic-lensing">
+      <h2>Kinematic Lensing</h2>
+      <p class="collab">TOSCA</p>
+      <p>
+        Traditional weak lensing suffers from shape noise: we cannot distinguish a galaxy's intrinsic ellipticity from lensing-induced shear without averaging over thousands of galaxies. Kinematic lensing breaks this degeneracy by combining galaxy shapes with spectroscopic velocity field measurements. An unlensed galaxy's photometric major axis aligns with its kinematic axis (the direction of peak rotation); gravitational shear rotates the image but not the velocity field, creating a measurable misalignment. This requires ~100× fewer galaxies than traditional weak lensing.
+      </p>
+      <figure>
+        <img src="/kinematic-lensing.png" alt="Kinematic lensing schematic" />
+        <figcaption>Velocity-field symmetry breaking from shear. Figure by M1 intern Jordy Ram.</figcaption>
+      </figure>
+      <p>
+        With an M1 student we improved a symmetry-based kinematic lensing method and showed it applies to elliptical galaxies as well as spirals. I'm now supervising an M2 intern applying kinematic lensing to real IFS data from the SAMI Galaxy Survey for the first time, characterizing systematic effects absent from simulations and measuring cluster masses via lensing of background galaxies.
+      </p>
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-xs);
+  }
+
+  .subtitle {
+    margin-bottom: var(--space-lg);
+  }
+
+  .overview {
+    margin-bottom: var(--space-lg);
+  }
+
+  .overview p {
+    text-indent: 0;
+  }
+
+  .projects {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .card {
+    padding: var(--space-md);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    box-shadow: 2px 3px 8px rgba(46, 42, 38, 0.06);
+  }
+
+  .card h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: var(--space-xs);
+  }
+
+  .collab {
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .card p {
+    margin-bottom: var(--space-sm);
+    text-indent: 0;
+  }
+
+  .card p:last-child {
+    margin-bottom: 0;
+  }
+
+  figure {
+    margin: var(--space-sm) 0;
+  }
+
+  figure img {
+    width: 100%;
+    border-radius: 4px;
+    display: block;
+  }
+
+  figcaption {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+  }
+
+  .caption {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .scroll-reveal {
+    overflow: hidden;
+    border-radius: 4px;
+    margin: 0;
+  }
+
+  .scroll-reveal img {
+    width: 240%;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    will-change: transform;
+    transform: translateX(-40%);
+  }
+</style>
+
+<script>
+  function initScrollReveal() {
+    const containers = document.querySelectorAll('.scroll-reveal');
+
+    containers.forEach(container => {
+      const img = container.querySelector('img');
+      if (!img) return;
+
+      let currentX = -40;
+      let targetX = -40;
+      const ease = 0.025;
+
+      const updateTarget = () => {
+        const rect = container.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        const rawProgress = 1 - (rect.bottom / (windowHeight + rect.height));
+        // 35% to 50% vertical progress (faster)
+        const progress = (rawProgress - 0.35) / 0.15;
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+
+        // Start at -40%, scroll to -55% (15% travel)
+        targetX = -40 + (clampedProgress * -15);
+      };
+
+      const animate = () => {
+        currentX += (targetX - currentX) * ease;
+        img.style.transform = `translateX(${currentX}%)`;
+        requestAnimationFrame(animate);
+      };
+
+      window.addEventListener('scroll', updateTarget, { passive: true });
+      updateTarget();
+      animate();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

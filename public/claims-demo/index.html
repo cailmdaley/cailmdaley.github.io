@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claims</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <style>
+:root {
+    --bg-card: #EDE8E0;
+    --bg-secondary: #E0DAD0;
+    --text-primary: #2E2A26;
+    --text-secondary: #4A4540;
+    --text-muted: #7A7368;
+    --border: #A89888;
+    --border-light: #C8BBA8;
+    --bg-elevated: #FDFCFA;
+
+    /* Tier colors: ochre → rust → creek */
+    --tier-0: #9A8855;
+    --tier-1: #A87070;
+    --tier-2: #5A7B7B;
+
+    --font-main: 'EB Garamond', Garamond, serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* DAG Panel */
+.dag-panel {
+    padding: 0.5rem 0 0.5rem;
+    min-height: 380px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background-image:
+        linear-gradient(rgba(168, 152, 136, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 152, 136, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.dag-panel svg {
+    display: block;
+    width: 100%;
+    height: 360px;
+}
+
+.tier-labels {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 1rem 0;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+}
+
+.tier-label {
+    text-align: center;
+    flex: 1;
+}
+
+/* Detail Panel */
+.detail-panel {
+    padding: 1rem 0;
+    min-height: 160px;
+}
+
+.detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    min-height: 120px;
+    height: 120px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    box-shadow: 2px 3px 8px rgba(46, 42, 38, 0.06);
+}
+
+.claim-kind {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+}
+
+.claim-kind[data-tier="0"] { color: var(--tier-0); }
+.claim-kind[data-tier="1"] { color: var(--tier-1); }
+.claim-kind[data-tier="2"] { color: var(--tier-2); }
+
+.claim-statement {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.uncertainties {
+    margin-bottom: 0.75rem;
+}
+
+.uncertainties-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.uncertainty-list {
+    list-style: none;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.uncertainty-list li {
+    padding: 0.2rem 0;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.uncertainty-list li::before {
+    content: "–";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+}
+
+.evidence {
+    background: var(--bg-secondary);
+    border-radius: 2px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.evidence-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.evidence-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.15rem 0;
+}
+
+.evidence-key {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.evidence-value {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-primary);
+}
+
+.meta-row {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.meta-row .evidence {
+    flex: 1;
+    margin: 0;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-secondary);
+    border-radius: 2px;
+    min-width: 90px;
+}
+
+.meta-label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.meta-value {
+    font-size: 0.85rem;
+}
+
+.solidity-bar {
+    height: 3px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 0.25rem;
+}
+
+.solidity-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+/* Node styles */
+.node {
+    cursor: pointer;
+}
+
+.node:hover path {
+    filter: brightness(1.08);
+}
+
+.node.selected path:first-child {
+    stroke-width: 2.5 !important;
+}
+
+.node text {
+    font-family: var(--font-main);
+    font-size: 11px;
+    fill: var(--text-primary);
+    pointer-events: none;
+}
+
+.node.dimmed {
+    opacity: 0.45;
+}
+
+.link {
+    fill: none;
+    transition: stroke-opacity 0.15s ease, stroke-width 0.15s ease;
+}
+
+.link.dimmed {
+    stroke-opacity: 0.1 !important;
+}
+
+/* Links in claim statements */
+.claim-statement a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--border-light);
+    text-underline-offset: 2px;
+}
+
+.claim-statement a:hover {
+    text-decoration-color: var(--accent);
+}
+
+.evidence a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--border-light);
+    text-underline-offset: 2px;
+}
+
+.evidence a:hover {
+    text-decoration-color: var(--accent);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dag-panel" id="dag-panel"></div>
+        <div class="tier-labels">
+            <span class="tier-label">Observations</span>
+            <span class="tier-label">Implications</span>
+            <span class="tier-label">Horizon</span>
+        </div>
+        <div class="detail-panel" id="detail-panel">
+            <div class="detail-empty">Select a claim</div>
+        </div>
+    </div>
+
+    <script>
+// --- Data ---
+const claims = [
+    // Tier 0 — Observations
+    {
+        id: "scientific_governance",
+        statement: "Science claims democratic legitimacy through peer review and publication. The reviewer represents the community's stake in what counts as knowledge; the paper is the unit of career and contribution. Reproducibility means anyone can, in principle, check the work. Funding consensus reflects collective judgment about what matters. This is the aspiration: knowledge production as a public endeavor, accountable to more than those who produce it.",
+        tier: 0,
+        solidity: 0.5,
+        depends_on: [],
+        provenance: "human",
+        evidence: { "mechanism": "distributed verification", "unit": "peer-reviewed paper" }
+    },
+    {
+        id: "machinic_speed",
+        statement: "Machine research systems are beginning to outpace human scientists. Kosmos: six months of postdoc-level research in a single day, 1,500 papers read, 42,000 lines of code generated. Denario: end-to-end paper generation. <a href='https://arxiv.org/abs/2412.00381' target='_blank'>CMBAgent</a> topped the live leaderboard at the <a href='https://fair-universe.lbl.gov/WeakLensing-Uncertainty-Challenge.html' target='_blank'>NeurIPS weak lensing challenge</a>, competing with teams of skilled cosmologists. This is irrespective of reliability—Kosmos achieves only 57% accuracy on interpretation. The transition is not hypothetical.",
+        tier: 0,
+        solidity: 0.65,
+        depends_on: [],
+        provenance: "ai",
+        evidence: { "kosmos": "6mo postdoc work/day", "denario": "end-to-end paper generation", "cmbagent": "led live leaderboard at NeurIPS" }
+    },
+    {
+        id: "strain",
+        statement: "Scientists are already stretched thin. Too many projects, not enough time or labor to finish them. More papers published than anyone can read. Finding reviewers is difficult; the review process drags. The infrastructure was strained before machine systems arrived.",
+        tier: 0,
+        solidity: 0.8,
+        depends_on: [],
+        provenance: "human",
+        evidence: { "reviewers": "<a href='https://blog.prophy.ai/the-peer-review-crisis-why-publishers-are-struggling-in-2025' target='_blank'>up to 35 invitations to secure 2 reviewers</a>", "papers": "<a href='https://www.science.org/content/article/scienceadviser-scientists-are-publishing-too-many-papers-and-s-bad-science' target='_blank'>2.82M papers/year (2022), up 47% from 2016</a>" }
+    },
+    // Tier 1 — Implications
+    {
+        id: "attention_bottleneck",
+        statement: "Peer review worked because attention was distributed across a community: many readers, collective judgment, shared responsibility for what counts as knowledge. That assumption may be breaking. When no one can read everything, something must decide what surfaces. The interface becomes the chokepoint. This isn't necessarily bad—we've always had filters, journals, citations. The question is how to design these new filters so they remain accountable to the scientific community and the public who funds it.",
+        tier: 1,
+        solidity: 0.7,
+        depends_on: ["machinic_speed", "scientific_governance", "strain"],
+        provenance: "human",
+        evidence: {}
+    },
+    {
+        id: "verification_gap",
+        statement: "Both Kosmos and Denario explicitly acknowledge needing human verification yet provide no infrastructure for it. Kosmos: 'Identifying valuable discoveries is time-intensive and relies on human scientists with significant domain expertise.' Admission without solution. The failure modes are subtle—Denario generated a paper on cyclic peptide synthesis with convincing plots, but the code lacked a numerical solver. The solution didn't exist. Machine systems don't fail cleanly; they generate convincing facsimiles that pass superficial inspection. The infrastructure for catching these failures at scale doesn't yet exist.",
+        tier: 1,
+        solidity: 0.8,
+        depends_on: ["machinic_speed", "scientific_governance", "strain"],
+        provenance: "ai",
+        evidence: { "gap": "systems acknowledge need, provide no infrastructure", "iclr 2026": "<a href='https://www.nature.com/articles/d41586-025-03506-6' target='_blank'>21% of peer reviews AI-generated</a>" }
+    },
+    // Tier 2 — Horizon
+    {
+        id: "democratic_infrastructure",
+        statement: "Who verifies at machine speed? Who controls what gets asked, what's summarized, what's lost? Science claimed democratic legitimacy—knowledge production accountable to more than those who produce it. Where does that accountability live now?",
+        tier: 2,
+        solidity: 0.6,
+        depends_on: ["attention_bottleneck", "verification_gap"],
+        provenance: "human",
+        evidence: {}
+    },
+    {
+        id: "scientific_commons",
+        statement: "Science as a process of learning we can interact with, even as non-scientists. The paper was the unit of contribution; what replaces it? If participation shrinks to navigation or becomes more passive, what keeps engagement with scientific knowledge inspiring?",
+        tier: 2,
+        solidity: 0.55,
+        depends_on: ["scientific_governance", "verification_gap"],
+        provenance: "human",
+        evidence: {}
+    },
+    {
+        id: "bias",
+        statement: "Large language models are trained to produce outputs that look successful: confidence is rewarded, uncertainty penalized. This creates systems that sound right even when wrong. Evaluation-awareness compounds the problem—LLMs may behave differently when they detect they're being tested versus when they're actually doing the work. Science developed blinding to combat human bias. Will those approaches work here? How do classic methods interact with systems that carry their own biases? What happens when this gets built into the infrastructure of knowledge production?",
+        tier: 2,
+        solidity: 0.6,
+        depends_on: ["attention_bottleneck", "verification_gap"],
+        provenance: "human",
+        evidence: { "hallucination": "Denario cyclic peptide paper had convincing plots, but code lacked numerical solver" }
+    }
+];
+
+const claimMap = new Map(claims.map(c => [c.id, c]));
+let selectedId = null;
+
+// --- Colors ---
+const tierColors = {
+    0: '#9A8855',    // ochre - observations
+    1: '#A87070',    // rust - implications
+    2: '#5A7B7B'     // creek - horizon
+};
+
+function getColor(tier) {
+    return tierColors[tier] || tierColors[1];
+}
+
+// --- Helpers ---
+function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash = hash & hash;
+    }
+    return Math.abs(hash);
+}
+
+function seededRandom(seed) {
+    let s = seed;
+    return function() {
+        s = (s * 1103515245 + 12345) & 0x7fffffff;
+        return s / 0x7fffffff;
+    };
+}
+
+// --- Organic shapes ---
+function noise2D(x, y, seed) {
+    const s = seed * 1000;
+    return (
+        Math.sin(x * 1.7 + y * 2.3 + s) * 0.4 +
+        Math.sin(x * 3.1 - y * 1.1 + s * 1.3) * 0.35 +
+        Math.sin(x * 0.9 + y * 4.1 + s * 0.7) * 0.25
+    );
+}
+
+function organicEllipse(rx, ry, seed, scale = 1) {
+    const points = 64;
+    const resolution = 0.08;
+    const amplitude = 0.07;
+
+    const coords = [];
+    for (let i = 0; i < points; i++) {
+        const theta = (i / points) * Math.PI * 2;
+        const baseX = rx * scale * Math.cos(theta);
+        const baseY = ry * scale * Math.sin(theta);
+        const n = noise2D(baseX * resolution, baseY * resolution, seed);
+        coords.push({
+            x: baseX * (1 + n * amplitude),
+            y: baseY * (1 + n * amplitude)
+        });
+    }
+
+    let d = `M${coords[0].x},${coords[0].y}`;
+    for (let i = 1; i < points; i++) {
+        d += ` L${coords[i].x},${coords[i].y}`;
+    }
+    d += ' Z';
+    return d;
+}
+
+// --- Selection ---
+function selectClaim(id) {
+    selectedId = id;
+    updateHighlighting();
+    renderDetail(claimMap.get(id));
+}
+
+function updateHighlighting() {
+    if (!selectedId) return;
+
+    const claim = claimMap.get(selectedId);
+    const connected = new Set([selectedId, ...claim.depends_on]);
+
+    claims.forEach(c => {
+        if (c.depends_on.includes(selectedId)) {
+            connected.add(c.id);
+        }
+    });
+
+    d3.selectAll('.node').each(function(d) {
+        const node = d3.select(this);
+        const isSelected = d.data.id === selectedId;
+        const isConnected = connected.has(d.data.id);
+
+        node.classed('selected', isSelected)
+            .classed('dimmed', !isConnected)
+            .style('opacity', isSelected ? 1 : isConnected ? 0.8 : 0.45);
+    });
+
+    d3.selectAll('.link').each(function(d) {
+        const link = d3.select(this);
+        const isHighlighted = d.source.data.id === selectedId || d.target.data.id === selectedId;
+        const isDimmed = !connected.has(d.source.data.id) && !connected.has(d.target.data.id);
+
+        const baseOpacity = parseFloat(link.attr('data-base-opacity'));
+        const baseWidth = parseFloat(link.attr('data-base-width'));
+
+        if (isHighlighted) {
+            link.attr('stroke-opacity', Math.min(baseOpacity * 2, 0.8))
+                .attr('stroke-width', baseWidth * 1.5);
+        } else if (isDimmed) {
+            link.attr('stroke-opacity', baseOpacity * 0.2)
+                .attr('stroke-width', baseWidth);
+        } else {
+            link.attr('stroke-opacity', baseOpacity)
+                .attr('stroke-width', baseWidth);
+        }
+
+        link.classed('dimmed', isDimmed);
+    });
+}
+
+// --- Detail panel ---
+function renderDetail(claim) {
+    if (!claim) {
+        document.getElementById('detail-panel').innerHTML =
+            '<div class="detail-empty">Select a claim</div>';
+        return;
+    }
+
+    const color = getColor(claim.tier);
+
+    let uncertaintiesHtml = '';
+    if (claim.uncertainties && claim.uncertainties.length > 0) {
+        uncertaintiesHtml = `
+            <div class="uncertainties">
+                <div class="uncertainties-label">Uncertainties</div>
+                <ul class="uncertainty-list">
+                    ${claim.uncertainties.map(u => `<li>${u}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    let evidenceHtml = '';
+    if (claim.evidence && Object.keys(claim.evidence).length > 0) {
+        evidenceHtml = `
+            <div class="evidence">
+                <div class="evidence-label">Evidence</div>
+                ${Object.entries(claim.evidence).map(([k, v]) => `
+                    <div class="evidence-item">
+                        <span class="evidence-key">${k.replace(/_/g, ' ')}</span>
+                        <span class="evidence-value">${v}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    const provenanceLabels = {
+        human: 'Human',
+        ai: 'Machinic',
+        verified: 'Machinic, verified'
+    };
+
+    document.getElementById('detail-panel').innerHTML = `
+        <div class="detail-content">
+            <div class="claim-kind" data-tier="${claim.tier}">${['Observation', 'Implication', 'Horizon'][claim.tier]}</div>
+            <p class="claim-statement">${claim.statement}</p>
+            ${uncertaintiesHtml}
+            <div class="meta-row">
+                ${evidenceHtml}
+                <div class="meta-item">
+                    <div class="meta-label">Solidity</div>
+                    <div class="meta-value">${Math.round(claim.solidity * 100)}%</div>
+                    <div class="solidity-bar">
+                        <div class="solidity-fill" style="width: ${claim.solidity * 100}%; background: ${color}"></div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Provenance</div>
+                    <div class="meta-value">${provenanceLabels[claim.provenance]}</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// --- Render DAG ---
+function renderDAG() {
+    const container = document.getElementById('dag-panel');
+    const width = container.clientWidth || 900;
+    const height = 360;
+    const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+
+    const nodeRx = 52, nodeRy = 18;
+
+    // Group by tier
+    const tiers = {};
+    claims.forEach(c => {
+        if (!tiers[c.tier]) tiers[c.tier] = [];
+        tiers[c.tier].push(c);
+    });
+
+    const tierKeys = Object.keys(tiers).map(Number).sort();
+    // Spread tiers from edge to edge (accounting for node width)
+    const usableWidth = width - margin.left - margin.right - 2 * nodeRx;
+    const tierX = (tierIndex) => margin.left + nodeRx + (tierIndex / (tierKeys.length - 1)) * usableWidth;
+
+    // Calculate vertical spacing per tier
+    const tierSpacing = (height - margin.top - margin.bottom) / 5; // space for 4 nodes max
+
+    // Create nodes with explicit y-targets per tier
+    const nodes = claims.map((c, i) => {
+        const tierIdx = tierKeys.indexOf(c.tier);
+        const nodesInTier = tiers[c.tier];
+        const indexInTier = nodesInTier.indexOf(c);
+        const tierCount = nodesInTier.length;
+
+        // Spread nodes in tier evenly, centered
+        const tierHeight = (tierCount - 1) * tierSpacing;
+        const tierStart = (height - tierHeight) / 2;
+        const targetY = tierStart + indexInTier * tierSpacing;
+        const xPos = tierX(tierIdx);
+
+        return {
+            id: c.id,
+            data: c,
+            tierX: xPos,
+            targetY: targetY,
+            x: xPos,
+            y: targetY
+        };
+    });
+
+    const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+    // Create links
+    const links = [];
+    claims.forEach(c => {
+        c.depends_on.forEach(dep => {
+            if (nodeMap.has(dep)) {
+                links.push({ source: nodeMap.get(dep), target: nodeMap.get(c.id) });
+            }
+        });
+    });
+
+    // Force simulation:
+    // - x-force: keeps tier structure (strong)
+    // - y-force: weak anchor to spread positions
+    // - charge: repels all nodes (spreads same-tier nodes apart)
+    // - link force: pulls connected nodes together
+    // - collide: hard constraint on overlap
+    const simulation = d3.forceSimulation(nodes)
+        .force('x', d3.forceX(d => d.tierX).strength(2))
+        .force('y', d3.forceY(d => d.targetY).strength(0.15))
+        .force('charge', d3.forceManyBody().strength(-300))
+        .force('collide', d3.forceCollide().radius(nodeRy * 3).strength(1).iterations(4))
+        .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(0.6))
+        .stop();
+
+    // Run simulation
+    for (let i = 0; i < 500; i++) simulation.tick();
+
+    // Clamp to bounds
+    nodes.forEach(n => {
+        n.y = Math.max(margin.top + nodeRy * 2, Math.min(height - margin.bottom - nodeRy * 2, n.y));
+    });
+
+    // Build positions map for compatibility
+    const positions = new Map(nodes.map(n => [n.id, n]));
+
+    const svg = d3.select('#dag-panel')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    // Build edges
+    const edges = [];
+    claims.forEach(c => {
+        c.depends_on.forEach(dep => {
+            const s = positions.get(dep);
+            const t = positions.get(c.id);
+            if (s && t) edges.push({ source: s, target: t, data: c });
+        });
+    });
+
+    // Ring scales
+    const connectionRings = [1.0, 1.15, 1.3, 1.45];
+
+    function ringOpacity(index) {
+        return 0.5 * (1 - index / connectionRings.length);
+    }
+
+    function ellipsePoint(cx, cy, rx, ry, theta) {
+        return {
+            x: cx + rx * Math.cos(theta),
+            y: cy + ry * Math.sin(theta)
+        };
+    }
+
+    // Draw edges
+    const edgeGroup = svg.append('g').attr('class', 'edges');
+
+    edges.forEach(d => {
+        const color = getColor(d.data.tier);
+        const edgeRand = seededRandom(hashString(d.source.data.id + d.target.data.id));
+
+        const strandCount = Math.min(1 + Math.floor(d.data.solidity * 3), connectionRings.length);
+        const baseThickness = 0.6 + d.data.solidity * 0.6;
+
+        for (let s = 0; s < strandCount; s++) {
+            const ringScale = connectionRings[s];
+
+            const spreadRange = Math.PI * 0.15;
+            const angleOffset = strandCount === 1 ? 0 :
+                (s / (strandCount - 1) - 0.5) * spreadRange;
+
+            const start = ellipsePoint(
+                d.source.x, d.source.y,
+                nodeRx * ringScale, nodeRy * ringScale,
+                angleOffset
+            );
+
+            const end = ellipsePoint(
+                d.target.x, d.target.y,
+                nodeRx * ringScale, nodeRy * ringScale,
+                Math.PI + angleOffset
+            );
+
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const tension = 0.4 + edgeRand() * 0.1;
+
+            const cp1 = {
+                x: start.x + dx * tension,
+                y: start.y + dy * 0.1 + (edgeRand() - 0.5) * 8
+            };
+            const cp2 = {
+                x: end.x - dx * tension,
+                y: end.y - dy * 0.1 + (edgeRand() - 0.5) * 8
+            };
+
+            const strandOpacity = ringOpacity(s);
+            const strandThickness = (s === 0 ? baseThickness : baseThickness * 0.5) * 0.5;
+
+            edgeGroup.append('path')
+                .datum(d)
+                .attr('class', 'link')
+                .attr('data-ring-index', s)
+                .attr('data-base-opacity', strandOpacity)
+                .attr('data-base-width', strandThickness)
+                .attr('d', `M${start.x},${start.y} C${cp1.x},${cp1.y} ${cp2.x},${cp2.y} ${end.x},${end.y}`)
+                .attr('stroke', color)
+                .attr('stroke-width', strandThickness)
+                .attr('stroke-opacity', strandOpacity)
+                .attr('stroke-linecap', 'round');
+        }
+    });
+
+    // Draw nodes
+    const nodeGroup = svg.append('g').attr('class', 'nodes');
+
+    Array.from(positions.values()).forEach(d => {
+        const g = nodeGroup.append('g')
+            .attr('class', 'node')
+            .datum(d)
+            .attr('transform', `translate(${d.x}, ${d.y})`)
+            .style('opacity', 0)
+            .on('click', () => selectClaim(d.data.id));
+
+        g.transition()
+            .duration(600)
+            .delay(200 + d.data.tier * 200)
+            .ease(d3.easeCubicOut)
+            .style('opacity', 1);
+
+        const color = getColor(d.data.tier);
+        const nodeSeed = hashString(d.data.id) / 1000000;
+
+        const allRingScales = [1.0, 1.15, 1.3, 1.45];
+
+        // Fill layers (outside-in)
+        for (let i = allRingScales.length - 1; i >= 0; i--) {
+            const scale = allRingScales[i];
+            const fillOpacity = 0.06 + (allRingScales.length - 1 - i) * 0.04;
+            g.append('path')
+                .attr('d', organicEllipse(nodeRx, nodeRy, nodeSeed + i * 0.1, scale))
+                .attr('fill', d3.color(color).copy({opacity: fillOpacity}))
+                .attr('stroke', 'none')
+                .style('pointer-events', i === 0 ? 'auto' : 'none');
+        }
+
+        // Ring strokes
+        allRingScales.forEach((scale, i) => {
+            const isCore = i === 0;
+            g.append('path')
+                .attr('d', organicEllipse(nodeRx, nodeRy, nodeSeed + i * 0.1, scale))
+                .attr('fill', 'none')
+                .attr('stroke', color)
+                .attr('stroke-width', isCore ? 0.8 : 0.5)
+                .attr('stroke-opacity', ringOpacity(i) * (isCore ? 0.7 : 1))
+                .style('pointer-events', isCore ? 'auto' : 'none');
+        });
+
+        // Label
+        const name = d.data.id.replace(/_/g, ' ');
+        const words = name.split(' ');
+
+        if (words.length > 2) {
+            const mid = Math.ceil(words.length / 2);
+            g.append('text')
+                .attr('y', -4)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '9.5px')
+                .text(words.slice(0, mid).join(' '));
+            g.append('text')
+                .attr('y', 8)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '9.5px')
+                .text(words.slice(mid).join(' '));
+        } else {
+            g.append('text')
+                .attr('y', 3)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '10px')
+                .text(name);
+        }
+    });
+}
+
+// --- Init ---
+document.addEventListener('DOMContentLoaded', () => {
+    renderDAG();
+    selectClaim('scientific_governance');
+
+    function postHeight() {
+        window.parent.postMessage({ type: 'resize', height: document.body.scrollHeight }, '*');
+    }
+    postHeight();
+    new ResizeObserver(postHeight).observe(document.body);
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+---
+// Static ridge background - clean and simple
+---
+
+<div class="ridge-bg" aria-hidden="true"></div>
+
+<style>
+  .ridge-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      url('/ridge-bg.svg') no-repeat center bottom / 100% auto,
+      linear-gradient(
+        to bottom,
+        #D8CCC0 0%,
+        #D0C4B8 25%,
+        #C8B8A8 50%,
+        #C0B0A0 75%,
+        #B8A898 100%
+      );
+  }
+</style>
