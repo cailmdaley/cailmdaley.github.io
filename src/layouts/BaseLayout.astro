@@ -22,6 +22,11 @@ const currentPath = Astro.url.pathname;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
+  <meta property="og:title" content={`${title} — Cail Daley`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={Astro.url.href} />
+  <meta name="twitter:card" content="summary" />
   <title>{title} — Cail Daley</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 </head>
@@ -42,9 +47,7 @@ const currentPath = Astro.url.pathname;
     </main>
 
     <footer>
-      <p class="text-muted">
-        Cail Daley · Observational Patience
-      </p>
+      <p class="text-muted">Cail Daley</p>
     </footer>
   </div>
 </body>
