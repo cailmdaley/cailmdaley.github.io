@@ -437,3 +437,58 @@ footer {
   color: var(--text-muted);
   font-size: 0.85rem;
 }
+
+/* === RESPONSIVE === */
+
+@media (max-width: 768px) {
+  html {
+    font-size: 17px;
+  }
+
+  .container {
+    padding: 1.2rem 1.25rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-top: var(--space-lg);
+  }
+
+  nav {
+    justify-content: space-evenly;
+    gap: var(--space-sm);
+  }
+
+  blockquote {
+    padding: var(--space-md) var(--space-lg);
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  section {
+    margin-bottom: var(--space-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 16px;
+  }
+
+  .container {
+    padding: 1rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  nav {
+    justify-content: space-evenly;
+    gap: var(--space-xs);
+  }
+}

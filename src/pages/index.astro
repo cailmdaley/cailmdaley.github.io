@@ -125,4 +125,19 @@ const { Content } = await page.render();
     font-size: 1rem;
     color: var(--text-muted);
   }
+
+  @media (max-width: 480px) {
+    .work-list li {
+      flex-wrap: wrap;
+      gap: 0.25rem var(--space-sm);
+    }
+
+    .work-list .tag {
+      font-size: 0.75rem;
+    }
+
+    .work-desc {
+      font-size: 0.95rem;
+    }
+  }
 </style>
