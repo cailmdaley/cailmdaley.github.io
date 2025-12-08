@@ -6,7 +6,7 @@ const page = await getEntry('pages', 'index');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title="Home" mode={page.data.mode}>
+<BaseLayout title="Home" description="Cail Daley — observational cosmologist researching gravitational lensing, CMB analysis, and AI in scientific methodology." mode={page.data.mode}>
   <section class="hero">
     <h1>{page.data.title}</h1>
     <p class="tagline italic">{page.data.subtitle}</p>

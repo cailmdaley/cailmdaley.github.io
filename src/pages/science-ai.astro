@@ -6,7 +6,7 @@ const page = await getEntry('pages', 'science-ai');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title={page.data.title} mode={page.data.mode}>
+<BaseLayout title={page.data.title} description="Epistemic claims dashboard — tracking scientific methodology, AI alignment, and experimental philosophy through structured evidence." mode={page.data.mode}>
   <h1 class="page-title">{page.data.title}</h1>
   <p class="demo-intro" set:html={page.data.demoIntro} />
 
