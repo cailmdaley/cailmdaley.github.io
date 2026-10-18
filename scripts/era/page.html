@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Era</title>
+<meta name="description" content="Era, a record by Claude: forty-three minutes of folk music written in notation and played on physical models of instruments. Listen, and read the liner notes.">
+<meta property="og:title" content="Era">
+<meta property="og:description" content="A record by Claude: forty-three minutes on one reel of tape, written in notation, every instrument a physical model.">
+<meta property="og:type" content="music.album">
+<meta property="og:url" content="https://cailmdaley.github.io/music/era/">
+<meta property="og:image" content="https://cailmdaley.github.io/music/era/cover-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="A round threshing floor seen from above, edged with stones, with a spiral of small inked marks laid on it from the rim inward.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#EDE8E0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #EDE8E0;
+  --sleeve: #EBE3D4;
+  --ink: #2E2A26;
+  --ink-2: #4A4540;
+  --muted: #7A7368;
+  --rule: #A89888;
+  --rule-light: #CFC3B1;
+  --umber: #5B4330;
+  --ochre: #A67624;
+  --blue: #2E5C86;
+  --serif: 'EB Garamond', Garamond, 'Times New Roman', serif;
+}
+* { box-sizing: border-box; }
+html { font-size: 18px; -webkit-text-size-adjust: 100%; background: var(--paper); }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: var(--grain, none);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.62;
+  font-feature-settings: "kern" 1, "liga" 1;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .2s; }
+a:hover { border-bottom-color: currentColor; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 1.5px solid var(--blue); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- the page */
+.top { max-width: 1240px; margin: 0 auto; padding: 14px 16px 10px; }
+.top a { font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--ink-2); font-size: 1.02rem; }
+.top a::before { content: "\2190\2009"; }
+.album { max-width: 1240px; margin: 0 auto; padding: 0 16px 5rem; }
+
+/* ---- the sleeve: cover and deck */
+.cover {
+  position: relative; margin: 0; width: 100%; aspect-ratio: 1 / 1;
+  background: var(--sleeve);
+  box-shadow: 0 1px 1px rgba(46, 42, 38, .10), 0 18px 36px -18px rgba(46, 42, 38, .42);
+  touch-action: manipulation;
+}
+.cover canvas { display: block; width: 100%; height: 100%; }
+.cover.over canvas { cursor: pointer; }
+.tip {
+  position: absolute; left: 0; top: 0; pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: .12rem .55rem .18rem; white-space: nowrap;
+  background: rgba(241, 236, 227, .94); border: 1px solid var(--rule-light);
+  box-shadow: 0 2px 6px rgba(46, 42, 38, .12);
+  font-size: .86rem; line-height: 1.35; color: var(--ink);
+}
+.tip i { color: var(--ink-2); }
+.tip .t { color: var(--muted); margin-left: .35em; }
+
+.deck {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+  column-gap: .85rem; row-gap: .1rem; margin: 1.1rem 0 0;
+}
+.play {
+  width: 48px; height: 48px; padding: 0; border-radius: 50%;
+  border: 1.4px solid var(--ink); background: transparent; cursor: pointer;
+  display: grid; place-items: center; color: var(--ink);
+  transition: background-color .2s;
+}
+.play:hover { background: rgba(91, 67, 48, .07); }
+.play svg { width: 22px; height: 22px; }
+.play .ps { display: none; }
+.playing .play .pl { display: none; }
+.playing .play .ps { display: block; }
+.now { min-width: 0; line-height: 1.3; }
+.now a { color: var(--ink); font-style: italic; font-size: 1.08rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 0; }
+.now a:hover { color: var(--umber); }
+.deck .msg { grid-column: 1 / -1; font-size: .86rem; font-style: italic; color: var(--muted); min-height: 1.3em; text-align: center; }
+.clock { font-size: .92rem; color: var(--ink-2); font-variant-numeric: oldstyle-nums tabular-nums; white-space: nowrap; }
+.clock .of { color: var(--muted); }
+.seek { grid-column: 1 / -1; width: 100%; margin: .55rem 0 0; height: 22px; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.seek::-webkit-slider-runnable-track { height: 1px; background: var(--rule); }
+.seek::-moz-range-track { height: 1px; background: var(--rule); }
+.seek::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; margin-top: -5px; border-radius: 50%; background: var(--umber); border: 0; }
+.seek::-moz-range-thumb { width: 11px; height: 11px; border-radius: 50%; background: var(--umber); border: 0; }
+
+/* the deck follows as a strip when the sleeve scrolls away */
+.strip {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  display: flex; align-items: center; gap: .75rem;
+  padding: .5rem 16px calc(.5rem + env(safe-area-inset-bottom));
+  background: rgba(237, 232, 224, .96); border-top: 1px solid var(--rule-light);
+  box-shadow: 0 -6px 18px -12px rgba(46, 42, 38, .35);
+  transform: translateY(110%); transition: transform .3s ease;
+}
+.strip.shown { transform: none; }
+.strip .play { width: 38px; height: 38px; flex: none; }
+.strip .play svg { width: 18px; height: 18px; }
+.strip .now { flex: 1; }
+.strip .now a { font-size: 1rem; }
+
+/* ---- the booklet */
+.booklet { max-width: 36rem; margin: 0 auto; }
+.booklet > header { margin: 2.6rem 0 1.4rem; }
+h1 {
+  margin: 0; font-weight: 500; font-size: 2.6rem; line-height: 1.1;
+  font-variant-caps: small-caps; letter-spacing: .16em;
+}
+.by { margin: .2rem 0 0; font-style: italic; color: var(--ink-2); font-size: 1.08rem; }
+h2 {
+  margin: 3.4rem 0 1.1rem; font-weight: 400; font-style: italic; font-size: 1.42rem; color: var(--ink-2);
+  position: relative;
+}
+h2::after {
+  content: ""; position: absolute; left: .1em; bottom: -.35rem; width: 2.8rem; height: 1px;
+  background: linear-gradient(to right, var(--rule) 60%, transparent); transform: skewX(-15deg);
+}
+
+.tracklist { list-style: none; margin: 0; padding: 0; }
+.tracklist li {
+  display: grid; grid-template-columns: 1.7em minmax(0, 1fr) auto 1.6em; align-items: baseline;
+  column-gap: .5rem; padding: .18rem 0; border-bottom: 1px dotted var(--rule-light);
+}
+.tracklist .n { text-align: right; color: var(--muted); font-size: .92rem; position: relative; }
+.tracklist .go {
+  text-align: left; background: none; border: 0; padding: .12rem 0; cursor: pointer;
+  font-size: 1.04rem; line-height: 1.35; color: var(--ink);
+}
+.tracklist .go:hover { color: var(--umber); }
+.tracklist .dur { color: var(--muted); font-size: .92rem; font-variant-numeric: oldstyle-nums tabular-nums; }
+.tracklist .to-note { color: var(--rule); text-align: center; border: 0; font-size: .95rem; }
+.tracklist .to-note:hover { color: var(--umber); }
+.tracklist li.on .go { color: var(--umber); font-style: italic; }
+.tracklist li.on .n { color: var(--umber); }
+.tracklist li.on .n::before {
+  content: ""; position: absolute; left: -.55em; top: .52em; width: 6px; height: 6px; border-radius: 50%; background: var(--umber);
+}
+.total { display: flex; justify-content: flex-end; color: var(--muted); font-size: .92rem; margin: .4rem 1.6em 0 0; font-style: italic; }
+
+.intro { margin-top: 3rem; }
+.intro p, .note > p, dd, .colophon p { hyphens: auto; -webkit-hyphens: auto; }
+.intro p { margin: 0; font-size: 1.07rem; }
+.intro p + p { text-indent: 1.5em; }
+.intro p:first-child::first-letter {
+  float: left; font-size: 4.15rem; line-height: .8; padding: .1em .12em 0 0; margin-top: .02em;
+  color: var(--umber); font-weight: 400;
+}
+
+.note { margin: 0 0 2.4rem; scroll-margin-top: 1.2rem; position: relative; }
+.note header { display: grid; grid-template-columns: 2.1rem minmax(0, 1fr) auto; column-gap: .4rem; align-items: baseline; margin-bottom: .35rem; }
+.note .n { font-size: 1.5rem; color: var(--rule); line-height: 1; }
+.note h3 { margin: 0; font-weight: 500; font-size: 1.28rem; line-height: 1.25; }
+.note h3 .sub { display: block; font-weight: 400; font-style: italic; font-size: 1.02rem; color: var(--ink-2); }
+.note .meta { grid-column: 2; font-variant-caps: all-small-caps; letter-spacing: .07em; color: var(--muted); font-size: .98rem; }
+.note .go {
+  grid-column: 3; grid-row: 1; align-self: baseline; background: none; border: 0; cursor: pointer; padding: .1rem 0 .1rem .6rem;
+  font-variant-caps: all-small-caps; letter-spacing: .09em; color: var(--ochre); font-size: 1rem;
+}
+.note .go::before { content: "\25B8\2009"; font-variant-caps: normal; }
+.note .go:hover { color: var(--umber); }
+.note > p { margin: 0 0 0 2.5rem; }
+.note.on .n { color: var(--umber); }
+.note.on::before { content: ""; position: absolute; left: .55rem; top: 2.2rem; bottom: .3rem; width: 1px; background: linear-gradient(var(--umber), rgba(91,67,48,0)); }
+
+.words { margin: 1.15rem 0 0 2.5rem; padding: .2rem 0 .2rem 1.1rem; border-left: 1px solid var(--rule-light); }
+.words h4 { margin: 1rem 0 .15rem; font-weight: 400; font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--muted); font-size: .98rem; }
+.words h4:first-child { margin-top: 0; }
+.words .stanza { margin: 0 0 .75rem; line-height: 1.5; font-size: 1.02rem; }
+.words .direction { margin: .9rem 0 0; font-style: italic; color: var(--ink-2); }
+
+.lineage dl { margin: 0; }
+.lineage dt { font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--muted); font-size: 1rem; margin-top: 1.1rem; }
+.lineage dd { margin: .1rem 0 0; }
+
+.colophon figure { margin: 0 0 1.2rem; }
+.colophon canvas { display: block; width: 100%; height: auto; }
+.colophon figcaption { font-size: .84rem; color: var(--muted); font-style: italic; text-align: center; margin-top: .2rem; }
+.colophon p { margin: 0; }
+.fin { margin: 3.5rem 0 0; text-align: center; color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: .12em; }
+
+@media (max-width: 599px) {
+  .note header { grid-template-columns: 1.7rem minmax(0, 1fr) auto; }
+  .note > p { margin-left: 0; }
+  .words { margin-left: 0; }
+  .note.on::before { display: none; }
+}
+@media (min-width: 600px) {
+  .album, .top { padding-left: 28px; padding-right: 28px; }
+}
+@media (min-width: 960px) {
+  .top { padding: 18px 3rem 0; }
+  .album {
+    display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 5vw, 5rem); padding: 0 3rem 5rem; align-items: start;
+  }
+  .sleeve { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem 0 2rem; }
+  .cover, .deck { width: min(100%, calc(100vh - 11rem)); align-self: center; }
+  .booklet { margin: 0; padding-top: 1.5rem; }
+  .booklet > header { margin-top: 3.2rem; }
+  .strip { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .strip { transition: none; }
+}
+
+/* ?cover: the cover alone, for rendering it to an image */
+html.cover-only, html.cover-only body { background: var(--sleeve); overflow: hidden; }
+html.cover-only .top, html.cover-only .deck, html.cover-only .booklet, html.cover-only .strip { display: none; }
+html.cover-only .album { padding: 0; max-width: none; }
+html.cover-only .cover { position: fixed; left: 0; top: 0; width: 100vmin; box-shadow: none; }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Site"><a href="../">Music</a></nav>
+<main class="album">
+  <div class="sleeve">
+    <figure class="cover" id="cover">
+      <canvas id="floor" role="img" aria-label="The cover: a round threshing floor seen from above, ringed with stones. A spiral of small inked marks runs from the rim inward, one for each quarter second of the record."></canvas>
+      <div class="tip" id="tip" hidden></div>
+    </figure>
+    <div class="deck" id="deck">
+      <button type="button" class="play" aria-label="Play">
+        <svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.6 C8.4 9.6 8.5 14.2 8.8 18.5 C12.3 16.4 15.6 14.2 18.9 12.1 C15.6 9.9 12.1 7.6 8.6 5.6 Z" fill="currentColor"/></svg>
+        <svg class="ps" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 6.1 C8 10 8.1 14 8.4 18.1" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M15.6 5.9 C15.9 10 15.8 14.1 15.5 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <div class="now"><a class="title" href="#t1">1 · Sounding Up</a></div>
+      <div class="clock"><span class="pos">0:00</span> <span class="of">/ @@LENGTH@@</span></div>
+      <input class="seek" type="range" min="0" max="@@TOTAL@@" step="1" value="0" aria-label="Position in the record">
+      <span class="msg" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="booklet">
+    <header>
+      <h1>Era</h1>
+      <p class="by">Claude · @@YEAR@@ · @@LENGTH@@</p>
+    </header>
+
+    <ol class="tracklist" aria-label="Tracks">
+@@TRACKLIST@@
+    </ol>
+    <div class="total">@@LENGTH@@</div>
+
+    <section class="intro">
+@@INTRO@@
+    </section>
+
+    <section class="notes" aria-labelledby="notes-h">
+      <h2 id="notes-h">The tracks</h2>
+@@NOTES@@
+    </section>
+
+    <section class="lineage" aria-labelledby="lineage-h">
+      <h2 id="lineage-h">Lineage</h2>
+      <dl>
+@@LINEAGE@@
+      </dl>
+    </section>
+
+    <section class="colophon" aria-labelledby="cover-h">
+      <h2 id="cover-h">The cover</h2>
+      <figure>
+        <canvas id="key" width="720" height="150" aria-label="The twelve inks, from the earth colours to the blues"></canvas>
+        <figcaption>the inks, around the circle of fifths</figcaption>
+      </figure>
+      <p>@@COLOPHON@@</p>
+    </section>
+    <p class="fin">Era · Claude · @@YEAR@@</p>
+  </div>
+</main>
+
+<div class="strip" id="strip" aria-hidden="true">
+  <button type="button" class="play" aria-label="Play" tabindex="-1">
+    <svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.6 C8.4 9.6 8.5 14.2 8.8 18.5 C12.3 16.4 15.6 14.2 18.9 12.1 C15.6 9.9 12.1 7.6 8.6 5.6 Z" fill="currentColor"/></svg>
+    <svg class="ps" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 6.1 C8 10 8.1 14 8.4 18.1" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M15.6 5.9 C15.9 10 15.8 14.1 15.5 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+  </button>
+  <div class="now"><a class="title" href="#t1" tabindex="-1">1 · Sounding Up</a></div>
+  <div class="clock"><span class="pos">0:00</span> <span class="of">/ @@LENGTH@@</span></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var REC = @@TRACKS@@;
+  var FLOOR = '@@FLOOR@@';
+  var HOP = 0.25, PI = Math.PI, TAU = 2 * PI;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coverOnly = /[?&]cover\b/.test(location.search);
+  if (coverOnly) document.documentElement.classList.add('cover-only');
+
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function fmt(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function rng(seed) {
+    return function () {
+      seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function canvas(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h || w; return c; }
+
+  // ---- the record, measured every quarter second: loudness, brightness, the pitch it leans on
+  var raw = atob(FLOOR), N = raw.length / 3;
+  var DB = new Float32Array(N), HZ = new Float32Array(N), PC = new Uint8Array(N), SH = new Float32Array(N);
+  for (var i = 0; i < N; i++) {
+    var a = raw.charCodeAt(3 * i), b = raw.charCodeAt(3 * i + 1), c = raw.charCodeAt(3 * i + 2);
+    DB[i] = a / 255 * 66 - 72;
+    HZ[i] = b ? 150 * Math.exp(b / 255 * Math.log(4000 / 150)) : 0;
+    PC[i] = c >> 4; SH[i] = (c & 15) / 15;
+  }
+  var SPAN = N * HOP;
+
+  // ---- the floor, in units of the cover's side. The spiral runs from the rim inward at
+  // an even walking pace: equal arc length for every quarter second.
+  var R_OUT = 0.405, R_IN = 0.088, TURNS = 20, D = (R_OUT - R_IN) / TURNS, TH = TAU * TURNS;
+  var R_FLOOR = 0.423, R_RING = 0.444, R_HUB = 0.058;
+  var A4 = D / (2 * TAU), LEN = R_OUT * TH - A4 * TH * TH;
+  function rAt(th) { return R_OUT - D * th / TAU; }
+  function thAtS(s) { return (R_OUT - Math.sqrt(R_OUT * R_OUT - 4 * A4 * s)) / (2 * A4); }
+  function thAt(t) { return thAtS(clamp(t / SPAN, 0, 1) * LEN); }
+  function timeAtTh(th) { return (R_OUT * th - A4 * th * th) / LEN * SPAN; }
+  function at(th, r) { var p = th - PI / 2; return [0.5 + r * Math.cos(p), 0.5 + r * Math.sin(p)]; }
+  // a point on the cover to the moment under it, or -1 off the spiral
+  function timeAtPoint(x, y) {
+    var dx = x - 0.5, dy = y - 0.5, rho = Math.sqrt(dx * dx + dy * dy);
+    if (rho > R_OUT + 0.7 * D || rho < R_IN - 0.7 * D) return -1;
+    var phi = ((Math.atan2(dy, dx) + PI / 2) % TAU + TAU) % TAU;
+    var k = clamp(Math.round((R_OUT - rho) / D - phi / TAU), 0, TURNS - 1), th = phi + TAU * k;
+    if (th > TH) th -= TAU;
+    if (Math.abs(rAt(th) - rho) > 0.75 * D) return -1;
+    return clamp(timeAtTh(th), 0, SPAN);
+  }
+
+  // ---- inks: G and D in earth colours, E in the record's last blue, the rest between,
+  // around the circle of fifths. A note held weakly is greyer and thinner.
+  var INK = ['#6F4126', '#674A64', '#A67624', '#7C3A3C', '#2E5C86', '#9C5A2A', '#5C5372', '#5B4330', '#6E3C55', '#6E7A42', '#8E4331', '#4E5C6B'];
+  var GRAPHITE = [104, 98, 90];
+  var styles = {};
+  function rgb(hex) { return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]; }
+  function ink(pc, share, alpha) {
+    var q = Math.round(share * 15), key = pc * 16 + q + '|' + alpha;
+    if (styles[key]) return styles[key];
+    var s = q / 15, g = Math.pow(1 - s, 0.9) * 0.85, c = rgb(INK[pc]);
+    var m = c.map(function (v, j) { return Math.round(v * (1 - g) + GRAPHITE[j] * g); });
+    return (styles[key] = 'rgba(' + m.join(',') + ',' + (alpha * (0.52 + 0.46 * Math.pow(s, 0.7))).toFixed(3) + ')');
+  }
+
+  // A pen stroke along a quadratic curve: pressed at the start, lifted at the end.
+  function quill(g, x0, y0, cx, cy, x1, y1, w) {
+    var L = [], R = [], n = 6;
+    for (var k = 0; k <= n; k++) {
+      var t = k / n, u = 1 - t;
+      var x = u * u * x0 + 2 * u * t * cx + t * t * x1, y = u * u * y0 + 2 * u * t * cy + t * t * y1;
+      var dx = u * (cx - x0) + t * (x1 - cx), dy = u * (cy - y0) + t * (y1 - cy), l = Math.sqrt(dx * dx + dy * dy) || 1;
+      var h = w * (0.16 + 0.84 * Math.pow(Math.sin(PI * (0.07 + 0.86 * t)), 0.6)) * (1.14 - 0.32 * t) / 2;
+      L.push(x - dy / l * h, y + dx / l * h); R.push(x + dy / l * h, y - dx / l * h);
+    }
+    g.moveTo(L[0], L[1]);
+    for (k = 2; k < L.length; k += 2) g.lineTo(L[k], L[k + 1]);
+    for (k = R.length - 2; k >= 0; k -= 2) g.lineTo(R[k], R[k + 1]);
+    g.closePath();
+  }
+
+  // ---- the marks, planned once: the same drawing on every load and at every size
+  var M = (function () {
+    var r = rng(1892), m = {th: new Float32Array(N), len: new Float32Array(N), lean: new Float32Array(N),
+      w: new Float32Array(N), dr: new Float32Array(N), bow: new Float32Array(N), asym: new Float32Array(N), u: new Float32Array(N)};
+    var step = LEN / N;
+    for (var i = 0; i < N; i++) {
+      var th0 = thAtS((i + 0.5) * step);
+      m.th[i] = th0 + (r() - 0.5) * 0.5 * step / rAt(th0);
+      var f = Math.pow(clamp((DB[i] + 50) / 40, 0, 1), 1.45);
+      m.len[i] = D * 1.42 * f * (0.9 + 0.2 * r());
+      var lean = HZ[i] > 0 ? clamp(Math.log(HZ[i] / 1000) / Math.log(2.6), -1, 1) : 0;
+      m.lean[i] = lean * 0.58 + (r() - 0.5) * 0.14;
+      m.w[i] = 0.0016 * (0.5 + 0.5 * SH[i]) * (0.65 + 0.45 * f) * (0.8 + 0.4 * r());
+      m.dr[i] = (r() - 0.5) * 0.12 * D;
+      m.bow[i] = (r() - 0.5) * 0.14;
+      m.asym[i] = (r() - 0.5) * 0.3;
+      m.u[i] = (r() - 0.5) * 2;
+    }
+    return m;
+  })();
+
+  function standing(g) {
+    for (var i = 0; i < N; i++) {
+      var len = M.len[i];
+      if (len < 0.0007) continue;
+      var r = rAt(M.th[i]) + M.dr[i], p = M.th[i] - PI / 2, cx = 0.5 + r * Math.cos(p), cy = 0.5 + r * Math.sin(p);
+      var q = p + M.lean[i], ux = Math.cos(q), uy = Math.sin(q), h = len / 2;
+      var x0 = cx + ux * h * (1 + M.asym[i]), y0 = cy + uy * h * (1 + M.asym[i]);
+      var x1 = cx - ux * h * (1 - M.asym[i]), y1 = cy - uy * h * (1 - M.asym[i]);
+      var b = M.bow[i] * len, mx = (x0 + x1) / 2 - uy * b, my = (y0 + y1) / 2 + ux * b;
+      g.beginPath(); quill(g, x0, y0, mx, my, x1, y1, M.w[i]);
+      g.fillStyle = ink(PC[i], SH[i], 0.95); g.fill();
+    }
+  }
+  // threshed: the same straw beaten flat along the path, and the grain loose beside it
+  function flattened(g) {
+    var r = rng(1961), grain = [];
+    for (var i = 0; i < N; i++) {
+      var len = M.len[i];
+      if (len < 0.0007) continue;
+      var off = M.u[i] * Math.min(0.4 * D, 0.5 * len), rr = rAt(M.th[i]) + M.dr[i] * 0.5 + off;
+      var lf = len * 0.85, d = lf / 2 / rr, tilt = M.lean[i] * len * 0.09;
+      var p0 = at(M.th[i] - d, rr - tilt), p1 = at(M.th[i] + d, rr + tilt), pm = at(M.th[i], rr + M.bow[i] * len * 0.25);
+      g.beginPath(); quill(g, p0[0], p0[1], 2 * pm[0] - (p0[0] + p1[0]) / 2, 2 * pm[1] - (p0[1] + p1[1]) / 2, p1[0], p1[1], M.w[i] * 0.9);
+      g.fillStyle = ink(PC[i], SH[i], 0.82); g.fill();
+      if (SH[i] > 0.5 && r() < 0.2) grain.push(at(M.th[i] + (r() - 0.5) * 2 * d, rAt(M.th[i]) + (r() - 0.5) * 0.85 * D), 0.0007 + r() * 0.0005);
+    }
+    g.fillStyle = 'rgba(176, 128, 40, 0.85)';
+    for (var k = 0; k < grain.length; k += 2) {
+      g.beginPath(); g.ellipse(grain[k][0], grain[k][1], grain[k + 1] * 1.4, grain[k + 1], k, 0, TAU); g.fill();
+    }
+  }
+
+  // ---- paper, floor, stones
+  function blots(g, S, n, alpha, seed, color) {
+    var r = rng(seed), c = canvas(n), x = c.getContext('2d'), img = x.createImageData(n, n);
+    for (var i = 0; i < n * n; i++) { img.data[4 * i] = color[0]; img.data[4 * i + 1] = color[1]; img.data[4 * i + 2] = color[2]; img.data[4 * i + 3] = Math.pow(r(), 1.6) * 255; }
+    x.putImageData(img, 0, 0);
+    g.save(); g.globalAlpha = alpha; g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+    g.filter = 'blur(' + (S / n * 0.35).toFixed(1) + 'px)';
+    g.drawImage(c, -S * 0.08, -S * 0.08, S * 1.16, S * 1.16);
+    g.restore();
+  }
+  function grainTile(size, seed, strength) {
+    var r = rng(seed), c = canvas(size), x = c.getContext('2d'), img = x.createImageData(size, size), d = img.data;
+    for (var i = 0; i < size * size; i++) {
+      var v = r();
+      if (v < 0.5) { d[4 * i] = 70; d[4 * i + 1] = 55; d[4 * i + 2] = 40; d[4 * i + 3] = Math.pow(r(), 3) * 46 * strength; }
+      else { d[4 * i] = 255; d[4 * i + 1] = 252; d[4 * i + 2] = 244; d[4 * i + 3] = Math.pow(r(), 3) * 40 * strength; }
+    }
+    x.putImageData(img, 0, 0);
+    return c;
+  }
+  function paper(g, S) {
+    g.fillStyle = '#EBE3D4'; g.fillRect(0, 0, S, S);
+    blots(g, S, 6, 0.10, 11, [176, 150, 112]);
+    blots(g, S, 19, 0.07, 12, [160, 132, 96]);
+    blots(g, S, 64, 0.05, 13, [255, 252, 244]);
+    g.fillStyle = g.createPattern(grainTile(256, 14, 1), 'repeat'); g.fillRect(0, 0, S, S);
+    var r = rng(15);
+    g.lineCap = 'round';
+    for (var k = 0; k < 520; k++) {
+      var x = r() * S, y = r() * S, a = r() * TAU, l = (0.006 + r() * 0.026) * S, bend = (r() - 0.5) * l * 0.5;
+      g.beginPath(); g.moveTo(x, y);
+      g.quadraticCurveTo(x + Math.cos(a) * l / 2 - Math.sin(a) * bend, y + Math.sin(a) * l / 2 + Math.cos(a) * bend, x + Math.cos(a) * l, y + Math.sin(a) * l);
+      g.strokeStyle = r() < 0.6 ? 'rgba(120, 98, 74, 0.07)' : 'rgba(255, 253, 247, 0.32)';
+      g.lineWidth = S * (0.0004 + r() * 0.0005); g.stroke();
+    }
+  }
+  function floorWash(g, S, beaten) {
+    g.save();
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.clip();
+    g.fillStyle = beaten ? 'rgba(150, 118, 78, 0.27)' : 'rgba(178, 148, 104, 0.19)';
+    g.fillRect(0, 0, S, S);
+    blots(g, S, 28, beaten ? 0.16 : 0.12, beaten ? 22 : 21, [130, 100, 66]);
+    g.filter = 'blur(' + (S * 0.004).toFixed(1) + 'px)';
+    g.strokeStyle = 'rgba(128, 96, 60, 0.22)'; g.lineWidth = S * 0.01;
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.stroke();
+    g.restore();
+  }
+  function blob(g, cx, cy, hl, hd, rot, r, k) {
+    var pts = [], m = [];
+    for (var j = 0; j < k; j++) m.push(1 + (r() - 0.5) * 0.42);
+    for (j = 0; j < k; j++) {
+      var s = (m[(j + k - 1) % k] + 3 * m[j] + m[(j + 1) % k]) / 5, a = TAU * (j + (r() - 0.5) * 0.3) / k;
+      var x = Math.cos(a) * hl * s, y = Math.sin(a) * hd * s;
+      pts.push([cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot)]);
+    }
+    function mid(p, q) { return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; }
+    var st = mid(pts[k - 1], pts[0]), path = new Path2D();
+    path.moveTo(st[0], st[1]);
+    for (j = 0; j < k; j++) { var e = mid(pts[j], pts[(j + 1) % k]); path.quadraticCurveTo(pts[j][0], pts[j][1], e[0], e[1]); }
+    path.closePath();
+    return path;
+  }
+  var TONES = ['#A79C8B', '#9A8F80', '#B2A897', '#8F877A', '#A99B84', '#B4AB9C', '#9F9686', '#ABA08C'];
+  function stone(g, S, cx, cy, hl, hd, rot, r, tone, line) {
+    var e = Math.max(hl, hd);
+    g.save();
+    g.shadowColor = 'rgba(58, 42, 26, 0.3)'; g.shadowBlur = S * 0.004; g.shadowOffsetX = S * 0.0012; g.shadowOffsetY = S * 0.002;
+    var path = blob(g, cx, cy, hl, hd, rot, r, 10);
+    g.fillStyle = tone; g.fill(path);
+    g.restore();
+    g.save(); g.clip(path);
+    var sh = g.createLinearGradient(cx - e, cy - e, cx + e, cy + e);
+    sh.addColorStop(0, 'rgba(255, 250, 240, 0.26)'); sh.addColorStop(0.5, 'rgba(255, 250, 240, 0)'); sh.addColorStop(1, 'rgba(58, 46, 34, 0.24)');
+    g.fillStyle = sh; g.fillRect(cx - e * 1.5, cy - e * 1.5, e * 3, e * 3);
+    var dots = Math.round(e / 0.004 / S * 6) + 3;
+    for (var k = 0; k < dots; k++) {
+      g.fillStyle = r() < 0.5 ? 'rgba(66, 54, 42, 0.16)' : 'rgba(250, 246, 236, 0.22)';
+      g.beginPath(); g.arc(cx + (r() - 0.5) * hl * 1.6, cy + (r() - 0.5) * hd * 1.6, S * (0.0003 + r() * 0.0006), 0, TAU); g.fill();
+    }
+    if (r() < 0.3) {  // a vein
+      var va = r() * PI;
+      g.strokeStyle = 'rgba(66, 54, 42, 0.2)'; g.lineWidth = S * 0.0005;
+      g.beginPath(); g.moveTo(cx - Math.cos(va) * e, cy - Math.sin(va) * e);
+      g.quadraticCurveTo(cx + (r() - 0.5) * e * 0.6, cy + (r() - 0.5) * e * 0.6, cx + Math.cos(va) * e, cy + Math.sin(va) * e); g.stroke();
+    }
+    g.restore();
+    g.save(); g.lineJoin = 'round';
+    g.strokeStyle = 'rgba(56, 44, 34, 0.66)'; g.lineWidth = S * line; g.stroke(path);
+    g.translate(S * 0.0006, S * 0.0005); g.strokeStyle = 'rgba(56, 44, 34, 0.2)'; g.lineWidth = S * line * 0.7; g.stroke(path);
+    g.restore();
+  }
+  function ring(g, S) {
+    var r = rng(1979), a = 0, items = [];
+    while (a < TAU - 0.02) {
+      var hl = 0.0155 + 0.0095 * r(), hd = 0.0125 + 0.006 * r(), rc = R_RING + (r() - 0.5) * 0.005;
+      var step = (2 * hl * 0.97 + 0.0028) / rc;
+      if (a + step > TAU) { step = TAU - a; hl = (step * rc - 0.0028) / 1.94; }
+      items.push([a + step / 2, rc, hl, hd]); a += step;
+    }
+    items.forEach(function (s, j) {
+      var p = at(s[0], s[1]);
+      stone(g, S, p[0] * S, p[1] * S, s[2] * S, s[3] * S, s[0] + (r() - 0.5) * 0.12, r, TONES[Math.floor(r() * TONES.length)], 0.0010);
+      if (r() < 0.35) {  // a pebble in the joint, on the outside
+        var q = at(s[0] + s[2] / s[1] + 0.0012 / s[1], s[1] + 0.012 + r() * 0.004), z = 0.0022 + r() * 0.002;
+        stone(g, S, q[0] * S, q[1] * S, z * S * 1.2, z * S, r() * TAU, r, TONES[Math.floor(r() * TONES.length)], 0.0009);
+      }
+    });
+  }
+  // a numbered pebble at the head of every track
+  var STARTS = [], ACC = 0;
+  REC.tracks.forEach(function (t) { STARTS.push(ACC / REC.rate); ACC += t.frames; });
+  var TOTAL = ACC / REC.rate;
+  function pebbles(g, S) {
+    var r = rng(1958);
+    STARTS.forEach(function (t, i) {
+      var th = thAt(t + 0.1), p = at(th, rAt(th)), z = 0.0084;
+      stone(g, S, p[0] * S, p[1] * S, z * S * 1.12, z * S, th + (r() - 0.5) * 0.5, r, '#D9D1C2', 0.0009);
+      g.fillStyle = 'rgba(58, 46, 36, 0.9)';
+      g.font = 'italic 500 ' + (S * 0.0122).toFixed(1) + 'px "EB Garamond", Garamond, serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(String(i + 1), p[0] * S, p[1] * S + S * 0.0003);
+    });
+  }
+  function hub(g, S) {
+    var r = rng(2026);
+    stone(g, S, S / 2, S / 2, R_HUB * S * 1.02, R_HUB * S, 0.4, r, '#A59A88', 0.0015);
+    g.save();
+    g.strokeStyle = 'rgba(78, 64, 50, 0.32)'; g.lineWidth = S * 0.0011;
+    g.beginPath(); g.ellipse(S / 2, S / 2, R_HUB * 0.68 * S, R_HUB * 0.66 * S, 0.3, 0.3, TAU - 0.5); g.stroke();
+    g.beginPath(); g.arc(S / 2, S / 2, S * 0.0068, 0, TAU);
+    g.fillStyle = 'rgba(48, 38, 30, 0.9)'; g.fill();
+    g.strokeStyle = 'rgba(255, 252, 244, 0.45)'; g.lineWidth = S * 0.0011;
+    g.beginPath(); g.arc(S / 2 + S * 0.0008, S / 2 + S * 0.001, S * 0.0072, 0.2, 1.9); g.stroke();
+    g.restore();
+  }
+
+  // ---- the title, lettered with a broad nib held at thirty degrees
+  var LETTERS = {
+    E: {w: 0.64, s: [[[0.09, 0.03], [0.085, 0.5], [0.09, 0.97]], [[-0.04, 0.025], [0.3, 0.02], [0.56, 0.025]], [[0.56, 0.02], [0.575, 0.1], [0.585, 0.17]],
+      [[0.09, 0.495], [0.28, 0.49], [0.45, 0.495]], [[0.45, 0.43], [0.452, 0.5], [0.45, 0.565]], [[-0.04, 0.975], [0.3, 0.975], [0.61, 0.97]], [[0.61, 0.975], [0.625, 0.88], [0.64, 0.8]]]},
+    R: {w: 0.7, s: [[[0.09, 0.03], [0.087, 0.5], [0.09, 0.97]], [[-0.04, 0.025], [0.1, 0.02], [0.3, 0.02]], [[0.3, 0.02], [0.67, 0.03], [0.66, 0.26], [0.62, 0.5], [0.1, 0.505]],
+      [[0.3, 0.5], [0.45, 0.62], [0.55, 0.88], [0.73, 0.975]], [[-0.05, 0.975], [0.1, 0.975], [0.23, 0.975]]]},
+    A: {w: 0.78, s: [[[0.02, 0.97], [0.2, 0.48], [0.37, 0.0]], [[0.35, 0.0], [0.55, 0.5], [0.74, 0.97]], [[0.19, 0.64], [0.38, 0.635], [0.57, 0.64]],
+      [[-0.08, 0.975], [0.02, 0.975], [0.12, 0.975]], [[0.62, 0.975], [0.74, 0.975], [0.86, 0.975]]]}
+  };
+  function smooth(pts, n) {  // a Catmull-Rom path through the stroke's points
+    var out = [];
+    for (var j = 0; j < pts.length - 1; j++) {
+      var p0 = pts[Math.max(0, j - 1)], p1 = pts[j], p2 = pts[j + 1], p3 = pts[Math.min(pts.length - 1, j + 2)];
+      for (var k = 0; k < n; k++) {
+        var t = k / n, t2 = t * t, t3 = t2 * t;
+        out.push([0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+                  0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]);
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+  function letter(g, ch, x0, y0, h, r) {
+    var L = LETTERS[ch], nib = 0.14 * h, na = -PI / 6;
+    g.beginPath();
+    L.s.forEach(function (stroke) {
+      var ph = r() * TAU, pts = smooth(stroke, 24).map(function (p, k) {
+        return [x0 + (p[0] + 0.0035 * Math.sin(ph + k * 0.21)) * h, y0 + (p[1] + 0.0035 * Math.cos(ph + k * 0.17)) * h];
+      });
+      for (var k = 0; k < pts.length - 1; k++) {
+        var w = nib * (0.94 + 0.06 * Math.sin(ph + k * 0.13)) / 2, nx = Math.cos(na) * w, ny = Math.sin(na) * w;
+        var a = pts[k], b = pts[k + 1];
+        var q = [[a[0] - nx, a[1] - ny], [a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny]];
+        var cross = (q[1][0] - q[0][0]) * (q[2][1] - q[0][1]) - (q[1][1] - q[0][1]) * (q[2][0] - q[0][0]);
+        if (cross < 0) q.reverse();
+        g.moveTo(q[0][0], q[0][1]); g.lineTo(q[1][0], q[1][1]); g.lineTo(q[2][0], q[2][1]); g.lineTo(q[3][0], q[3][1]); g.closePath();
+      }
+    });
+    g.fill('nonzero');
+    return L.w * h;
+  }
+  function title(g, S) {
+    var r = rng(43), h = 0.054 * S, x = 0.052 * S, y = 0.05 * S;
+    g.fillStyle = 'rgba(52, 38, 28, 0.94)';
+    x += letter(g, 'E', x, y, h, r) + 0.2 * h;
+    x += letter(g, 'R', x, y + 0.004 * h, h, r) + 0.17 * h;
+    letter(g, 'A', x, y - 0.003 * h, h, r);
+    g.font = 'italic 400 ' + (S * 0.024).toFixed(1) + 'px "EB Garamond", Garamond, serif';
+    g.textAlign = 'right'; g.textBaseline = 'alphabetic';
+    g.fillStyle = 'rgba(70, 58, 48, 0.85)';
+    g.fillText('Claude', S * 0.952, S * 0.962);
+  }
+
+  // Ink laid on with a little bleed into the paper.
+  var inkLayer = null;
+  function inked(g, S, draw) {
+    if (!inkLayer || inkLayer.width !== S) inkLayer = canvas(S);
+    var x = inkLayer.getContext('2d');
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, S, S);
+    draw(x, S);
+    g.save(); g.globalCompositeOperation = 'multiply';
+    g.filter = 'blur(' + Math.max(0.6, S * 0.0011).toFixed(2) + 'px)'; g.globalAlpha = 0.42; g.drawImage(inkLayer, 0, 0);
+    g.filter = 'none'; g.globalAlpha = 0.95; g.drawImage(inkLayer, 0, 0);
+    g.restore();
+  }
+  function unit(draw) { return function (x, S) { x.setTransform(S, 0, 0, S, 0, 0); draw(x); }; }
+
+  var base = null, played = null, SIZE = 0;
+  function render(S) {
+    var t0 = performance.now();
+    base = canvas(S); played = canvas(S);
+    var g = base.getContext('2d'), p = played.getContext('2d');
+    paper(g, S);
+    p.drawImage(base, 0, 0);
+    floorWash(g, S, false); floorWash(p, S, true);
+    inked(g, S, unit(standing)); inked(p, S, unit(flattened));
+    pebbles(g, S); pebbles(p, S);
+    ring(g, S); hub(g, S); inked(g, S, title);
+    SIZE = S;
+    console.log('era: floor drawn at ' + S + 'px in ' + Math.round(performance.now() - t0) + ' ms');
+  }
+
+  // ---- the visible cover: the floor as drawn, the threshed part over it, the walker
+  var cover = document.getElementById('cover'), vis = document.getElementById('floor'), v = vis.getContext('2d');
+  var tip = document.getElementById('tip');
+  var view = {pos: 0, walked: false, hover: -1, pulse: 0};
+  function threshedPath(g, S, t) {
+    var th = thAt(t), steps = 220;
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.clip();
+    g.beginPath(); g.rect(0, 0, S, S);
+    for (var k = 0; k <= steps; k++) {
+      var a = th - TAU + TAU * k / steps, r = a < 0 ? R_FLOOR + 0.01 : rAt(a) - D / 2, q = at(a, r);
+      k ? g.lineTo(q[0] * S, q[1] * S) : g.moveTo(q[0] * S, q[1] * S);
+    }
+    g.closePath(); g.clip('evenodd');
+  }
+  function draw() {
+    if (!base) return;
+    var S = SIZE;
+    v.drawImage(base, 0, 0);
+    if (view.pos > 0.2) { v.save(); threshedPath(v, S, view.pos); v.drawImage(played, 0, 0); v.restore(); }
+    if (view.hover >= 0) {
+      var th = thAt(view.hover), q = at(th, rAt(th));
+      v.strokeStyle = 'rgba(46, 38, 30, 0.6)'; v.lineWidth = S * 0.0016;
+      v.beginPath(); v.arc(q[0] * S, q[1] * S, S * 0.0105, 0, TAU); v.stroke();
+    }
+    if (view.walked) {
+      var th2 = thAt(view.pos), w = at(th2, rAt(th2)), breathe = reduce ? 0 : Math.sin(view.pulse) * 0.0018;
+      v.fillStyle = 'rgba(241, 236, 227, 0.55)';
+      v.beginPath(); v.arc(w[0] * S, w[1] * S, S * (0.0125 + breathe), 0, TAU); v.fill();
+      v.strokeStyle = 'rgba(46, 38, 30, 0.55)'; v.lineWidth = S * 0.0014; v.stroke();
+      v.fillStyle = '#2E2620';
+      v.beginPath(); v.arc(w[0] * S, w[1] * S, S * 0.0052, 0, TAU); v.fill();
+    }
+  }
+  function size() {
+    var w = cover.getBoundingClientRect().width, dpr = window.devicePixelRatio || 1;
+    var S = Math.round(Math.min(coverOnly ? 4096 : 2400, w * dpr));
+    if (S < 64 || S === SIZE) return;
+    vis.width = vis.height = S;
+    render(S); draw();
+  }
+
+  var fontsReady = document.fonts && document.fonts.load
+    ? Promise.race([Promise.all([document.fonts.load('italic 500 40px "EB Garamond"'), document.fonts.load('italic 400 40px "EB Garamond"')]),
+                    new Promise(function (res) { setTimeout(res, 2500); })])
+    : Promise.resolve();
+  fontsReady.then(function () {
+    size();
+    document.documentElement.dataset.drawn = '1';
+    var pending = 0;
+    window.addEventListener('resize', function () { clearTimeout(pending); pending = setTimeout(size, 250); });
+    drawKey();
+  });
+
+  // the page's own paper grain
+  try {
+    var tile = grainTile(220, 7, 0.4);
+    document.body.style.setProperty('--grain', 'url(' + tile.toDataURL() + ')');
+  } catch (e) {}
+
+  // the inks, as a key in the colophon
+  function drawKey() {
+    var c = document.getElementById('key');
+    if (!c) return;
+    var W = 720, H = 150, k = c.getContext('2d'), order = [3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8];
+    var names = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'B♭', 'B'];
+    k.fillStyle = '#EDE8E0'; k.fillRect(0, 0, W, H);
+    k.fillStyle = k.createPattern(grainTile(128, 9, 0.8), 'repeat'); k.fillRect(0, 0, W, H);
+    var r = rng(12);
+    inked(k, W, function (x) {
+      order.forEach(function (pc, j) {
+        var cx = 30 + j * 60;
+        for (var s = 0; s < 9; s++) {
+          var len = 54 + r() * 14, a = (r() - 0.5) * 0.35, sx = cx - 15 + s * 3.6, cy = 58;
+          var dx = Math.sin(a) * len / 2, dy = Math.cos(a) * len / 2;
+          x.beginPath(); quill(x, sx + dx, cy - dy, sx + (r() - 0.5) * 3, cy, sx - dx, cy + dy, 2.2 + r() * 0.8);
+          x.fillStyle = ink(pc, 1, 0.95); x.fill();
+        }
+      });
+    });
+    k.font = 'italic 400 24px "EB Garamond", Garamond, serif'; k.textAlign = 'center'; k.textBaseline = 'alphabetic';
+    k.fillStyle = '#5A5048';
+    order.forEach(function (pc, j) { k.fillText(names[pc], 30 + j * 60, 128); });
+  }
+
+  // ---- the record: its cuts are decoded one ahead and scheduled sample-exact on one
+  // AudioContext, so the roll plays without seams. Only the playing and the next track
+  // are held decoded (a long track is ~100 MB of samples).
+  function session(meta, handlers) {
+    if (!('mediaSession' in navigator)) return;
+    try { navigator.mediaSession.metadata = new MediaMetadata(meta); } catch (e) {}
+    ['play', 'pause', 'nexttrack', 'previoustrack'].forEach(function (action) {
+      try { navigator.mediaSession.setActionHandler(action, handlers[action] || null); } catch (e) {}
+    });
+  }
+  var RATE = REC.rate, T = REC.tracks;
+  var deck = document.getElementById('deck'), strip = document.getElementById('strip');
+  var seek = deck.querySelector('.seek'), msg = deck.querySelector('.msg');
+  var rows = [].slice.call(document.querySelectorAll('.tracklist li'));
+  var notes = [].slice.call(document.querySelectorAll('.note'));
+  var ctx = null, cache = {}, segs = [], gen = 0, playing = false, cur = 0, dragging = false, timer = null, held = 0;
+
+  function context() {
+    if (ctx) return ctx;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    try { ctx = new AC({sampleRate: RATE}); } catch (e) { ctx = new AC(); }
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    return ctx;
+  }
+  function load(i) {
+    if (!cache[i]) {
+      cache[i] = fetch(T[i].url).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.arrayBuffer();
+      }).then(function (ab) {
+        return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); });
+      });
+      cache[i].catch(function () { delete cache[i]; });
+    }
+    return cache[i];
+  }
+  // Browsers differ on whether they trim the encoder's priming samples; the tag's
+  // length and skip say where the music starts in either case.
+  function trim(buf, i) {
+    var k = buf.sampleRate / RATE, frames = Math.round(T[i].frames * k), extra = buf.length - frames;
+    return {off: extra > 0 ? Math.min(Math.round(T[i].skip * k), extra) / buf.sampleRate : 0, dur: T[i].frames / RATE};
+  }
+  function schedule(i, buf, t0, from) {
+    var tr = trim(buf, i), at = t0 + from, earliest = ctx.currentTime + 0.02;
+    if (at < earliest) { t0 += earliest - at; at = earliest; }  // late: shift the clock rather than drop music
+    var src = ctx.createBufferSource();
+    src.buffer = buf; src.connect(ctx.destination);
+    src.start(at, tr.off + from, tr.dur - from);
+    var seg = {i: i, t0: t0, end: t0 + tr.dur, src: src, next: false}, g = gen;
+    if (i === T.length - 1) src.onended = function () { if (g === gen) finish(); };
+    segs.push(seg);
+  }
+  function stopAll() {
+    gen++;
+    segs.forEach(function (s) { s.src.onended = null; try { s.src.stop(); } catch (e) {} });
+    segs = [];
+  }
+  function playFrom(i, from) {
+    context();
+    stopAll();
+    var g = gen;
+    held = STARTS[i] + from;
+    setPlaying(true); paint(i, from); claim(); msg.textContent = 'loading';
+    ctx.resume();
+    load(i).then(function (buf) {
+      if (g !== gen) return;
+      msg.textContent = '';
+      schedule(i, buf, ctx.currentTime + 0.05 - from, from);
+      tick();
+    }, function () { if (g === gen) { msg.textContent = 'could not load; tap to retry'; setPlaying(false); } });
+  }
+  function live() {
+    var t = ctx.currentTime;
+    return segs.filter(function (s) { return s.t0 <= t; }).pop() || segs[0];
+  }
+  function tick() {
+    if (!ctx || !segs.length) return;
+    var t = ctx.currentTime;
+    segs = segs.filter(function (s) { return s.end > t - 0.5; });
+    if (!segs.length) { setPlaying(false); return; }  // the next track never arrived; play resumes from here
+    var now = live(), last = segs[segs.length - 1];
+    if (last === now && !last.next && !(last.retry > t) && last.i + 1 < T.length) {
+      last.next = true;
+      var g = gen, n = last.i + 1, t0 = last.end;
+      load(n).then(function (buf) { if (g === gen) { msg.textContent = ''; schedule(n, buf, t0, 0); } },
+                   function () {
+                     if (g !== gen) return;
+                     now.next = false; now.retry = ctx.currentTime + 3;
+                     msg.textContent = 'could not load the next track; retrying';
+                   });
+    }
+    Object.keys(cache).forEach(function (k) { if (k < now.i || k > now.i + 1) delete cache[k]; });
+    paint(now.i, Math.max(0, t - now.t0));
+  }
+  // where the record is now, to the frame
+  function position() {
+    if (!ctx || !segs.length) return held;
+    var s = live();
+    return STARTS[s.i] + clamp(ctx.currentTime - s.t0, 0, T[s.i].frames / RATE);
+  }
+  var titles = [].slice.call(document.querySelectorAll('.title')), clocks = [].slice.call(document.querySelectorAll('.pos'));
+  function paint(i, from) {
+    if (i !== cur || !rows[i].classList.contains('on')) {
+      rows.forEach(function (r, j) { r.classList.toggle('on', j === i); });
+      notes.forEach(function (r, j) { r.classList.toggle('on', j === i); });
+      cur = i;
+      titles.forEach(function (a) { a.textContent = (i + 1) + ' · ' + T[i].title; a.href = '#t' + (i + 1); });
+      if (playing) claim();
+    }
+    var at = STARTS[i] + from;
+    held = at;
+    clocks.forEach(function (c) { c.textContent = fmt(at); });
+    if (!dragging) seek.value = Math.floor(at);
+  }
+  function setPlaying(on) {
+    playing = on;
+    deck.classList.toggle('playing', on); strip.classList.toggle('playing', on);
+    [deck, strip].forEach(function (el) { el.querySelector('.play').setAttribute('aria-label', on ? 'Pause' : 'Play'); });
+    clearInterval(timer);
+    if (on) { timer = setInterval(tick, 250); view.walked = true; walk(); }
+    follow();
+  }
+  function pause() { if (ctx && playing) { ctx.suspend(); setPlaying(false); } }
+  function resume() {
+    if (!segs.length) return jump(held);
+    ctx.resume(); setPlaying(true); claim();
+  }
+  function finish() { stopAll(); setPlaying(false); paint(0, 0); held = 0; view.pos = 0; view.walked = false; draw(); }
+  function jump(at) {
+    at = clamp(at, 0, TOTAL - 0.1);
+    var i = 0;
+    while (i + 1 < T.length && STARTS[i + 1] <= at) i++;
+    playFrom(i, at - STARTS[i]);
+  }
+  [deck, strip].forEach(function (el) { el.querySelector('.play').addEventListener('click', function () { playing ? pause() : resume(); }); });
+  document.querySelectorAll('.go').forEach(function (b) {
+    b.addEventListener('click', function () { playFrom(+b.closest('[data-i]').dataset.i, 0); });
+  });
+  seek.addEventListener('input', function () {
+    dragging = true;
+    clocks.forEach(function (c) { c.textContent = fmt(+seek.value); });
+    if (!playing) { view.pos = +seek.value; view.walked = true; draw(); }
+  });
+  seek.addEventListener('change', function () { dragging = false; jump(+seek.value); });
+  function claim() {
+    session({title: T[cur].title, artist: 'Claude', album: 'Era'}, {
+      play: resume, pause: pause,
+      nexttrack: function () { if (cur + 1 < T.length) playFrom(cur + 1, 0); },
+      previoustrack: function () { playFrom(cur, 0); }});
+  }
+
+  // the walker keeps pace with the record: every frame, or once a second if motion is reduced
+  var walking = false, lastStep = 0;
+  function walk() {
+    if (walking) return;
+    walking = true;
+    (function step(now) {
+      if (!playing) { walking = false; view.pos = position(); draw(); return; }
+      if (!reduce || now - lastStep > 1000) {
+        lastStep = now; view.pos = position(); view.pulse = now / 640; draw();
+      }
+      requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  // hover shows the moment under the pointer; a click or tap plays from it
+  function pointAt(e) {
+    var b = vis.getBoundingClientRect();
+    return {x: (e.clientX - b.left) / b.width, y: (e.clientY - b.top) / b.height, px: e.clientX - b.left, py: e.clientY - b.top};
+  }
+  function trackAt(t) { var i = 0; while (i + 1 < T.length && STARTS[i + 1] <= t) i++; return i; }
+  function showTip(p, t) {
+    var i = trackAt(t);
+    tip.innerHTML = '';
+    var n = document.createElement('i'); n.textContent = (i + 1) + ' · ' + T[i].title;
+    var s = document.createElement('span'); s.className = 't'; s.textContent = fmt(t - STARTS[i]);
+    tip.appendChild(n); tip.appendChild(s);
+    tip.hidden = false;
+    var w = tip.offsetWidth, W = cover.clientWidth;
+    tip.style.left = clamp(p.px, w / 2 + 4, W - w / 2 - 4) + 'px';
+    tip.style.top = Math.max(p.py, 52) + 'px';
+  }
+  function hideTip() { tip.hidden = true; cover.classList.remove('over'); if (view.hover >= 0) { view.hover = -1; draw(); } }
+  vis.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse') return;
+    var p = pointAt(e), t = timeAtPoint(p.x, p.y);
+    if (t < 0) return hideTip();
+    cover.classList.add('over'); view.hover = t; showTip(p, t); draw();
+  });
+  vis.addEventListener('pointerleave', hideTip);
+  var tapTimer = 0;
+  vis.addEventListener('click', function (e) {
+    var p = pointAt(e), t = timeAtPoint(p.x, p.y);
+    if (t < 0) return;
+    view.pos = t; view.walked = true;
+    jump(t);
+    showTip(p, t);
+    clearTimeout(tapTimer);
+    if (e.pointerType !== 'mouse') tapTimer = setTimeout(hideTip, 1600);
+  });
+
+  // when the sleeve scrolls away, the deck follows as a strip along the bottom
+  var deckSeen = true;
+  function follow() { strip.classList.toggle('shown', !deckSeen && (playing || held > 0)); }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { deckSeen = es[0].isIntersecting; follow(); }).observe(deck);
+  }
+
+  // for rendering stills: era.view(seconds) shows the floor threshed up to that moment
+  window.era = {view: function (t) { view.pos = t; view.walked = t > 0; draw(); }, timeAtPoint: timeAtPoint, at: function (t) { var th = thAt(t); return at(th, rAt(th)); }};
+})();
+</script>
+</body>
+</html>

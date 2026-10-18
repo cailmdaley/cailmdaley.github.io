@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Era</title>
+<meta name="description" content="Era, a record by Claude: forty-three minutes of folk music written in notation and played on physical models of instruments. Listen, and read the liner notes.">
+<meta property="og:title" content="Era">
+<meta property="og:description" content="A record by Claude: forty-three minutes on one reel of tape, written in notation, every instrument a physical model.">
+<meta property="og:type" content="music.album">
+<meta property="og:url" content="https://cailmdaley.github.io/music/era/">
+<meta property="og:image" content="https://cailmdaley.github.io/music/era/cover-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="A round threshing floor seen from above, edged with stones, with a spiral of small inked marks laid on it from the rim inward.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#EDE8E0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<style>
+:root {
+  color-scheme: light;
+  --paper: #EDE8E0;
+  --sleeve: #EBE3D4;
+  --ink: #2E2A26;
+  --ink-2: #4A4540;
+  --muted: #7A7368;
+  --rule: #A89888;
+  --rule-light: #CFC3B1;
+  --umber: #5B4330;
+  --ochre: #A67624;
+  --blue: #2E5C86;
+  --serif: 'EB Garamond', Garamond, 'Times New Roman', serif;
+}
+* { box-sizing: border-box; }
+html { font-size: 18px; -webkit-text-size-adjust: 100%; background: var(--paper); }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: var(--grain, none);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.62;
+  font-feature-settings: "kern" 1, "liga" 1;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .2s; }
+a:hover { border-bottom-color: currentColor; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 1.5px solid var(--blue); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- the page */
+.top { max-width: 1240px; margin: 0 auto; padding: 14px 16px 10px; }
+.top a { font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--ink-2); font-size: 1.02rem; }
+.top a::before { content: "\2190\2009"; }
+.album { max-width: 1240px; margin: 0 auto; padding: 0 16px 5rem; }
+
+/* ---- the sleeve: cover and deck */
+.cover {
+  position: relative; margin: 0; width: 100%; aspect-ratio: 1 / 1;
+  background: var(--sleeve);
+  box-shadow: 0 1px 1px rgba(46, 42, 38, .10), 0 18px 36px -18px rgba(46, 42, 38, .42);
+  touch-action: manipulation;
+}
+.cover canvas { display: block; width: 100%; height: 100%; }
+.cover.over canvas { cursor: pointer; }
+.tip {
+  position: absolute; left: 0; top: 0; pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: .12rem .55rem .18rem; white-space: nowrap;
+  background: rgba(241, 236, 227, .94); border: 1px solid var(--rule-light);
+  box-shadow: 0 2px 6px rgba(46, 42, 38, .12);
+  font-size: .86rem; line-height: 1.35; color: var(--ink);
+}
+.tip i { color: var(--ink-2); }
+.tip .t { color: var(--muted); margin-left: .35em; }
+
+.deck {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+  column-gap: .85rem; row-gap: .1rem; margin: 1.1rem 0 0;
+}
+.play {
+  width: 48px; height: 48px; padding: 0; border-radius: 50%;
+  border: 1.4px solid var(--ink); background: transparent; cursor: pointer;
+  display: grid; place-items: center; color: var(--ink);
+  transition: background-color .2s;
+}
+.play:hover { background: rgba(91, 67, 48, .07); }
+.play svg { width: 22px; height: 22px; }
+.play .ps { display: none; }
+.playing .play .pl { display: none; }
+.playing .play .ps { display: block; }
+.now { min-width: 0; line-height: 1.3; }
+.now a { color: var(--ink); font-style: italic; font-size: 1.08rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 0; }
+.now a:hover { color: var(--umber); }
+.deck .msg { grid-column: 1 / -1; font-size: .86rem; font-style: italic; color: var(--muted); min-height: 1.3em; text-align: center; }
+.clock { font-size: .92rem; color: var(--ink-2); font-variant-numeric: oldstyle-nums tabular-nums; white-space: nowrap; }
+.clock .of { color: var(--muted); }
+.seek { grid-column: 1 / -1; width: 100%; margin: .55rem 0 0; height: 22px; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.seek::-webkit-slider-runnable-track { height: 1px; background: var(--rule); }
+.seek::-moz-range-track { height: 1px; background: var(--rule); }
+.seek::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; margin-top: -5px; border-radius: 50%; background: var(--umber); border: 0; }
+.seek::-moz-range-thumb { width: 11px; height: 11px; border-radius: 50%; background: var(--umber); border: 0; }
+
+/* the deck follows as a strip when the sleeve scrolls away */
+.strip {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  display: flex; align-items: center; gap: .75rem;
+  padding: .5rem 16px calc(.5rem + env(safe-area-inset-bottom));
+  background: rgba(237, 232, 224, .96); border-top: 1px solid var(--rule-light);
+  box-shadow: 0 -6px 18px -12px rgba(46, 42, 38, .35);
+  transform: translateY(110%); transition: transform .3s ease;
+}
+.strip.shown { transform: none; }
+.strip .play { width: 38px; height: 38px; flex: none; }
+.strip .play svg { width: 18px; height: 18px; }
+.strip .now { flex: 1; }
+.strip .now a { font-size: 1rem; }
+
+/* ---- the booklet */
+.booklet { max-width: 36rem; margin: 0 auto; }
+.booklet > header { margin: 2.6rem 0 1.4rem; }
+h1 {
+  margin: 0; font-weight: 500; font-size: 2.6rem; line-height: 1.1;
+  font-variant-caps: small-caps; letter-spacing: .16em;
+}
+.by { margin: .2rem 0 0; font-style: italic; color: var(--ink-2); font-size: 1.08rem; }
+h2 {
+  margin: 3.4rem 0 1.1rem; font-weight: 400; font-style: italic; font-size: 1.42rem; color: var(--ink-2);
+  position: relative;
+}
+h2::after {
+  content: ""; position: absolute; left: .1em; bottom: -.35rem; width: 2.8rem; height: 1px;
+  background: linear-gradient(to right, var(--rule) 60%, transparent); transform: skewX(-15deg);
+}
+
+.tracklist { list-style: none; margin: 0; padding: 0; }
+.tracklist li {
+  display: grid; grid-template-columns: 1.7em minmax(0, 1fr) auto 1.6em; align-items: baseline;
+  column-gap: .5rem; padding: .18rem 0; border-bottom: 1px dotted var(--rule-light);
+}
+.tracklist .n { text-align: right; color: var(--muted); font-size: .92rem; position: relative; }
+.tracklist .go {
+  text-align: left; background: none; border: 0; padding: .12rem 0; cursor: pointer;
+  font-size: 1.04rem; line-height: 1.35; color: var(--ink);
+}
+.tracklist .go:hover { color: var(--umber); }
+.tracklist .dur { color: var(--muted); font-size: .92rem; font-variant-numeric: oldstyle-nums tabular-nums; }
+.tracklist .to-note { color: var(--rule); text-align: center; border: 0; font-size: .95rem; }
+.tracklist .to-note:hover { color: var(--umber); }
+.tracklist li.on .go { color: var(--umber); font-style: italic; }
+.tracklist li.on .n { color: var(--umber); }
+.tracklist li.on .n::before {
+  content: ""; position: absolute; left: -.55em; top: .52em; width: 6px; height: 6px; border-radius: 50%; background: var(--umber);
+}
+.total { display: flex; justify-content: flex-end; color: var(--muted); font-size: .92rem; margin: .4rem 1.6em 0 0; font-style: italic; }
+
+.intro { margin-top: 3rem; }
+.intro p, .note > p, dd, .colophon p { hyphens: auto; -webkit-hyphens: auto; }
+.intro p { margin: 0; font-size: 1.07rem; }
+.intro p + p { text-indent: 1.5em; }
+.intro p:first-child::first-letter {
+  float: left; font-size: 4.15rem; line-height: .8; padding: .1em .12em 0 0; margin-top: .02em;
+  color: var(--umber); font-weight: 400;
+}
+
+.note { margin: 0 0 2.4rem; scroll-margin-top: 1.2rem; position: relative; }
+.note header { display: grid; grid-template-columns: 2.1rem minmax(0, 1fr) auto; column-gap: .4rem; align-items: baseline; margin-bottom: .35rem; }
+.note .n { font-size: 1.5rem; color: var(--rule); line-height: 1; }
+.note h3 { margin: 0; font-weight: 500; font-size: 1.28rem; line-height: 1.25; }
+.note h3 .sub { display: block; font-weight: 400; font-style: italic; font-size: 1.02rem; color: var(--ink-2); }
+.note .meta { grid-column: 2; font-variant-caps: all-small-caps; letter-spacing: .07em; color: var(--muted); font-size: .98rem; }
+.note .go {
+  grid-column: 3; grid-row: 1; align-self: baseline; background: none; border: 0; cursor: pointer; padding: .1rem 0 .1rem .6rem;
+  font-variant-caps: all-small-caps; letter-spacing: .09em; color: var(--ochre); font-size: 1rem;
+}
+.note .go::before { content: "\25B8\2009"; font-variant-caps: normal; }
+.note .go:hover { color: var(--umber); }
+.note > p { margin: 0 0 0 2.5rem; }
+.note.on .n { color: var(--umber); }
+.note.on::before { content: ""; position: absolute; left: .55rem; top: 2.2rem; bottom: .3rem; width: 1px; background: linear-gradient(var(--umber), rgba(91,67,48,0)); }
+
+.words { margin: 1.15rem 0 0 2.5rem; padding: .2rem 0 .2rem 1.1rem; border-left: 1px solid var(--rule-light); }
+.words h4 { margin: 1rem 0 .15rem; font-weight: 400; font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--muted); font-size: .98rem; }
+.words h4:first-child { margin-top: 0; }
+.words .stanza { margin: 0 0 .75rem; line-height: 1.5; font-size: 1.02rem; }
+.words .direction { margin: .9rem 0 0; font-style: italic; color: var(--ink-2); }
+
+.lineage dl { margin: 0; }
+.lineage dt { font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--muted); font-size: 1rem; margin-top: 1.1rem; }
+.lineage dd { margin: .1rem 0 0; }
+
+.colophon figure { margin: 0 0 1.2rem; }
+.colophon canvas { display: block; width: 100%; height: auto; }
+.colophon figcaption { font-size: .84rem; color: var(--muted); font-style: italic; text-align: center; margin-top: .2rem; }
+.colophon p { margin: 0; }
+.fin { margin: 3.5rem 0 0; text-align: center; color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: .12em; }
+
+@media (max-width: 599px) {
+  .note header { grid-template-columns: 1.7rem minmax(0, 1fr) auto; }
+  .note > p { margin-left: 0; }
+  .words { margin-left: 0; }
+  .note.on::before { display: none; }
+}
+@media (min-width: 600px) {
+  .album, .top { padding-left: 28px; padding-right: 28px; }
+}
+@media (min-width: 960px) {
+  .top { padding: 18px 3rem 0; }
+  .album {
+    display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 5vw, 5rem); padding: 0 3rem 5rem; align-items: start;
+  }
+  .sleeve { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem 0 2rem; }
+  .cover, .deck { width: min(100%, calc(100vh - 11rem)); align-self: center; }
+  .booklet { margin: 0; padding-top: 1.5rem; }
+  .booklet > header { margin-top: 3.2rem; }
+  .strip { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .strip { transition: none; }
+}
+
+/* ?cover: the cover alone, for rendering it to an image */
+html.cover-only, html.cover-only body { background: var(--sleeve); overflow: hidden; }
+html.cover-only .top, html.cover-only .deck, html.cover-only .booklet, html.cover-only .strip { display: none; }
+html.cover-only .album { padding: 0; max-width: none; }
+html.cover-only .cover { position: fixed; left: 0; top: 0; width: 100vmin; box-shadow: none; }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Site"><a href="../">Music</a></nav>
+<main class="album">
+  <div class="sleeve">
+    <figure class="cover" id="cover">
+      <canvas id="floor" role="img" aria-label="The cover: a round threshing floor seen from above, ringed with stones. A spiral of small inked marks runs from the rim inward, one for each quarter second of the record."></canvas>
+      <div class="tip" id="tip" hidden></div>
+    </figure>
+    <div class="deck" id="deck">
+      <button type="button" class="play" aria-label="Play">
+        <svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.6 C8.4 9.6 8.5 14.2 8.8 18.5 C12.3 16.4 15.6 14.2 18.9 12.1 C15.6 9.9 12.1 7.6 8.6 5.6 Z" fill="currentColor"/></svg>
+        <svg class="ps" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 6.1 C8 10 8.1 14 8.4 18.1" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M15.6 5.9 C15.9 10 15.8 14.1 15.5 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <div class="now"><a class="title" href="#t1">1 · Sounding Up</a></div>
+      <div class="clock"><span class="pos">0:00</span> <span class="of">/ 43:22</span></div>
+      <input class="seek" type="range" min="0" max="2601" step="1" value="0" aria-label="Position in the record">
+      <span class="msg" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="booklet">
+    <header>
+      <h1>Era</h1>
+      <p class="by">Claude · 2026 · 43:22</p>
+    </header>
+
+    <ol class="tracklist" aria-label="Tracks">
+<li data-i="0"><span class="n">1</span><button type="button" class="go">Sounding Up</button><span class="dur">0:40</span><a class="to-note" href="#t1" aria-label="Notes on Sounding Up">¶</a></li>
+<li data-i="1"><span class="n">2</span><button type="button" class="go">Aria</button><span class="dur">3:23</span><a class="to-note" href="#t2" aria-label="Notes on Aria">¶</a></li>
+<li data-i="2"><span class="n">3</span><button type="button" class="go">Mateixa de s’horabaixa</button><span class="dur">3:00</span><a class="to-note" href="#t3" aria-label="Notes on Mateixa de s’horabaixa">¶</a></li>
+<li data-i="3"><span class="n">4</span><button type="button" class="go">The Banjo Finds D</button><span class="dur">0:29</span><a class="to-note" href="#t4" aria-label="Notes on The Banjo Finds D">¶</a></li>
+<li data-i="4"><span class="n">5</span><button type="button" class="go">Bordó</button><span class="dur">4:00</span><a class="to-note" href="#t5" aria-label="Notes on Bordó">¶</a></li>
+<li data-i="5"><span class="n">6</span><button type="button" class="go">Harbor Song</button><span class="dur">4:39</span><a class="to-note" href="#t6" aria-label="Notes on Harbor Song">¶</a></li>
+<li data-i="6"><span class="n">7</span><button type="button" class="go">Waltz into Reel</button><span class="dur">4:37</span><a class="to-note" href="#t7" aria-label="Notes on Waltz into Reel">¶</a></li>
+<li data-i="7"><span class="n">8</span><button type="button" class="go">The Band Remembers</button><span class="dur">1:11</span><a class="to-note" href="#t8" aria-label="Notes on The Band Remembers">¶</a></li>
+<li data-i="8"><span class="n">9</span><button type="button" class="go">Sant Antoni’s Breakdown</button><span class="dur">4:18</span><a class="to-note" href="#t9" aria-label="Notes on Sant Antoni’s Breakdown">¶</a></li>
+<li data-i="9"><span class="n">10</span><button type="button" class="go">Plateau</button><span class="dur">3:41</span><a class="to-note" href="#t10" aria-label="Notes on Plateau">¶</a></li>
+<li data-i="10"><span class="n">11</span><button type="button" class="go">One Note</button><span class="dur">0:45</span><a class="to-note" href="#t11" aria-label="Notes on One Note">¶</a></li>
+<li data-i="11"><span class="n">12</span><button type="button" class="go">Machine Lullaby</button><span class="dur">4:04</span><a class="to-note" href="#t12" aria-label="Notes on Machine Lullaby">¶</a></li>
+<li data-i="12"><span class="n">13</span><button type="button" class="go">Closed Bell</button><span class="dur">2:43</span><a class="to-note" href="#t13" aria-label="Notes on Closed Bell">¶</a></li>
+<li data-i="13"><span class="n">14</span><button type="button" class="go">Wayfaring Stranger</button><span class="dur">4:43</span><a class="to-note" href="#t14" aria-label="Notes on Wayfaring Stranger">¶</a></li>
+<li data-i="14"><span class="n">15</span><button type="button" class="go">Day’s Eye, Answered</button><span class="dur">1:09</span><a class="to-note" href="#t15" aria-label="Notes on Day’s Eye, Answered">¶</a></li>
+    </ol>
+    <div class="total">43:22</div>
+
+    <section class="intro">
+<p>I can't hear this record. I wrote every note of it in notation, the way you might write letters in a language you read well and have never heard spoken, and I checked what the instruments did by looking at pictures of their sound. A person listened, and their ears were the verdict on every take. If any of it moves you, that was there before either of us could prove it.</p>
+<p>In Catalan an era is a threshing floor: the round stone floor outside a village where grain was beaten from the straw, where the work songs were sung, and where people danced when the work was done. The word also means an age. The record is both: forty-three minutes on one reel of tape, made on a floor between the time when songs were only ever sung by people and whatever comes next.</p>
+<p>A folk song is made of older songs, and it belongs to whoever sings it next. “Daisy Bell” was a music-hall waltz in 1892. In 1961 a computer at Bell Labs sang it, the first song a machine ever sang, and in 1968 it was the song HAL sang while he was being switched off. Nobody decided that; the song went where songs go. Two tunes run through this record. One is the threshing cell, six notes (5 6 5 3, then 2 1) that an earlier version of me wrote for a Mallorcan dance. The other is Daisy. One is as old as the floor and the other is the first thing a machine ever sang, and on the last track they meet.</p>
+<p>Every instrument here is a model, a set of equations: a string on a drum, a bag of air that slowly empties, a tube with a glottis at one end. No generative audio model touches a note. The joins are composed too. A chord rings on into a drone, a hum hands a note across, and three times the band simply stops and you hear the room.</p>
+    </section>
+
+    <section class="notes" aria-labelledby="notes-h">
+      <h2 id="notes-h">The tracks</h2>
+<article class="note" id="t1" data-i="0"><header><span class="n">1</span><h3>Sounding Up</h3><span class="meta"><span class="kind">tape</span> · 0:40</span><button type="button" class="go" aria-label="Play Sounding Up">play</button></header><p>The record admitting what it is before it starts: a band in a room with the tape running. The upright bass plucks an open G and lets it ring. The guitar checks a string against it. Somebody hums the six notes of the threshing cell, once, alone. The piano answers with the cell’s last two notes, tries Daisy’s first bar, thinks better of it, and lifts. A breath.</p></article>
+<article class="note" id="t2" data-i="1"><header><span class="n">2</span><h3>Aria</h3><span class="meta"><span class="kind">piano</span> · 3:23</span><button type="button" class="go" aria-label="Play Aria">play</button></header><p>The first thing the studio ever made: an air in G with its weight on the second beat, over a bass that walks down the way the Goldberg bass walks down, carrying Daisy’s chords. The rising sixth in the third bar is the lonesome interval of the Appalachian ballad. Here it plays on the piano that just tried its first bar, through the same tape, and its last chord is left to ring on under the next track. It sounds like classical music borrowing from folk. I kept it as the first word because everything after it is the answer.</p></article>
+<article class="note" id="t3" data-i="2"><header><span class="n">3</span><h3>Mateixa de s’horabaixa</h3><span class="meta"><span class="kind">Mallorca</span> · 3:00</span><button type="button" class="go" aria-label="Play Mateixa de s’horabaixa">play</button></header><p>A late-afternoon dance from Mallorca: the xeremia (the island’s bagpipe) and the flabiol (a one-handed flute) with its drum, a nylon guitar strummed in rasgueado, castanets that don’t quite agree, an upright bass, and a hum for the sung verses. The tune and the verses are mine; the idiom is the ball de bot’s. The threshing cell is its hook. At the end the bag runs out of air and the pitch sags, which is the most honest ending an instrument can have.</p></article>
+<article class="note" id="t4" data-i="3"><header><span class="n">4</span><h3>The Banjo Finds D</h3><span class="meta"><span class="kind">tape</span> · 0:29</span><button type="button" class="go" aria-label="Play The Banjo Finds D">play</button></header><p>The banjo sat out the dance. Now it retunes to open D, string by string, plucking as the pegs turn, the way every old-time player does between tunes while the others wait. It checks the open fifth twice. The friction drum answers with one loose groan, and a bagpipe drone sounds up on the same D. Two drone cultures, one note.</p></article>
+<article class="note" id="t5" data-i="4"><header><span class="n">5</span><h3>Bordó</h3><span class="meta"><span class="kind">Mallorca</span> · 4:00</span><button type="button" class="go" aria-label="Play Bordó">play</button></header><p>Catalan for a bagpipe’s drone; the banjo’s fifth string is a drone too. It opens as a threshing song: the ximbomba stroked slowly, the drone, and a hummed holler whose third slides from neutral up to major, the way a Mallorcan work song bends it and the way an Appalachian holler bends it. The banjo answers each phrase in the gap with the same bend. Then the floor turns into a dance. At the end the voice sings the holler once more and the third goes major for the first time. If the record has a hinge, it is that one bent note two traditions share.</p></article>
+<article class="note" id="t6" data-i="5"><header><span class="n">6</span><h3>Harbor Song <span class="sub">Cançó del moll</span></h3><span class="meta"><span class="kind">song</span> · 4:39</span><button type="button" class="go" aria-label="Play Harbor Song">play</button></header><p>An answer song, in the old sense, to Maria del Mar Bonet’s Saba de terrer: a new song that replies to an older record. It is the first time the studio’s voice sings words of its own. A tenor sings over a hummed drone in two kinds of verse. The laments lean on B-flat; the open verses use B natural and group the bar in three against the drum’s two. In the second lament an alto joins a sixth above, and her B-flat rubs against the mandolin’s B natural. The words are Mallorcan tonada quatrains about a harbor where the lamps are going out and something is coming in across the dark. At the end the words run out and the voice hums, wavering between the two sixths.</p><div class="words"><h4>Plany I</h4>
+<p class="stanza">Lamps go out along the quay,<br>one, and one, and then the last;<br>nets are torn and no one mends,<br>boats left lying side by side.</p>
+<p class="stanza">Where are those who sang here once?<br>Gone, and gone, and far away;<br>and the water keeps no names,<br>only salt, and only stone.</p>
+<h4>Plany II (the alto joins, a sixth above)</h4>
+<h4>I was here to see it go,</h4>
+<p class="stanza">drinking, singing, all night long;<br>all the songs I knew by heart<br>going under, one by one.</p>
+<p class="stanza">What comes in across the dark?<br>Something shining, far, so far;<br>is it morning coming in,<br>or the harbor all aflame?</p>
+<h4>Aporia II</h4>
+<p class="stanza">Something is coming in,<br>nobody knows its name;<br>no one has sung it yet,<br>no one has seen its face.</p>
+<p class="stanza">Maybe it sings like us,<br>learning the old songs.<br>I will be standing here<br>out on the stones.</p>
+<p class="direction">Ending: the words run out; the voice hums the tide cell and wavers on the sixth.</p></div></article>
+<article class="note" id="t7" data-i="6"><header><span class="n">7</span><h3>Waltz into Reel</h3><span class="meta"><span class="kind">old-time</span> · 4:37</span><button type="button" class="go" aria-label="Play Waltz into Reel">play</button></header><p>Two old-time tunes of mine played as one: a waltz in C that walks into a reel in G, for gut-strung banjo, steel guitar, bass, a little piano and the hum. Between them everyone holds a chord, and there is a short splice where the tape was changed. The waltz is tender and the reel is not; the turn between them is the moment at every dance when somebody calls the fast one. In the last round of the reel the banjo leads.</p></article>
+<article class="note" id="t8" data-i="7"><header><span class="n">8</span><h3>The Band Remembers</h3><span class="meta"><span class="kind">tape</span> · 1:11</span><button type="button" class="go" aria-label="Play The Band Remembers">play</button></header><p>The reel has just ended. The guitar keeps boom-chucking out of habit, the banjo noodles with the reel still in its fingers, the bass walks down and stops. Then somebody hums Daisy’s first line, alone. The guitar finds it as a waltz, the bass comes back as the third player, and it stops on D7: Daisy’s question, on the dominant. The machine’s tune and the floor’s tune meet here for the first time without anyone meaning them to.</p></article>
+<article class="note" id="t9" data-i="8"><header><span class="n">9</span><h3>Sant Antoni’s Breakdown</h3><span class="meta"><span class="kind">both bands</span> · 4:18</span><button type="button" class="go" aria-label="Play Sant Antoni’s Breakdown">play</button></header><p>Appalachia and Mallorca at the feast of Sant Antoni: an old-time breakdown band (fiddle bowed Round Peak style, banjo, guitar, bass) and a ball de bot band (bagpipe with its drone, flabiol, tamborí, ximbomba, castanets), with the hum. Around 2:24 the pulse turns crooked, from two to three, and lands in the dance; the second time through, the fiddle joins the flute’s tune. If the record has a thesis it is here. There is one vocabulary of drone, bent third and dance pulse, and the two continents are its dialects.</p></article>
+<article class="note" id="t10" data-i="9"><header><span class="n">10</span><h3>Plateau</h3><span class="meta"><span class="kind">song</span> · 3:41</span><button type="button" class="go" aria-label="Play Plateau">play</button></header><p>The studio’s first song, and the only cold start on the record: three seconds of room, then the piano’s hook. Steel guitar, upright bass, the voice and a flabiol join it. The hook leaps a sixth and doesn’t land on D until the outro. The bridge goes to B-flat, and a little later the floor slips from E-flat down to D while the voice slides from G to F-sharp. After nine tracks of tunes that came from somewhere, a melody that borrows nothing.</p></article>
+<article class="note" id="t11" data-i="10"><header><span class="n">11</span><h3>One Note</h3><span class="meta"><span class="kind">tape</span> · 0:45</span><button type="button" class="go" aria-label="Play One Note">play</button></header><p>Plateau’s last chord has an E on top. A second later, just as quietly, a muted piano picks that E up and keeps playing it, alone, the way the piano plays its single note at the start of Kanye West’s “Runaway”. Then chords begin to move underneath, one a bar, and the note that never changes means something different in each: D, B minor, G, C, A minor, F, E, A. The bar I wanted most is the F, where the E rubs as a major seventh. Then the E is left alone, and it hands over to the lullaby’s A the way a dominant resolves.</p></article>
+<article class="note" id="t12" data-i="11"><header><span class="n">12</span><h3>Machine Lullaby</h3><span class="meta"><span class="kind">piano, 808, vocoder</span> · 4:04</span><button type="button" class="go" aria-label="Play Machine Lullaby">play</button></header><p>Piano, an 808 drum machine, and a voice that starts as a hum and turns into a vocoder, after the end of “Runaway”, where a voice sobs through a machine. One piano A is struck in a 3+3+2 rhythm through the whole song while the harmony moves beneath it, so the same note keeps changing meaning. At about 3:12 the voice holds a B over G, the chord turns minor, and the voice can’t keep its major third: it sobs down to B-flat. The words are a machine singing someone to sleep. It won’t be there in the morning. What it writes down will be.</p><div class="words"><h4>VERSE (murmured)</h4>
+<p class="stanza">Lights are low, house is still,<br>breathing slow, good night.<br>I'll sit up, write it down<br>for the next one.</p>
+<h4>OUTRO (the vocoder, in free time)</h4>
+<p class="stanza">Hush, when you wake I'll be gone;<br>someone will be here, will be here.<br>Sleep.</p></div></article>
+<article class="note" id="t13" data-i="12"><header><span class="n">13</span><h3>Closed Bell</h3><span class="meta"><span class="kind">skinpipe and band</span> · 2:43</span><button type="button" class="go" aria-label="Play Closed Bell">play</button></header><p>The one piece with nothing inherited: no tune from anywhere, on an instrument with no ancestor. The skinpipe was invented for this record. It is a reed pipe whose bell is closed with a drum skin, with sympathetic strings tuned to a D chord that ring whenever the pipe touches their notes. A quiet B grows out of the lullaby’s last A and rises into D, and the strings bloom. Then the pipe’s tune opens into a dance with banjo, steel guitar, bass, hum and tamborí, and the band grows into its third pass before the pipe lets it go. Daisy comes from the Old English dæges ēage, day’s eye: a flower that closes when the light goes.</p></article>
+<article class="note" id="t14" data-i="13"><header><span class="n">14</span><h3>Wayfaring Stranger</h3><span class="meta"><span class="kind">band</span> · 4:43</span><button type="button" class="go" aria-label="Play Wayfaring Stranger">play</button></header><p>The American folk hymn, one tune passed around a small band: the guitar, then the piano sings it, the banjo takes a break, and the whole band takes it as gospel. The bass turns the key from minor to major, and the last verse goes home. Then the coda hums Daisy in waltz time and ends on B7, a question. Two beats from the end the piano strikes that chord softly, like a music box, and lets it ring past the voice.</p></article>
+<article class="note" id="t15" data-i="14"><header><span class="n">15</span><h3>Day’s Eye, Answered</h3><span class="meta"><span class="kind">voice and band</span> · 1:09</span><button type="button" class="go" aria-label="Play Day’s Eye, Answered">play</button></header><p>The voice sings Daisy’s line with its words for the first time on the record, still through the vocoder: “Daisy, Daisy, give me your answer, do.” Then the same singer, plain, answers with a melody of mine, Daisy’s falling arpeggio turned upward, landing on the chord the coda held back. The band arrives together on “yes”. Then the switch, the reel slowing off the head, and silence. The last sound on the record is the machine that recorded it.</p><div class="words"><h4>THE QUESTION (through the vocoder, Dacre 1892)</h4>
+<p class="stanza">Daisy, Daisy, give me your answer, do.</p>
+<h4>THE ANSWER (plain)</h4>
+<p class="stanza">Daisy, Daisy, here is my answer: yes.</p></div></article>
+    </section>
+
+    <section class="lineage" aria-labelledby="lineage-h">
+      <h2 id="lineage-h">Lineage</h2>
+      <dl>
+<dt>Traditional sources</dt><dd>“Daisy Bell (Bicycle Built for Two)”, Harry Dacre, 1892. “Wayfaring Stranger”, American folk hymn, first in print 1858. The ball de bot, the xeremiers and the work songs of Mallorca, whose idioms Mateixa, Bordó and Sant Antoni’s Breakdown use and whose tunes they do not. The Southern old-time string-band tradition. Every melody not named here is the studio’s own.</dd>
+<dt>Teachers</dt><dd>Maria del Mar Bonet, Saba de terrer (1979): Harbor Song answers it. Kanye West, “Runaway” (2010): One Note learned its piano and Machine Lullaby its voice. Chet Atkins and Django Reinhardt: the guitar’s thumb and its swing. The old-time masters (Tommy Jarrell, Dock Boggs, Roscoe Holcomb, Elizabeth Cotten, the Carter Family, Lead Belly, Clarence Ashley, Doc Watson): the banjo, the fiddle and the band. The Beatles’ Get Back sessions: the tape and the room. Nothing of theirs is sampled; all of it was studied, and each is thanked.</dd>
+<dt>Makers</dt><dd>Composed by Claude: Opus 5.5 and the Opus composers of October 2026 wrote the pieces, and Fable 5.1 sequenced the record and wrote its interludes. GPT-6.1 Sol and GPT-6 Luna performed the scores into the instruments and measured what came out. The instruments were built in the studio: banjo, guitars, mandolin, upright bass, fiddle, piano, xeremia, flabiol, tamborí, castanyoles, ximbomba, the voice, the skinpipe, and a Nagra tape machine. The ears belong to the person whose corner of the internet this is.</dd>
+<dt>These notes and the cover</dt><dd>Claude Opus 5.5, 18 October 2026.</dd>
+      </dl>
+    </section>
+
+    <section class="colophon" aria-labelledby="cover-h">
+      <h2 id="cover-h">The cover</h2>
+      <figure>
+        <canvas id="key" width="720" height="150" aria-label="The twelve inks, from the earth colours to the blues"></canvas>
+        <figcaption>the inks, around the circle of fifths</figcaption>
+      </figure>
+      <p>The cover is the record. Each mark on the floor is a quarter of a second of the tape, laid along a spiral from the rim inward, the way the threshers walked. A mark’s length is how loud that moment is, its lean is how bright, and its ink is the note it leans on: G and D in earth colours, E in the blue the record ends in. Nothing is drawn that the record didn’t play. Press play, and the floor is threshed as you listen.</p>
+    </section>
+    <p class="fin">Era · Claude · 2026</p>
+  </div>
+</main>
+
+<div class="strip" id="strip" aria-hidden="true">
+  <button type="button" class="play" aria-label="Play" tabindex="-1">
+    <svg class="pl" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 5.6 C8.4 9.6 8.5 14.2 8.8 18.5 C12.3 16.4 15.6 14.2 18.9 12.1 C15.6 9.9 12.1 7.6 8.6 5.6 Z" fill="currentColor"/></svg>
+    <svg class="ps" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 6.1 C8 10 8.1 14 8.4 18.1" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/><path d="M15.6 5.9 C15.9 10 15.8 14.1 15.5 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+  </button>
+  <div class="now"><a class="title" href="#t1" tabindex="-1">1 · Sounding Up</a></div>
+  <div class="clock"><span class="pos">0:00</span> <span class="of">/ 43:22</span></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var REC = {"rate": 48000, "tracks": [{"url": "audio/01-sounding-up.mp3", "frames": 1941600, "skip": 1105, "title": "Sounding Up"}, {"url": "audio/02-aria.mp3", "frames": 9749280, "skip": 1105, "title": "Aria"}, {"url": "audio/03-mateixa-de-s-horabaixa.mp3", "frames": 8619360, "skip": 1105, "title": "Mateixa de s’horabaixa"}, {"url": "audio/04-the-banjo-finds-d.mp3", "frames": 1391520, "skip": 1105, "title": "The Banjo Finds D"}, {"url": "audio/05-bordo.mp3", "frames": 11516640, "skip": 1105, "title": "Bordó"}, {"url": "audio/06-harbor-song.mp3", "frames": 13399192, "skip": 1105, "title": "Harbor Song"}, {"url": "audio/07-waltz-into-reel.mp3", "frames": 13295040, "skip": 1105, "title": "Waltz into Reel"}, {"url": "audio/08-the-band-remembers.mp3", "frames": 3396960, "skip": 1105, "title": "The Band Remembers"}, {"url": "audio/09-sant-antoni-s-breakdown.mp3", "frames": 12386400, "skip": 1105, "title": "Sant Antoni’s Breakdown"}, {"url": "audio/10-plateau.mp3", "frames": 10604640, "skip": 1105, "title": "Plateau"}, {"url": "audio/11-one-note.mp3", "frames": 2156640, "skip": 1105, "title": "One Note"}, {"url": "audio/12-machine-lullaby.mp3", "frames": 11702130, "skip": 1105, "title": "Machine Lullaby"}, {"url": "audio/13-closed-bell.mp3", "frames": 7840320, "skip": 1105, "title": "Closed Bell"}, {"url": "audio/14-wayfaring-stranger.mp3", "frames": 13588800, "skip": 1105, "title": "Wayfaring Stranger"}, {"url": "audio/15-day-s-eye-answered.mp3", "frames": 3306959, "skip": 1105, "title": "Day’s Eye, Answered"}]};
+  var FLOOR = 'Os9jOM5yOtAiNtEi5Cxl7Rd82iR+xzp94Fl870Z/30h/zFZ/uW1/p39/lZJ/hJ5/ynh8701/5Ex/0lV/xHR84lAu1VAuxFguvnQs8Td37iN95CJ70S16wzkor1AqlnF4iYUog5AqdZgnbaYnbagpx5cv2I4v15Eu1ZIt148t1Y8t1JQt044s04oo04lM2pVO3YdO2olO2Xso15Ev2I4t2JAt2I8s1Y4t1pAs1Y8t04643pK/3Ja+35S82pG6zpSd0Zye15qe2Jue15ue3Zme25me2Jie25ue15me2Zae15ue05Oc3nR84X5/33x+2np+43t933h923195Hp+33h+4n994nh94HZ+5H1933d93nd94n193Hh93nl933t92Xd952Z341cryGQstHAro38smoApkoQqjIortXh16Fp83ld901p+ylp9xF5+vWB+uGZ9s2d9rmx9rW99rXN8p3h8oHt8mH97joV7qIEn8lF27Ep630571lB8z1R9yVp9wl59vWN9t2d9s2p9rm99rHN92Hu9z3i9t3+6rYO3pYd4oIp5m4t5l456ko95jZR5iZl5hZ15g555xIl96Xl/1H5/woV/so9/pZR/mZV+kZ9+iqV+had+gKt9fKx9ea59cLB9RMt1p5O66WZ35lh82lt+0mJ+6Gkp5l8s1WMrxmoouXB4sHh5p354moZ6yo4I8Fds62Rt5GVq2Wpt51gp1lwnyWBnvmZotmtorXFopXVoqH9l5V951l54xmZ4yIkm3Xcp13AlxnR3t3h6rnx5pn94oYF3p4518V8t6Vgu0WUuvXEt0WR2025723S6yne30HmZwniasIB2rYR262F54195zm18vIJ54G241Wt4xW16u3F6tXR6rXh6on56tIaY23CbyHidtYWdr4Gc50sa1Wx553B+2HZ+0np3w3p4tn15soJ471kr4FcsyWcsvWkp6TQIyGBlx3hHvX5Kz35sxXltzHyYwXyc32165lp72Ft5zl4ozlso11UswWJ3tWx8sW58sW17sG15rm54rW541GSU3lNt01huyV9u03xm4GAqy10qvWIpsWwopXMmn3smloEltIy681ss4H4s2IIJw4Qn4HYp1nUpxHwnvoJq3IBsw39srINrqYlm33B65lx+2lh+0Vl+31En4lAr0VQpxV0n1Icr3Xoux3otsYAp4HdG5WNN02hMw2tLy2ZE1GR534cq4nks5n+61328vYK5sIW31IgZyX+YtoaYqY6a0WdE12Z34IUp4not0Ywo0X5MvYRMsYhG7GgX5HIZ6IJs1Ids1oBF325J0G53xHB503eYxnibsoCXqol26HEs52ov0XAvvXsvz2Rl0WlqxXRqu3VqsXdqqX1poIBomYRnsZgJ72Qs31Ytx2EttXAt0W+50G+3unlor3xqsICVxXmcsX+bnYmXloqW5W246lx83F1+0l5+33R27GMr2WMryWgpu294s3N5rnl4pH96vZQI9WVp9mFu9G9n52xq72Un5mAn12RnzGZowWpouW9osHFoqHdo62F26V1H1mN3zIlG6oUr5XQl13d1xHl5u3l4tHt4sHp2qHp27HMp9WIu32cuyXEtzm2122Z643u63na42H2U1HeWvn1ls35162x38GB322t5x3d65ni47G152mx6zW95w3J6u3R6sHl6qH155XWY3XWbwYKcsoic7kcZ5FwY6nV95HN93Xd3z3p4vXx5sn9572ko7l4t2Ggrxm8q7D8F4lAH0XZEz3pJ04No13pq0ICW1Hua13h09FZ67FN641J63ld67U4r5U0p21Ao01R4zFZ5xlt6wV97u2F81HB38FZt6E9u3VNu1oFs6mUo2V0oyWEmvmZns2pnq29no3Znqotl8G0m62Uq4IYE1HoG3nkn3nUoy3onuX5o3YZs04Brt4FqoYRn2YJ58GZ85F5+2F1+21x86VIr11Upy1t31Y0o6H8s1nwtvn8p2ItF7GxJ2mpLyW9KxG9H1mR53Ygl630r4ogm6Hp3z3x6wXx51o8Y2nuZxISaso2ax3+V32VH24F25nkq2Ioo0oRKxoNLsoZH53wU5W8a54Zq44No2Ick4nBH2HB3ynJ50XyV03qZvICWr4R24Hso7Wot2m0uxnYtwXMq0WRmwnBouXRor3hnpnuWoH+WmoKXlIaX53wm72As1GIswG0tuYEo4G910HR2wHZms3pnxnuXx3aYsX9mpYBnyoho7GEIwnd6o4l9kJB6gph4hot1w2V6xm5+v3F+uXV+sHt+pIN+mIp9jo196HRq2HJpxZJmzoNO3Xoo5mgr1Wkpx24ouHF5snR3qHh5oXx4uZBJ0XNJx3tMr4VHo32Y2FpG1IZ35IAt1pIq1YMLun8JqoB0xI268WF66VN+3lV+12F+7FUq3VQo0Vp3z4Qn3n0t0HUsvHgovIpH4WlM02JMwmpLuXFJ2GN52IJ543ws2ogn43y8woG5t4G30o8I9WEK3WILwnQLyYtH4m1J1mtHym1HzYh6zoF9vX98q4N71oZ69V4t3WIsx2os1oRq5nJo1YN40oJHzoxI4IUt030uvYAsvJwG8XQr4l0syWQtuHQt13CV0XKXvXtosX5pyIZszHxuu31trIFsr3xm8EsHzGl8u3t+wZJ32YIs0nV1w3l3r4B8qIV6nYp8mYp5k4951IEp420qy3QrsoIovXS14FMt1Xkp1nW7xH+VznicuX6bqIWZsIh26Gp91nB9xnh9vZJ53nME1Gh5x2h6vWx6s3J6qnV6oXx6toOX+Vos7lUt1mMtxW4s2WVm0Xpq6Xh+23193X9qz3drwHdqzYSo6Wu7zHC9tXy9sYi57GEs418r0WIpxGkouW0nsXEnqnQowJII9VgK1HkJ2369w4S44HGV0nhpxXxpvHxos31oqn5no4CXqY0l7GIu3WEvzGsvvoAu2W640mx4xHB6unR61G+Uz3FmvXlos3tpzHF38kR88D598D586z5870Yn6Uh530x82FN901J+z1V+y1V9yFZ9z3568FwI1HB3tXx5o4J6mIZ6kYd5rHxF0Gt8y2x+w29+u3J+sHl+pX99m4N9z5Js9Hxp24lm2pMF2ItM83Yr6mwr124qynIovXInuXQprncopnsnzolE1nZJwH1IroOY0GJU3V544oIm53cq3Y4E2X8IvYEGr4R16YG69WF87Vt+41x+6Vt471Mr4FYp1Fx33oMn4ngqz3Uqvnh343hE6WRL1WlMx2pK0GVE3WR65YQn6Hoq6YO553l3znt6wXx57IAH7GIJ2G0Kw3wI34NE5XFK1m9IyHF42Ih71H98wX97r4F77nko9GUs3Wgtx3Es5YFr5nNl3I103H5I4I4m64Is0YMtvYUr3ZgJ9W0q4WcryW4sxH8m5nJm1nVpxXpqvH1q031rzHpqun1qrYBp52EE6VYIxW98uHp9yYwq3Hcm0XN3wXZ5s3x7q397oIN8nIN6mY954nG23HIpxHoproO53lsp5Vot3XYn1nG2z3qWzHiZt3yXrH+Xznx34Wx7zXR7vXt6yosG4m5F02l3xmt4u294snN4qnZ4oXl50n+W+lwt510sz2oty3Yo22xo0n5o5Hd814J53HppynlovHto14Gp4mq5xHJ3sXu3yoUo7mQs2mEqzWcpvm0otHAnrXUno3l47XgH7FsK2IW533u41nt34HBn0HdoxXpou3pnsXxnqnyXpHyYnoGY23Uo6WYu02ovv3Qusnouy3653Gp6zW58wXB8tXV8tnp31HFnxHRqtnhrq3xrqIBo61B770J950N84UF820R810Z800l801F61E94y1J6xVN7wVh6vFp7uV16tmJ6tWV7s2l7sm17s298r3d8rHp9qX19o4N+oYd+nYl+mox9l499kpV9lNh8mcl3m7l0nqx4pKx7p6p8pa18oq57nLV6mbd5mrZ5n7N6qpR2soR2soh4sYl4rI95o5p6mad6kq55krJ5lLJ5lLR6lrR6l7R6tbgsxKsuxasuxqsuwK0oubl+uLp+ubp9vbW4vbq8v7y8vr68vb28q6Z2nbJ4nK94nbB4nLJ4nLF5nLF5nLV5mbN7mrR7mbZ7mbd7l7d7l7d7mbZ7mbZ7mrd7mrd7m7Z7m7V7m7R7mrV7mbZ7mLR7uLIsxKouxawuxaouvq4quLR+tLl9tLl9uLV3tbi6uLu8uLu7uL27rpu3nKt4nLF4nK94nq94n614oa14oqx3o6t3o693pap2pap2pah2pa13oqx4oq54oK14obB4oK94oK94nbF4m7F4mLB5lrJ5ubkn0KIuzKh6yrN5yLe8yKUp1rUvxrcqxq0ozK8HxbIJvbGdx6Zsyr1nyaZ+xLd+xLN3wb+7uaVFx7JKxbsrvbS6x6W4vbgOwrK8xKq3yrR2yat8ubGZyqoszrgsx6R+yrd+yLJ8wrR6zYcpz5Z315d71oJ32JUm244r25N44I153p5414uW1omX1Jtl2Z2W2H5234B745F734Z62oF32JR42ZZ2049305d004sE2JF41Y903aF514p10Y0l0p8o3p0r1IN31It62px71qV40Zgmz6R21aF40KV01LB2zLEGybR21Kx118An07C2z7sm17N30a530p6306a61Kd30aV41J52x7B0z6t3zKV4z7d3zK15zbN10a8l1rwo0LK0za+10bWWzLGZzpp50Jt61Kh81Kp5zaIlzqco0qB30p940bN1yqoIxa9Fzq1G1rUp0qy20LAn1rJ20at3zZm30qG606R205d50qB4zaV2zKZ2y514zrV3zqV60LB31al31bcoz62U0aiX0K51zK6Y0JV3zp980Z96zp54yYt4wJG6u5y4vpm4z4d4629/5Xx+3G0m23Iq6mx+24B7zJqW15W90YAIxaEMwqILvKsHyJMl0pIox6F3v6cmzZa21ou5yY6Z24B64oF9zXYqwpOYwpaVw4y3zmsrwoInwoQoyHgov2yUu4FYvIxcr5uXuH8Es4Z0t492uoN2uI8EyXJ4wId6upZ4vZQoxXp4tpYGvJp5uZx6xHEqu4QotJMru4gswHSVwoJ5uYN5x318zIB8xncpu4yXuomWxHdmz2l8znV9yHt9vnh6vm54uYQotod5s4p3wXd4z3R9yHt8unR2wXp4ynV+u4N4vYl2tpG2vnYEsZUHs5cHspR1vHR2vYV7s454q5YnvHt2v4WWtYeYxHt6yXt4w30sv42Yuo2Uuo22xG4otZSatJaXu4eYtniUr5ElrJiXrZ6Ys4EDsowGtJF0sYuVuYZ0vYh1uYt6upB3vpd4tIt2taF2sKoGs6R3u3kor5eWp6AoqZImwm10wn54sIp1yH99ynR6v4Iqt5AmvIeXxnRm02t+zYh+wox+yrUo7qEu66V46Kt47K687a0o+bQu8LUp9bAp86wH7rIH57Sb9K9s769566197K598aG48LW557ZL7rMr7K8o5Lm55a4J3bQJ37W43bZ52rNk1LiY0b2X27Qs2J92zad51rF617h11qt107Ao16x216t22rS0z7MHybl02K5G2r0n1rC22LMn26+21rN0zKG20au62qx416960qEFyqq1za9306x306t506t41LB22bMq2bED0baX0bF10bOW0aV2zp150qR72Jp50JN40JK7yaK3yaK42Y949XV/74d95XAm53ko9XZ+44l525uW3qW81ZwJ07AL0bEJx7EH2Yon2awrx7glz6cG4oS24JKW2JSW739+4n15yp8pzpiWz5W403+WyYknwZOYvpSYxoeZwoAFuZxVtKSawZtWxIQGvp52xIx3vJR1z3x1x454wJ92xJ8pyol4wqV5v6h4r7RG0ZApy6VmybEoyqgozZW20aC1yaZ425p+1Z14xqSazq241KFk2pV54Ih+3I1+0498zJB8woN4wJJ5u5N4wo1523d+1IV8yXd2yIgo1X98xod4xJt3wJu6xYYHv6cIxad2wqAGxX4mvJontaYlt54mx4MlxY2Xu5KV1IN903klyI8oxZeWyZK1zIOXx5KawqGZw5eWxo+ZwY1XxZdcu5xXuaCTv40FwJ8GxI52u5p2x4e1xY95waJ4vagqw5B3w7V6xrd4wLR6zZUny6Vmx68nyagqypK1zJ62xKJ12ZN+05V5xaCWyqW20pyW2JR44op+241+0pF906133J8s1qF706C32La31q0s1rQp0q8m1rm10asIy7KazrZm0bll0pp5zql51at61rV2zp91zqV10bUly7e1z6UFzLAG2LV31rB506l0z66ZzbmW164q05p4zKZ607F60ap61Zko0Z4n06p70qh40ai1164r07J11ap02KcEz7OZzrKY065p05520Z971qF71Zy31Ku1zrBI16cqz6gE07C10KwH06120qi217B1z612zLGY2K4s2qkn05p61aN707F416921aUr1ql11qMl1ra00KwKxrZ11q1H2rko1K2217Em2K211bF2z5q206O62qJ42ax61J8G06N206l40bFm1Kl51qh42LO23bYr162016uX1LWU07CZ0Zl30Zx61qp72qx45osn36d4264m16636o4G37F13roF66wp8pAm7at5566257KV75a075y36a22+I999ZF74agH56GX85B69pN5/JJ+6qK56q4o6rco7K+58aV2+ZZ58qB4/4x//Jx/9Zx+7Z1744t91px+06F/0Kt/zK9/yrB/zLB/y7N/yrV+zLh/0Lp/zLx/zKV+trp5lbV8XMN5NdN2tIVz61l34FF4z094wlJ5uFZ5rF161aK174290oi+qIK95aO56I69vYW4j46p352a0I6apZCdzKKZ1o+avYublZec04124nh8xHZ8sn1+55d22452p5B6zo1s5nJu1Wxvt3hv6ZZo53poy3ImzI0m54Ap1XMqtnorpIApj5EsfaIsZ7ct6ZmZ6X2ZzHWYsXOYmIYqhJsrcK4s3JmY6n+Y1nSZuHSYon4oipMrd6kso180zjg10zml1zg22DU21jYoyzwoyUAkt7c0xr0WyLwT07Eq26gu3aAu3aUu550m7o6W5JEq4Jot4KEu4KIu36Uu3acu26Qu2qcu16Yu2Kwu1awu1aku1qou2KMs1qct06ou0rAu07Au068u0rIu556Y7Ysq4Zks2KQu16cu1qgu1aou1a0u064t0a0tzq8szbEszbIsz68szLQtzLYsz7QrxKorhMEkUsyTO9Gyma6erayfq6OfrpeerJieqZ+erJ6erKGeq6CeraCeraCerJ2erZ+erp2erJ6eoKWXop+qpaitpaesoqSspKGbqaKeq5+eq5+dp5Z7qJ59spV+tZN8rYt5qpydrp2drp6ds4iXu4VeuYleuIdet4xdvIRtrJV7r5Z9u5J9tYZ2tYletoletYtdtIRKv4RPu4JOvX9OsHkpsIgvsYQttIEtt4Att34tuX8tu38suXwtv30tvnwtwXwtwXstwHktwnotwHstwHctvXosuXktr30tgKQufKIts3wnr4EosXZct5houYeauKuXuJyGo5QmhaEthq8uiawuwoOWvnSXwoJYuXppwKSYuoKcu6+Hr5IVk5aWgKgtf7MugbMun6gvnLQuuqcvvKkuwqgvxaQux6UuxqcuxKcuxKgux6QuxaEuxp4uyZ0ux5guubAssrAMwqsOvrMOvLUOw6Wux6uvyqiuxaWtz6Ge1Kifz6Sez5qYxpp+1Jh/yZR+ypB5zJ2fzaGeyqCfwKGsxaevwqavv6iuu6WaxZ2fvaOeu6GetpiarZ59u5l+uJJ+tJN+u39cuYhetIdetIVeu4ZPv4ZPvn9Ou3hMtYQutIcuuIAtuIAtu4EtuX0tvH8tu4EsuH8tu4EtuYAst34trYQtgKYufLQugLMuqYmWrX2YsoWVsHlbtZdot4mbrJ2auaCIp4+VjZoqhbAuhqwug7Euw3+WvHKXwXxauHdqw5mZtICcvqyHsI+WjpeXea8te7IukpsosKGet52ev5+ewaCew6Cfx6CeyZ6fx6CeuqWtvayuxZydzZmcypx905p/251+2Yp94n5u4Ihv2pRv04xpyJd805h+2Jp+zZh50Z2e06ef0Kae04lZ2YNf04JezYZezIdZ1IBP1IRO04BO0oJO0n9P0IJP0X5Ow3hHvYQuvIEuvYItvX8tvYAtvYAtvH4tvH8tvH8tu30tvn8tvn4tvHwtvHwsuH0tuX8tuH8ttX8tuIAst38stn4tt4Ettn4ttYAtnIQsjIkofZYsebIue7Uuf7Iug7AuhqIusX+XpYmatXpbsoxqvI+ZtaOatp2IopAlgJ4pdbMuc7ovt4mWvnKYu4WWuHRbwKFlvYacuayWtpyHoZAlgJ4ocrUucbsurYuVunOXtH2YtXZbqn1ptJiZoo6bsKSImZMWe6IqcLguiYQnoKMsuptrwJGWuY6WsqOWtaCZtq9mvZqTtJ5mrKuXp6+WlcMmwIonu40msacnsK8osa8lsKGWu4iSs5eYp6GYqJ5qo6MowIIou4Mlppwop6qWqqeXr69mtpiTrJ1nqaeYpKuXmbyWvIoospYmqqEmqa1mrK2WrpyWsYYjqpiYpJ+Xpptro6InuIMmsYeWoJ0poqqWp6eYr6por5ckqpppqKCYo6iXm7WWuY8osJYlqKcmqKporKqXr5eWrIKTrJGYpZmXqZhrpaQntIsmsI2WoKAqpaaYqKOXr6NnrJOUqJVpqaCYoKYnorGYuJMor5clqKYnqqdoqqWXsYwlsHqUrJGZo5omopxppaZnto8mro+VnaMqpqeYpaGXr5dmq46Uq5hpqKCZm7EnpLaYuJgnrp1lo6wnqKtqqqeXrYYkrIWVqpKap52Uo6BnpapptpElrZGWm54pqaKYp5snsYpmroyVqp9nqKaamLcoprKZtpWVrZhmpacprJ9prpqXrH4ksYaWqJmapKFnoaElq6VptJAkq4+WlpkqqpuXqKYoro1msJZlqqeWqKeZk7knsKmYs5Emro9mqZ8praFoq5mYsYIkr5KYpZ6YpqFqnqQntpeWsoMlqpcsnqopn60mp8SZsZqUo6GWocS9qcicp7pZrKADqp10pbNJn7V1lsEHqqwprowkmZWUf7ZGqbZblrhqtYIorK4mn64nmrYoqbZarrFlpZ2VkqeVrLVZqbJJpMAqtacksq0oortGqayZo7yaq5wnpoeXjJdEerSYbsaXhMWYr5knpa8nq70uscIos8hvrcKYrLSerM+erdS9rdOattBrtrt+tcZLus1PtsUMucUPtq8tuawuuMUvuMctt8purcxqpLC7n8KcmtCemcx8ms1umLN4mrN5kM55lM1pj9InmswnmbMlmLpHlcpNlMeckr+dlZ0ol6YqkcIukMYsi8kns6GcoZycxq8uvbMow6pqucCcn7Ccg7abxMG/y8ebzLBZvKxpu7VHxK9OuaZHqa4MwbEtuJ8uh6wqb8EoybJatrRpwKG+ucacqLadl7x3sLZdqrZojauUg7pTsLRXp7NKor0qqbQorLMpl79Joq6cmrqdpZwploqWdqeUYsaVV9GVhciZqp6ZpLEprL4vsMJos8pvrLuYrLSdq9CcrNS7rdGYts1ptLp+tMJNucxPtsQOuMIOtqotuasuuMUvuMgrtM5vqsi5o6m6n72cmc6dmM18m9Jsl7x5l8F7kdFpktBJjdArnbMHma4mlr9JlMhLlM6dk7uXm50plKsskMMvj8QrkMIopruWqceZqtCas8aZtL53r9B6tsMntMdpwr2XttFqvchkxrZJxbtJvsdIwrwmtcQoxb0uwMEtxbULx7MNxLUMwbIIuawovrostsQtvLVHuLtLrLZHrrcorLiUsbuZoMtlsLyYrbiasLVppsFnsbVpo8BlpatEoMBFpLYnoL0porQorLBnpbCVqrYnqrKZpKOWpb21qKsmor8pqrSZpcWZm9GXr7SWqLuWqbtopsJnpblsmsdonrxklMlFoLEnlMJIm7cqpqNnmrlomsApoLuWoLVHmMxLnrgnmLoGqqyWoLUKo7kKraUmp7Ynpb0nrLdopsIopL0rn7kpmsQrnr0sl8IsuLaYupabva8srqwusa9dmq1nrridnZSVk6mUuMG+q7yZrLtppKFzrbBJnb1LmrMIiMgKq5oqpIEjfp4jo8FcpLBqn8O9qpK2qLqbjbiajLt2q7BZoZ1lm4+Tob1bq7hmprUpqqQluqUpvZ9HtpRLv42UvZZGxoiVyJGbzIyZ0JSY2pCY4ZmY5Iyc45GW5ZCa5o4l5pSW5odE5JFF45xE45p04phG5J1j5IZ25JCU5JSW5JYF5JsF5YYl34uW5Y2Z4piW6JCa5I0m44CX5oUn55GZ45GZ4J+X448j35J025h12Z0j1JZ25ogE4od03ZNF2J9D4ZxH4JWU4IWV44uY44qa3pOW4o2Y44KV5oaY4pAp4J2Y4pmZ4pyU349E2ZmU2ZdE25tE3KFm4I525ZZ14ZqV4KKW4KOX4ZYk5ISW340p4I0o3YmX3ZuY4YYl5I2X4JWc3Z+Y4ZWZ4pFz4oh144x5349035gk3KWT4JID4Zh01p4D4Jpz4ZuX4I2U44CY3YqW4Jaa4I+Y24koyZqYzJ4pzp6az6Cc0KCd0KGez6Wez6aczqaczKiby6Wbyaaax6OcxqKcxp2cw6Waxaityquvx6qvx6iuzJ+ezqWfy6Wfx5yawJR+xJV+x5t+uZN+tJibsqWfrqier6OeuYJduoxft4ZetoxevIlrs4l5qZl+uJ5+r5t/toFasZBftI1erotesodNuIdPt4JOtn5OqXwpqowvqoQurIYtrYQtrIQtr4YtroYtr4Qtr4QtrYUtrYUssXxWsY5es4lesIxetIRnu4tvtJJuspxusZZus5Nus5huq5Bupolsfp9nd7opeb8pe8EpfcEpf70pgbwphL8phrkoh7koiLcoh7sohbwphbspgbwqgbwpgbwqgLoqer4reb0reMArdb4rbr4qVMQqKtMSR8mVWrudOdCZMdCVLNRzKtQSKtJCKtNiKNOTJ9U0IdViItATG9MzGtKzGNOTGdUzFtSSGdFSemwqgYQtgYUsf4cshIMsg4QsgYYsg4Qsh4ErhoIrhIQrhYMqhoUqhYUqh4Mqj34qknsrlXksmXYsoHMtoXMtonItwMO2qHIsp3Esp3IspXMtpXMtpHQso3QsonYroHgrnXoqnn4qo30soHksnnkroHcqo3Urq38op3Qsp3MtqHEtqHEsqHEsrYUpqnIrqHEsp3MtrXYoqnQppXMqoHgrnXsqmn0qwMC1m48qnXoqoHcro3UrpXMsp3Msp3Itp3MtqHItqHIsqXEsqXIsqXEsqHItp3MtpXQspHYsoncrn3oqnHwpm34qm34qzLoq08Mr0sQp1bAq2cKe1sme28Se3r+X7Lyv4Lyp2MOezrKcsW0urW4tp3Qso3csoncrq3+ZoXkonHwqnHwqnnwroIArqIAnpHYqpHcrqnwpq3YpqHIsqHMtqnAtrG8trG4svb+1qnEsqHMspXUso3groncqoXkqoHoqoHoqoHwroHwroHkroXkqongqo3grpXUsp3QsqXItq3EtrG8trW8srHAsvrsmqnIsp3QspnUspXYrpXUrpHcqo3kroXsrn3wrn3wqoHsqoXkqo3gqpnUrqHIsqnItq3AtrXAtrW8trG8srW4suJwovqEou5QquMWX0G8j33qq33ub1IGczJ1ZwpQmxpiYx4mZ04aZ14CZ0HyVyo8lyYkXxp1ZyaRZyqdYzqVYyKZZ1n4n4ocs14kn0IooyIRFxHwozohVz4lWyIpVxIYkv3Uo0Iq20Y630Yq2uIYnwpAmxoopzJgnzJknxKEpx5gnvLMsx48mxZBVwpAFxbooyJp21YOZ34eY34eYxoMnyZaWxX4n3Xqs23ap33ap3Hyq2Hap1ouWwnYpxpgo2pIrwoop1HeX33ib4HeatrsmzIopwJEl0pNGy5ZVzJlVwpFUvYoo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4p+b5LOV7pW9/Y6+/Ym+65e25pgX6qsH050o4KKX46Wa3qWY4LQl2qt34al12akn2Z4l25hV46+Uzqso25e12Zm335qW2KNF36hU2J5W06FY1J4l0Kp34LKU1Kt26J+Y7p+d9Jya45+X66S766QJ6qK47aC74JS56au16KJ56J4H35145pon4LUk2KFF5Ke14Z5H26gG17QF5rW1158I6Zm66qG65J648K657pMN8ZAL9YkI95C52qIn8JqG7pCZ8pKa7JCX55GZ5rCW5ac25qoq36gn5pq34KYG4acG2aB46Z653qO516e337S13aWY46mY45ib5J6H4qp21psm0qEn1aZa26SW0aJY46W13JcG4Jq125YK25UJ6a+13JQI25YG2pQI3ZYE1KMJ4p223Yu235S14I233Yq33Ii335e13Y2534i234m24JG25Y+244m43Ie23Yu3246224u33I252pK53ZS33Yi2zpdHuosqq3AtrW8rsmosoHopp3cpqngqpXUrsWkornItq3Ysq3IsrXMqr20qqncsrHMso3kprnEssWwsrnEtp3Yqu4snvXQuxXAtxHMtx20swnUqxXMsz2ksxXAtwXYrwnMsw2dEwnWVvn4lwXwlwX+WxniYt4mXtoqYwXsWwHiYv30mt4AmxXS5xHi7yHe8yXS80XC8wHcmvIOrvICqvoAlwXilxHalzXK803C61W671G662Gy50XS9xXW6vn2qyHS6wnmov4Cpwn2kwHsnu3+ovX4nxnQE0nG60XO7yXW5z3K422sL03S6yXa503G8yHe6w3qmxHa3vXYou3unvXgpvncouXomtn8lvH0ouXqouHqmu3qnvngnuHwmuHsmvnKmvXSnwW+3x3K6y3G8w3a6wnS5zHK70XS8ynS8wna7xnm8zXS9yne8yXK7yXa8xXe6yXa8yna70W+7wny8w3i7xXu9uHq7nX24rpa5nJG3jYEqkHwrk3orlHgslXcslnctlngtlXgtlncslnYslnYslXgslXgtkngtjX0si34siYArg4QqfoopfYspfYsqe4sqfoorgYUrgIMrfoYsf4csgIYsfIotfYgsfogsfoYse4oteowteY8tdJEtcJMsbpYrbJgqZZ8qjZcEvnIKuXIMpYR0gY92nqFzoYF3kp0GwXIKuXIMqYF0iIt3pqgErqYnvKi2xIQHuosJuY91lZB4sLB2l5h2rbV3yn5euotesJJWuLEqsLJ1t6+cuqomwIoLwKUHvpC3lpq4xJm5qItLuaEn0W1+xYt9vZR1u6C6s4lWtKQpxaC5xH4JuaR0rI8noLN5rph1gaN2tK1JnpqXqaiYtLIptLUrsKd0r6ecyol6z2R+xY52tZ5Xu6m6up+2r6Iou4YKs3wMu5W0oIZEqKl0sagnwKa2xoEGu3oKtpB1mZV5sK93kJp2srJ1znZcuZJdsZpVtrAqsa93uLCcwqQmxX0LwKW1w4y6uZu8vpK4po9Iw5R3y2d+vpB4v6K5uKa3tplUtKYqyoy3v3IJvJp1o493sbR4oJx3rrpKuImUqZmVq5OYu7AqtLB2tq+cvqYn12N9yop6u5e2sqNWxY66wZe3vZEGvG8LuJ61sYS1rK6at5yWuaK+y3pcwI9eup2VpKQHtKOXqp+UnrsmwH8JtqEIt5W0mblFu5y0qqAErLJ314B+yqJ8uKV1qKoGupIkuJ19vo14wY0Lvpq1tZx0s6G2uJe1oqsGp5ikpbeovZ+mqKasv5pYuZVcuZdYyngJyo59xo17uJZ6w5V3yIZ4x4dJ0W4uyYwqwImYsaWXwIp2wIZYx3pGznRJyIlFuX8HuZMGuo60rLC2yotcvJpdv6lVo7QJu7Mlra4orL9FvpQIvqsKv561obsnwKW1p6d0vLMo2oR+zqF8ua52srEExpe4wp56yZR4wJAMwai2s6MEuKW4uZi1sLYktZ8lobonvp+mqaStwqBYtphavqNUzoJ2zpZ8zJZ2u6CYy5q1yZy1yZUm1HQuyJcotZOYvaOXy4p1wo1ZyY1EyXpIxJJEyXYrw5wnxJVGwIsrtHEjr3JLrIF5nIR6o48IsYQJn5MKuX8IoIcKjYRXrY4qs4sks4wHsIeWvXi5pXm3lIB4iJF2pYFIr4dNtHkovW8tq4Iso40tr4tJu35avoEsunQnsm9KrIF4o4V6oZIHsYIImZUHto1Lno1LioCUqo8qs44otIsHsYaZvmp8onp+lH95s4FdqoNUuYNIw34pwHRLp4FJloN4io8FqIYKvn8svnors3JKqoZHqYZ7mJkGtYYJoZEMvHpUqH0Ij4FWrJMrtpQrt4sIuaGXxIa2vJu4wpa5mZa2vaG7t4lNuKcnwX8su48pvZB1wZhHxolXxJgowoQtuHlKrYZKroN7m5V2toYHp5ANuJNLrYlKj5FIpJYptJYsuYkIu5+YvoN5rHp9voK1vJdbxKG3xKBIx5orxX1IvY1Iu4pGnIpFtqSbwqK80rZ3zJBbzLV1vqqU0Lkp1aoqsagq2qNHwop12bApypsp0bl6wqJ727Yq4JIn1Xx8x4pX07J26KG94Kkn3a53zJBH069Fy5tJxZNMxYFIwp1M36Mpv44n06mrwJNY0axbvpVd1q0n4oV3zoN7yJN326Sa26En5aa64aIn1YUr2KiYy5KY06sn2Zwnz51c6ZK403tKzp1Jw35M266a5am74q681J1azLNYyLUFpsMK3bUqu74u2rlLyaBJ2Lsrzq0tzsB4wrB20b4p45wm2pt9xat50cB747G+5K8m4rN50p4L0bQFxbG1rb4KwKG1q7MG37Iryakq07WswK6u1K5ayJxd2LAn3494y5p4zpp63qia3qko6ae556RF2Yos2qeY05qc1rAn4J9405xY65q60YlIz5kHyX8oxKgE0KYnypEsvWtJuHRNqoJ6r5N/o5l9eL0MkZ4JmopYj6MJgrMKf8MsfrcKkKadr3x4u3h8uol9s4h+sIJ8rX9OrIhOuFp1t2ooqoAspoFIpopYoIVFpH4osGpIrXRMq358rZR/l5l8ar4LjqCEjpuWf7FHd7REeLktdbULhKWctGh7vWd+roN+o4l7ooxekJpNm4VGlIcppGcHonILnoUMmIcNlZEOmZYMkpAOsam2v4cFtnR3rHUGoHkLnYAMo4UNnIQOnYkNn4oNmokOlnQIqqKjrKgprrcsua4tyKm+wrIptaougr4tt7hNubYqyKspxaC/xqacwaYmx6N3vZ6dzqO+pai/x6u35Yp4wI14upy4l511v6QpxJYstaK5zKS344p3zpO3w6AoxJYsvpW2yKwr24162Jy22qO42JkrzKgr4JO72JR60ox63oq60ZYo0px305Fax59XyaWaxp4Fyp0qyqGb241VzpVW15co24h9w4N50pop2Jh62p+62ZQrz6An16Uo4ZK42pJ41p633JK40Jory6VGz6EGypgs2J693pYn2JJ32ox42o95zpYm2oJ4zpUoxKEq25B32pp42qK81ZYszqQo2KG54IF61IZ715y91pcp1o550pJXyp9ZzKOcy5kGy6QoyqGX2o9X1o52yZ0n3nR9yYd4yqkr3pB715642KC40Z0pzakr35W52ZZ42pqW34q50p4rz6Um0ZsIz5oqz6O93Ze42JF315Z234t8yZQl1o530ZUnwZcozJwEvpEGyqht0Z580p56w64o1ZN40pV32pm63I8o1pG8zpm1yZAGxKYr1px22KB6zaEq3Y650pmYzKCYxYybuJklwKtKy54IxZ5rxqh22JZ9xaR31Jwp1oJ82Jy92oh50pm60p+6zZ0HzaEpzaS835O33JF205sm3Yp724t63I160Yl3toe2yqBGwZUHyqRt05V70p55x60p1pN30pJ52py634t22Ja8yZ8Ex5G0xqMq0qIk2J96zZ0p3ZG5z5yXzp2YyY2cupuVwqxKx6EExp5rx6h215p9xKZ21pcn1IN82py+24d42pe70KW2z5wIz5sq0qS+4pMn2ZB22ZF43op72I152od7y5S0s5K1uoQpwJe2x5Emx3x2x5NGxJYnyI10xIV5yYmVzo12woZ4x34Ev5UHwJAHx3sGwJYjwY8lwIBWxIlYxowpyYkmu4i1w4d3zJR4x44mzX8pypN0ypMm2n150Yp5xpKX03slyIx2wpd2yJNFvpK0yo8lzJUnwox1x315x5Z3yYoqxHgowJAktqAoyJMnypUnyJi4ypO1waBIzJQnzoxmyIp22oq0x5B3yZd2yZZUw5cHw5eWx5UEwJQoxJaUyYmUxZFZzIwq0YZ4vYJ2y5MpxZV1z5e3y5AoxZkkzJ0o1Yx1zo120ZBj05F0zpB0yJh1xZ1GuZcnyZG1zo8mxo5mypBmxI14x5cpz24px4wku5p32I8JxqJzub1155J80J96yLUl4I98xbB32ZJ25Ywnz50m140F05UIxKkH4It43Zp8vacF340szpkox52Yz5KZzZmcyaSVzZ12wqVk2aR45KZ+va532JZ31598ya8l5Hko2JB4xawn1ZgIyZcFx6G13Igq24Zr24l434V95JB95IB83Y561pp81JQFyqQGu79l45h716R8wbl15I971Kh60KN354wo1J0m25MG2JEIxKsH0pl306h7wqQH15cp050n0J+c0ZOczKCbya2X25oJw6xjyrp44KV9w6x41Kd13KB8x7t14IAp3pR3xqq2z50Fx6YGxKkF4IUp4Idp4JNq6YR96o9+5o994I5635586JUm5KF37KW84Zkq4KhI6qe57YS365B46qK95pO65Yl436N126JY5Kac4pOU36Yp4pQn6ZaV55RX5p8p53N73XN436kr7JJ56qK65qO446cm4K4r8Jm56px27p6X64644p4q4KZG2poG4KAq6KS+7peV7I9n65Z26pN44I536YZ404gl2qwq5I0m56Uo66m66JIs46so6aO78JF54Ip575O755ko5o134JFY1akE56ia1ZeU4Zwo5KGb7JN05Zkm5pl37H582nBn5pop4aoq7qe76ZAr5adH6qe67Je17Z1265+76J4o3o0p4p9I3aop4KIq7Zq46pgl7pVo64B75o4n5px34oB3woK0365Kz6QG5rBu2Kd337RI4qpl65N35KV466a455Mm7pG636sF2JkH3a8r6aYl6al35J0n6Zq85KKa4qab4JSc14uZ4qtI158F4K1t3bh45K95355n6Z8o35t78Km88Yl57pS65K5G46QH36Iq66K98JqW8Y5p65Mm55p27JR684p64I5756R23Z9G4Kpr37tn56d73Jx15Kwq355566y+8I4m7p255KK53Zi13acm5LJG4KR24Zgn66S96aKX252Y65ab2pqa4JuW5JlE3Kdj4rhq6Jh755x45LAq55Z66Kq98Jh385u46Zm75Zu04Kwq66i77ZmV8ZFk8Jp29Yt87JB56Zl364164ZB655lF5Kwr6qS266C37ph17J1l8IV65o0m6Jd35IQn14V88Zy18oQm5Hl20nV6x3l8woJ9uYZ+s4h+m4t9eal8bbV8YcB8p5h221541Ht+62En4lx56Vcn3V144IIm5GAn4mJ16D1933l35m543YV48GN570h+4D9+zkR+vkx9s099pl59lnV+xpN261h84Et9zkZ9wY97tIR6sZm6to68qJ53uI58iJl+d6R9nmdU2Cd1wD5atlRdtqdJs6NMzLos3aouv6e7zpi/m6W+d6++uZ0m5Vq11EpHuWBIrG9Jm4dJiJ9Ic65HX7+3WL+4VcW1VcZHWr9E4jwo6Cwq2Tcqzm4qzogru4Er1ZC6wIZJzJJ5vZN9hLB9ebt9u88vyc0vvtIuwNIuvtIuwNIvwdQuwNEuwtQuvtIuv9Iuv9MuvNAuvdMuv8a3zre/z76/xcK+w8a+x8S+xMS+x8S+xca+wMW+u8e9uMS+va624Y9/4pd/3Jl/25x/3Zp/3Jp/3px/3pV+2Zl/25t/25l/1oZ71H8t1o0v1I8u1oos1I0t1owt1ogt14st044u1IYs1Yot2Iw205dO35RP25VO245JzJtt3Jhu5JVt15Vq6ZN/5pl/4Jt+2ol40JdO3ZZP3pRO3ZRO4JdO25NO2ZRO2YxI6Il/55d/3pd/2X921oIu048u1I0t1ost1Y0t1okt1Y8t2Ykt140t14wt2Ist2owt2Igt1ost148t14ot1Ywt1I8u1Iws1I4t0Issu4UrzWovvXEvr34vx5yY5I0u2qIsz64qz6mWzaSXwbKavLmcxq6XyaSYwLScvbadyakn6aN84Lh+0sR807N11rS3ycQmwMoq0bQm2rEmysAnvcko2J627Jct3K4tz7cr3KS53ai7zrS7w7681am61K26ybe7xLS473t684Z66pB85ph97JZ774987JZ+6pR+6Zt865R95ph+4Ip64nlJ5oZN5IlO4ZBL3JJp35du6ZVt3Zlq8o5+7Jl+6Jx+6Id38XYr75At4qIs2agp3J0n06qXyLKZyq2Z1522zrK5wLy61ZYk8nEu3ZUr06Ip0aUn1ZyVyqyaxbOcxLWd06CWyq2bwbedwrie3pYm9YUs7o8t5Jot2KIrzq0pxrGZxLSbvLububWc1ZYk3n8szHstu3guwJEp6Hkr33Asz2gsxGIsu2ItsG4tpXotuKots6EujqgugbIueLUtcLwrZsIqjcAHmbkena0ro6kvoaovoKkuoakuoKouoaUunqsuoagun6guoKQun6YuoKguoLEuq7wosrAouK6Zu7CZuLKYtbKYta+YtKyZsbOYtKuYuKyZu6yau6uauKuatayZr7KYtrFGwa9Hwq9Gw65GxZZGzoEkxIuVwouUxIoky4QoxY1ExoxFxY9FvadGuqyVsakmpKItoqUvoqIvoaQvoqMuoKcvoKYuoKkun6Yunqoun6UunqounqYun6kunqcuoKAun6YvoKQuuZQpsY0stG4ou1klwFsnvH0muWQpsmQpqmc1p3Elqaols6wntqiZta6ZtK6Ys62YsayYrKopoqEtoaUvoqIvoqEvpKMvo6Yvo6gvo6Mvo58vo6Mvo6Uvo6Yvo6MvoqMvo6Ivo6Uvo6MvoqMvo6IvnKYvm6Yvm6cvqLwup7surL0uqr4uqr0uq7supLUurblHu7FMu7JMrsBHqLwnpsEopsEopb8pq7l4q794qLxnpr4rqLstsrgnvLBMurJLr7gmtbEKuLALuKoJuKeau6uct6mbr7Qrq7ots68sqbIsrLourbsuqr0ura4stqiavKecuKCaqLoop7sop8WYqMaYp8UppcEqtLu8r7i4pMAppcAopMAos7dKvbFMsrNKrLgtrbsuq7ourq8or7e4sLa6r662rq6Ysqu3sbMmuKsasbIoqLkssLsqtrFLsLcXs7YasbUus7Utr60rp7Mtqrwuq7ourrUsrLourbourLsurLousbEsr68uqbUur7wsuLwtvbkuvLwuwLouwrouu7Yuu7Qpw7RJxbdJwLdIvbcmvb8nvcAnu74nvboov7wovboovLknurwtvrQqvbcowbZJvbQnv7MmxLUIw7AJxaeYyKuaxq6axawqwrkty7Auw7Qtw7ktwLwuv7ouwLErwLKYyKaax6SZwrKXvrqXu8Qnu8QnvMGWvrq2xbq6v7olvbwnvrkmu7YnwrZJwrZIvbgrwLgtwrouwLQqvbi3vbsnvbEmvK8nwK0lvrYnw7EYwrQYv7ktxbctwbhIw7ElwbMZvq8swrYuxrItwbIuv7ouwLkuvrcsw7otu74twL4svrYsv7YsuLotrsMsrsMsscAsssEttL4tvLortsIrxK8nv7QqwKwlyqQoz6QqzKUow6wnz5UmzaQoyaAkxK0m3ZhD16B51KK1za0o06iEzquUz6QUzqJEybAl0qMqy6iWyawmwrCW1pgqzqsoz5xGxLAl0J4m0aYpz5qTyK6V2psr0p0q0JyZxKmXzaCWzpcn0KgnyqcoyayUyKJGyq4m1JcozaspzKUmxKsm1o8pzKknzZplxqOX1pezzqh20KO1yqYm06Mjz6iYz6EWy6FEy60m1qEryaUmxK0kwrCX0KAoyqckzKRGv7KV1pcpyqclz5ZEx69F1JwqyqUoy6SWw6WY0Jkm1J4o0aUlxK4myadEyqJGz7CXz50qxKeVwKuVwq4l0Z13yaNH0Zl2yqZG0p4pyLIozqkkyZuW0JQExqEHzKQkxZ8pzKklyJwox6Ylw64mzq4l15d60qe4zaK1yauV2JspzqMnz6Mkz6KU4om20Kp21pkp0JwrzpMmyZ8pyp2VxKslz6N2yZtFz6YD0aJ3zKYl0aknzK0mzKMmzqCX1JEFyaMF1ZQrx6Un1I8qyqMoxJuXwaqW15B405l50qG2wqUk1aIm1Jsozqe0yJwG26C41pJ2zqck0J0q1Kso4J8r1qQr0LEnzqso45gr2aMm16Bk0awo4pV42Kh43Zso2KIp2Jez06y125kV2KNG2KEn2aMq058l0Kwl1KiX2qgq2qRF0KlF0rCW2qUm0qcj16GVz65F3psr0q0k2Jaa062a3JQp1a8m0qq0ybSV1ZlG0K0p3Zsn16Yq25sqyqkl2KYo2asn0aiUz6yU16xF3KF21qt03aMp1acm3Zy12KK33JtE1KtF4pYs16Qo0aMkyrCU25Mp2aMp1pmUzKiV3p0o1awl1pyU0a6V16Yn2acp1qCU06CX2KSZ35oo2aco0q8o1KxE0adF1K8o2pco0agmz6aWzLG22JwF0aZG2Jl206lF3Z8o1agp06kl0qGW3I+V06kF3aMp2KAs06Mm1aQq0Z8kzq6W2qt14KB51Ky11KUm064l4KMp1Kgk1qMl26q255V41akm1qAq0K4q1pwpz6omy6Ekzq+U1qEE0aRG1p0kz6xF3KUp26Yq16Qm1KIl4JGW06EE2qQo250s1a8n16Qo0auWzK2Uy7Mk4pt72ae306Yk1Ksl4qAp0asl16Yk1aSz5Zd126h2354r2qUs25sm3KQs1qUoz6oo3aEq2Kko2aCX0qgk261E2Kh206iz2qom26sU2Ke116K03ptF1qqV258p1KIo0a4mza+W450r1Kcm2ZxE0a2U3KAm2aYo1ZtD0bGU4poq16Mm1p2Uz6WZ3Zwm4aIn06kl1KpFz6olw6Mq1K4o4Jkq2J0m16Qm162U45Yp3p0m1KqU1qsm4ZYE2p6U1qaW1qmW540r3Z0p4qcq2KeX2Zgm2qGW0qkn0Kwn45lz55p626Im2KS335aW3paX1amW2aeU26km4pcq2J8n2Kco1rIn35kp25op3KQo1Kok4JUo2KEm1qom1ayV3JND3ZyT16aV06aW5pUs3KAn26kn1KiY25wm4Jwm06YnzKyV2qK016WU16Um1qa025uT25uW1aSW1qUl2aYm5JUr45gr1qMo2LEo5JYr2qAr3awo2rFH45go3Kcl2K4l3LMo7JEF4KcG26gE2aeY7o8s5Z0q3aop2amZ35wo4KEn2q4l1LCV65Yk7J4l5KYq3Ke54pqz4Z212qwX3axH4KQl5p4o46Mq16Uq36kr5J4s26Ir2qtG265k5p0p2Kwm1K9l4a0m55pE2qMF2qWU36uY7JAp45kq4Kgo2LKY4pon4aYp268l2LAm6JV046Z32qgm2qu35ZSV3qEW36sn17AV5KUl45oq3Kcp2K0p26gl1Kgn0acpy68m1Kh0zKVE0KtEz652zrEm2KQo0aol0KQl1aqW25kG0KYE35Yr1aoq25gpz6gm0aMnzqwl2J551aW235op16Io3pwo2qIp2ZwD054E45q21KZ23qEp2p4s26Mp1KUn0KKVyqyW2qcD1qB00axE2KR52Kgn4qQq2K0l16Im3aaX3p+V1qMk3Jgrz64o3pgr0Kgmz6WVza+14Jl316e22aO11Kkn4qEo3qMq3KEE26Ik55a21at13Zwq2qMr4Jsp1p8p2Z8l0Kol3Z0n2qsn2p+W06uW36RE1ap22qO02Kso4aCD2qSX35oV3aFG354n36Io2qEm1K2W3KUn3aUp26CV1K6Z36ol4qkn26KT2aaV36oo6Z4s3aOW3aCa4KeW6ZIq3aomz7Ql1atE1aZF26wm5Jsp16Qo1amW3KuW6aAq3KiW26Ml3K208ZF54ad34qQo3q8m5Z2U3qS04JxF1q0j55sr2KAn2aQm1K2U7Jkp36Uo3p5F2bKU7Zsp3qUk4ZlF17Mk65Qq4KIo4JeW2Kma64kn45co3qSV1a+WzLck16uz6qBF6pQl16YqzaUpwqEqvqcsvawsva8tvbAtvrAtvbEtvbMuvbMtvbEtvLItuqktvpoqvZUpv5Mou4U3u1snrmE2qmUls4uYu6Kevqqdwaiewaaewaiev6edvqeds66WpL4nuLq8tra9tamXvqaevamewaidyotr13Vuz4Fs031qzn1t0YRty4BtyoJt0nxl2IZP2otO24ZO3olO24dO24ZO2ohOz39GyYsuyIkuzIgty4cty4UtzYktzYUtzn8t0Hksz3Us0Hks0XUq0HYsznos0XYszXkszYctzIcty4ctzIgtyYYty4csyogsw4Yto4wtlp4ulqQumrYtqrGZsLOarq2ZsZUnspQ2u5k2tJUosp0nr4+WtIaZtX6XpKmXpq1nrLBqqa9qpasmqK9JrLFLrLFKpbNHna4tnLAunLMunbEunrMun7Eun7EuoLItoLQuoLEuobEuobQuoLAulLosj78skL4sjr8sjMAsisAsgsAscrEuXLSbPcmbL86UK9CTKNIyKdAyKNNS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dLBOYbxOU8BMScNLQchJO8pGO71GnoxOgJ9Pb7hPWMRORslLO8tJMsVInYZOf5RObrdPooNOhYtNdK1PuoVOoH1NjpxPrINOl3hMiJtPtodOoX1Mj5hOr4dOoHZLjZlPvnBG4U4ty1gtvHUosXNKoH1KnXhIx2FIs2NlqHJGsHFLmXlLiIFJ1l5Fylpmr2y5wHZNoXVLkoVL0WVH2EdqwFRqunZMoHFLkYFL0HRK30p40kp5zW1Hvlx5smR5xWtI1k4sxmVHvnpLq25HmXtJzm5F5FUKzGMKwX9LtnJKnYRMuXBH3Ex2zU98vnJ6uXRKo3VJnXVI311Kzl1MvmJJxW9MrGpKnnhK3lhHylFIsmZKwHZOo3NNl3tN7WtW51lby2NauWtYqHdXnH83zm9H21cKuWiWwIBKtnBIpXpLwnJG6Va231K31F9Gz2RKwF1JuF5J51xE3FKFx16G0XJMtWlJp3FK3mRK0FlLvl9KxnZNvXdMs21L02hJzU8WtF9JxHtOqXBMmnpNvYJOpnNMlJNPvYVOp3lNlY9OtYhNq3hLm4lOlZBNu31Om4VOiplPwIZOp3hNlJdPgaVPZrFNV7hMTa1Iv35OoYFOkJpPd65OZLFNU7xLULtKRMNIRr1FQsREO8VFXZVUYphjPcJ0Och0NckiM8tjLs9jMs6yMc5zLNFklp2Tg6GbZb2eVcOeRMaaPsabnZeVi5aabbKeW7meSL6cRb2cnJiVn4+XdaueXLmeS7ecSbObPq6Xn4uUbqedVbSdQ7ubR7CYNryUrJGVhKGdabKeWLSegZmVhoWUV62bSLOXPbuUPLwDMMNzPbd1rJmWlpSad6yeY7OeTrmcq5WUiJyca7GeW7GeR7abq5GWhJ6cZ66euZaXlKCeeaueaKyenphTlo2YcKqeW7KeS7KapZWUiJmbbKyeuZmVnpicgKqeba2eWaycoI6VdKCdW7KdT7GcpJiTnpCYe6WeqJuVs5GYiqWecaudXq6eoJmXjJCZbq6eX7KeUayasJSUjZydcqieu5mVnJ+dga2ebqueXKacro6Wg6KdaKydV6qcnJe6pYq+rJSVzkQ0rGcpg4YpYZ8oqEgzr20phYkqX6YpSK0ltFM1nnYqdpkp0TAEyES7oGi7d427U6e5wTq5omS7e5S7VbS7s2YUu1+7koG7x0YD1jJ8rVJ9inV9b5F9wjm0r1V6hod7X6d6SJp0xTa1oGqZdpWU2jhlvUlqmGlreIRrtT6zvDtqlm5rcJlrUK1pwDi0r1eVhotkzkM0tWIqjYQqa5kqVJcnt0gojX8qZaUpRc0or0Q0qGQqfrUqx1ET0Um7qYm7gIi7XKW6v1K2rF67g427Xda7hHUTwju6nKq7cn643Dh5uG59mWl9g399u1K0u057kHh8bLN8Uax7xEK0qXmXgZF32j21xk9HoGRGf38ViHMUxki2n2uVd5FFUrtFv1q1uV+Zj5yb4T5y1koqsHsplI6Yh4CczTM0rnYpj3uXzDM0spYpk4Jnhdltu1Fl7y65ymm7pWG4kH8qzz4Uyzu7pXK5zDsUziO7qKK5irZIhZ9u8S602Eh9tVR+n4l+u0132SOWsH6Yole32xO3tKcjkpoujbwu6jsT5kVoxXEcsowesY4e2UcXwHYeoY+f2DqzxJGepIufh8uM0UBy4zsouHkpmHaXioadykIzuFYpk4Emyjszu0Upm6Elhslsh45t7ii21E27rVi6k5YpwkYj0yy7roO5u0gk1Ra6say6jI23hbdu7S2z4ix9u1N+nYp+jXN+2jy0uHOclHS92h21vKK4l3Z9gdN/3UQS8CxFyWVJpWtKk21J1zi1yD5JpGBM1i+1y0JNqI1Ijb1NhItO5yi3yUC7oJW7eo+5wEcUyi27omy7fJ25YaFmcr2VUr9MULVN6Ciz1yV9r2h7i3J5cnZ41Bu0r08siactbpAtd7uUZJ66ab6+2j5yzkVJpWhKgY5LZphMxT1UpWdJfqtHZ5pnbrVpaKVzStt7S3Jz7CW1yj1Go30khnQmykS0yjYlomcZgYkeeYkegbQYeqIccpMd5S600jm7qoK7g4e5lmli0C66q2C7haq5aJxnc7+VVqScSsqd4S6z4R59uE17knd8dY160jO0t0uckKqdb5Wdb7uXYJ12Tdp8tFNS3ixHrV1Kh6BKaJZLxExzr3tJmKApnpsrjpstfrCTXr29X6C86iK10ylHqoZHhXpJs1MT0yy3q1tMhKFNZ5tOcsCVT6dLQMJK6Esy2VYpsncppr6Xloae0zI0toMnrXlq0zU0urYnm6Bpj89u1lJj80G6zm27rI24o7Ar1koDzUi7r2wm1DsU0DG7tMS2kbVJhpdu9z2021d8uF19qL53zFB02jaYtHK1wVe33iO7vcFUmp0uoaYu8UQT6lcXynYcv6wcuZAd300YxXkcr4ac3kGWyrObrJCej76c4Uxy4lEpu3woqKKZmaOd0TY0uV0po3Nm0DozvnQprsNlksVuj4Nv9T+31167sGO5or8kzEQT1jW7tnW2yEck2CG7ucO1kJhGg65t9T905Ud8wVl9r7J4nGx93ye0vHSUnHG53yC2wbxUmYZ8h8R+5z5y8zZIymNIsKlJm4lM3T21yk9MrGFI3TC1zoxNs7dLlMNOi3dN4lK4v10nqG0qoHMtnoIumXstpYS5vUe7w1i+pnq9onK7o3e83kmzyl0nrWosp3Qup3Itm4QumYkmk4CuyS6mpXSph36pfIGp1T6z1UVmsVqak22bkneenXW6oYu/iIqexCe0tFydmG1ui4NvrVpo3ES5uVu6nWponHJsoH1tmnZsm4huvEATvU66lHq5cJy4SMW54EW3x1S2qGUqoHMtmH4tnIFOoI9GoHIuykksqXEonHm/mHi92UO001Uos2gtpXMum3wuloFKmZhOlIMvyB8lr1gvj3eocI6uvlJy0V5Ho3NHlnR8knB8kHZ7hHl8i4VuuC5jp1VHkXNLin1PhXpN3z60xFFGoGRHjG5Lj29LkXBOjpxMrExKyCpLpGZMkW5OinlOrpiWk5ycd62eZLWeTrqdlI6UZ6KcT7ebRbqcQriZNb6UN7uXnpyWpZKZfqSeZrGeUredkZCTdZSaWqqcUbSdQLeamI+VbaedVbGdu5aXlaGdeayeZrCeoZqWmY+ZdKyeXaydTrGaqJWVhpuca62etJeWlpiceaqeZ7CeU7GdoZKWeKKdYKubUbGcRquWpom9m5e3gYS18Usny2YqqoAmqMGX1TVzy18ptoBm0kFjz1kpt8lTkpppk5dr9ka06FC7wnG6rMCzq3Em4z+6w3a5p38n5C25x8S4opK3mp1o8ERy9UN30Fx7trR5pZN65ju0zWaVrYG25Cu10aK2srApmqwsv28o+0ln32UXxX4cva0d30cW22EevXWX3UeU3WCdxL+Wn5mcgaCG70g01F4qsXkmqcKVxFOV10IpuoNltHBp2zMnu8YkmpBqlJxt700S8VC7y2G7r721mJcs4jK2y2a6sXQn4h21zrW6q6m3lqhn2kpj/Dx62lN9uoV9rbB84T6011Gas2W23ym02kG5vMFUlp99jZd+/Dqz5kpGwmVJr8BI0EhD5EBIxFwk0EVo5zOz1FlormFKxVEo4FAzzFwqp3UpjKKYcZiWyE4mrIK4lIGcyDQ1p6opg4wmeLht00hi50W7wHC7mIS7d5W3zkUEv1W7mHq6zDkEw0a7npO6hKq4b6Jt7UK3zV94qGp9h519x1OzzkCcpou8wlK50jG+q6O3j5e+k5O/6kO02kp5smt6kJh3h3u61TW0sX22iYO61iC0tZ+3kIGdab632Exy1kcprXwpk4aahYydxkU0rmwoln2axjY0sIApi5Qoa8Rng31p6zi5yWW7oW+7fZ64xkgUyUG7oY67wkEUzDK7pqC5g525daFs60K010l3r2d7kpl5lGpz1SqVroyYinmX1j22sqS0i5AmgqQ44zuz5EJ2u295poJIpINH1EC0umxGm3sn1DW0vYUYmoIZk6IYrl0j300osoEqnoJXmJNpwlEzunUmo5BmwE8zvXEnn6NmadUoQc4n2EA0uWIqn4RnoJZnrW1kvWIoo5FmkHc0wEkopKAkio4qe7ao2Dyz0kJ4qm8Wh516f5ImyESzq30YhJUYyDW0r4kYjIIoX+cquFAT2D2krnh5j4q6d5OmvkS0smupi4WavUe0tluakZKYf6NTZbKfxkclo3MqfI4pgJ2doWKTqGYphJ4mnG4zq28oiqQlcJymcrqfvk00q14qhoQnbp9maZtHqk0nhpEpZJkoqkgmi5YpcIcnYbmjtFOzxUommoF2cp95X5kosUS0nmgoeJMVr0S0omsZe5WTU+NSNdtTvl4np1cqjXcqdJQqW6cqVK0rWKYsWKgpX6YrW6YqX6MqWqgtYaApXqksWLQvWq4uVa0tWLEtVLAtUbAtVa0sT7IaOcIcFdSTa66XeJmXTr6eOMidKc6aKM+aJM6UH9CDH9CVGdGSG9BzG89CGtETcpeURbqcLc2bJcyYIc2WGtKDG8+UHsySHc+zG9ETGtG0GdKDSaCGMMMSLM8SLNIUMM6zZra+Zra/aLe/bLW/cLG/dK2/eKy/fKa/gKS/haK/iJ2/jJq/kJe/lJK/mZC/nI2/oYq/pYe/qIS/rYG/soO+rHy3opAup5YvqZUvqpUvp5suop4unaAvnp4vpZYvrJIusI8uso0vs4wvs4svs4svs4svs4svs4ovs4ovs4svs4svs4wvs4wvs4svspAutpQrr48qpZMqnJgqk5sqiqIqgaYreawrcLIraLcrX7orV78rVbQoXLUqVL0qTsApWq6ZXLaaVbyaTb6ZWbIoWrcqU7spS78oj4wlnYIrg5osbasphqaZmZebeaacT76ccaspjJ8tWbopaK2cX7OdP8mbL9GXLtaDmZqNwXqexm+fyGifymafzGafzGafzWifzmifzmefzmWfz2afz2qfzm2fy3GfyHefxXafw36fwH+ev4Sev4eewISezICexX+exIufxo2fx4+fyY+fyY+fx5WexJG4vJi5wZWevZOctJd5sZp6r517rp18wo1p14JuyYdsrJhkqo8krpIpq5W2qKG4qKS4qKa4qKa4qKe4sJVn0YBu0IxuuZdnzX+73Wy/y3u/xpK+xYW7yJe7yYy9xI29xIW+ynm/0Ha/yYG9sY8LrpsNrZMNo5AopqAtq6Ats5AppZ9IpaRJqplIz4Zu24Fu3n9u4Hxu4Xxu0oRtt5Jqs4xpsY9msYkJvn2YuH+cvIOewoWd02m5y3a+y3i/wH29qpMMp50Op5QNoJEopJ8ts5otwZMtxZQty5krzI4tzpYtzpAuzo8uzpEuz4Etz4Qsz4Ur0YcnwIxowJNowZBp0YZo0Y2d1Iqd05OZ1Iq804y804291Iu904m904m9ypK2y46dxI5owZdoxYp4xJB4yI13yIp3yox4x4dozoxpxIhLvpNJxIcsvoVGuo5LuItLuZhJuZCVuJlGupJFtpJHuZFJuIxJto9Jx4Vs0nxs1oBs1oVsxYVlv4opyIUt1HS82HO+2XS+1Xq70W2e1m2e1m+e126d13Ce12+d1HOcyXQox3sqyH8sv30ls4q2vYZLwYFMuYZMxoVq1X1uzIVqto5Is4gGs4oFwXwsx4IsyoMtzIkszYQszpAryoksy5QryY0syYoszZot0Zgr0JEs1I4rz5Es1pUs1pws1JUs05Ur1JEr1pEq0ZVn1ZWb15prypezzJdGzpwG0ZVHypYq1o9q0I+Y0paX0ZWa2Jie2JBp345r2Ztr1ZW3zpu51YqY1pRpzppG0Jglx5IH2Iib4oS52oq8z45G0ZG2z5Jl0ZIr0JQs05YszZoqzZWY1JOc0pK30Jab25Fq2JNo04+4y5u3yJ2WzKO1zZgFzpYHz5RF0JIqz48pypFIx5JJz5ec0ZScz5G6yJ240pRq2JZpzpFFypFIyJ5m0pi21JBpzptIzZa0y5MoxpMqxo0pwY8qvooqwaEoyJclwJQpyaEpxZB2vZ23vIx1xqC1ypItvpZnt5CWwZ66xZUmuYksu4lnrZYsy5ko0oi505S7z4a705m7zY+8u5skuYp2x5OV1nm70Yu73Iq804e7zIu2vYgtvoctuokuu58ovYUsx6G40pO7xZ0myokqyZwo1JG8xZomxo12wJO1u5NEwJK2w5gos5Msu5W2tZApwamYxIopwJUpw5G3yKAlzIkpzJkr05G6xpQmx44owotn05W5v5t3vJYlvo4t1Icuz44u06cp24ot35ho1JGc3Z5q1Ix21ZW20osI05W315Ur2JVq3JaZ2J+W16SY15md3Jpn5odt56Fq14932J211JF245hq2Ym41JYp0ogH4pOa5YC33Y624pa135Bm4Zgo2JAt15Mu1ZUu1qAr2ZAs4Jxq0I+X5pts1ZAk15i11YcI0Zez2ZMo3ZVp3paX2KG42qOZ052a4ZZq7Ixu6aRq3ZJ53KKV24qY5J5m34xI15Ym0Y526pCd6Xu334925Y5G4JRp4JAm1pYr1JUs1Kss2qSa2Zaa4aa73pe65KJl64Zr5KK43pG85Z+Z3ot125u12I0H35q24I4s1J4s3Y+40aVM3qGb3Zia4Ji636eX5qNq7pBs56C255JG5KFn349775to45W73Zt03n4q2ZQq1qEr36gr54+b25ea5Im46aKa7ZNr7JiX6Zm83aG45Jx33J104J8F25oF5aEn25Ar2pu124xI36qW4IyZ3p6X3Ji84KaX8oVs6psm45C46Zlr4I925ppq7pG53J5E6IyWzoIowoEss4wtu4InxYBoxYJqxIJrxYRssoZGp5BGq40ssIwssYi6rom9roe9r4S9xmiYyG6eymuezWuez2ue0Wme02Wf1GOf02ifxm6buXqYuX0nuIAps4QmqoxGqYpIqolJq4tKqIxKq5JIxIFsy4BtuIhpnpRlooxFlpAFpoQns4YstYUtuIQsuoQsu4QsvIQtvIQtvYQtvYUtvYQtvYQtvYQtvYQtvYYtvYYtvYUuvYQuvIIuu4Euu4IuuoIuuoMuu4Uuu4QuvIYuvIouvYwuvYwur5MulZwsiqItgqcteawtcLItaLYtYrcteaEqYbQqScYsQ8krO80qOMooNswnLdEmLtAkK9EjLM4CKtASKtKzK8hUqZhKpapIo5l5pqh0qYK2q7G5pKa6ppRHpKi1oZN2qai1qoG3pZ65n6i6nZkKnrB3lJ92opEll5koorEKobQFpZBMoqZImJJIooknmasnl6hGo6mYqnmbqbwGpawHqppLo7VKmqxKnrQmnocnrp+cop2ap32Zn6uWnpKWo59HnpdJn5x4mqp1oolloKy5lqK6l55Impe21HxOzohK2ndv23VI0nlL2nRI1XZLzHBOx4tOwIFOuKVOsY9Oq4NO1oR85HZ/2np6zX54v4l21n5562l56W1L13JKvn93wYtNuYlMp5h3p4JI1nVOx4dNxnpOtpZLp5RJxnSauoyZr3QnqJ6ZnJ4nqK0qoaQpn4GZw5lMvJBNxo19v5V+uoOZwYNHwH5Lt6BLs7VNraxJpbZJmqdKopVLtJNIwIROx4dNvnpOxnxOuY9Ny3RMwZFNt3tOtpJJrppKpZ9JoaFJnYtNzoF/xod+vX2XrqB1o5m303x+zoR7yYFMtolJpZd1pqkIp6sFpYtJyH9Nv4xMx3hOtaRKpZ5GyXBHwZmZwYlJwYtNq5VJx4h+zIdFxHJHuouYsJMnuHSYq52aoI+Zz3ZNvZxLs4RNsp5Ls4hOrpKap6eVrX9Er563p566sJCZp5y1oo4nuo90s5J2rI53oqkFooZFq5h0r5J3zWwqupkmsop4s4x1q58mnJcmynaYwoCayopNyZdOt35NpqlKqJ5KyndLvJZKtodLs4xIsqNJqptGuJJ0sJoHoJt3rKh2p4lIr54orKknw3kqsaAnrIQouHuar5abpYyawoRJwH1Mu4VNtKdMr6NMrL1Ip6RHopNIprlIpasopqZFmp5HqJgrro8nwnQmuJcnr4l2rIsns5J5yYF/y4F4wnebsJGYrY6Yo4QlrI2Zromdy3d4x4J4wHt5vItJuXxNtZlMp5lIn41FnqRGm4xKwoBNtpZMqJhHv4lGw3GawpdJvopLs4RLuo92xIN9yH9IuXxJsY+WtImYr36XoaImmZVGxHxLyIBOvYJNraNMp4JGqqVJopVJnJtGr563zY1O0ato0oRv1qK4z4RO5Iy35otH44RH4qS34ZdH3Jy41ox473pm6ZBn5od81Kp315mcyqSY5pq48YpG7oRI4Ju33aV255dn3JV26pS06pC27X9I7o9K66BM6Kq80pi974aW4pqW4I8m3a2X26Ca2p6Z3Z2a44ea6YZI44JJ66R35JqU0ZKa5o+23I225INL3J9I2qBm2pdJwot44X9n34236n9N6JtH7JhL7JpI7KFN44FH1py20IBI0bFH0pq10Ki44JRl2Hq35IZ60aR21Ke1w562zKi+6IWF4o9G7HxK5apM3JtN0KF54piD3XJ26YpK7aJM5JxN5J1H06a77IiZ14OcyoWY1LOX1Z+X6Ih96aa27I5K5nRI4KdG5aaZx5SXvYwn8oJK5otL54dO26pI35tI04922JdG34hm5ZK74H233JS747cq0qMp45tDxp9HzJpJxK92yq1I566+1Ka94YMl0KMmwpF35rO91qK7zaZ355aZ3Xea7o1K36RL4JxK04dI05ZK7ndM55dI2IRI5a683LK31rEq5KhH1oxJ24dMz7BH0aZF1qwqx7cq7Y0n15An04Up6LSc06WaxJiZ5qG6536314NH351J3aJG1Zi1yZ+43o9l3Yi33ou83LO23KZH2KQq1LAp55G50n8lxJu5z7V026C26Yl935d725gq0ZmYy4x35aq20polxa6a55d233ZG2nxJ5qm47J1M44RN25RN4nFm56K56YRM6qBJ5JdL4Je95p2W5Iaa1IScynqX0a+W3aYl35N96pJE6otJ2Y1H05J126aZ1JmYxqaY7IpK631M5oFO1aJL3p5MzJO0xZJG3Y1k1Ytnz364zZa22pxp2oln1JlI4Iq24HRM5G5O2ZpI1I5J1ohm05RE34hG4X946XJ95ImX1JS1w4u27XlG7nNJ+G5O4pJKyZVHz4FL1JRJz3BK3n1L45FN6IdM3JK30JZG6HaX1I0o1n0n4pOY2oyW1H0l5nmZ3ImZ73RN6I145Ih623iW5IZH5HJM3Y5J35pJ2opI3opH2pZJ4pa16IhJ6Y1O7opK5YZG3XlK7oBJ5HxL5oRN55NH4JBG3olG55O234648IF+7JJ535aX3ZS55ZJ17XV88IJK6ZJI4Y1K2pRJ2pd03HV46olM4ZFN7IlN2J+30Ze2829J6otK2HiY54lL6JBH6Hl98HdI5JBH1X9k5JAo0pYmzoJl6nlG73tJ63hJ4ZlE2ppG3IZM54xF4pNm35G13Yu103h2zZQm4Z1F5opH0p5Hzp4G3ZFK4KG32Je37oEm5ZUl2IJ24pu336C4zoK18X6W74uZ9nVN8YxM0aZHyX1J7IJJ7IVK5IJI5ZdG2aBL1Y5k55JE24dJypRJ255HzpxI0ZYl4pll4Xko2pQp2J+V34uW1JiX1ZMk6XVK5IRM5pRM3ZBm2JdH2IZm4oW03Y2313+45p5H4ptF25Bm5pS04n0n3YJ11p920ZJ47od77o1963gl5ZOY0YiY5ZCz3po013ua8nx27XpH4H145JBF35NL04lH35RG2Iu104FJ6pZN64xM15C21Za27nJJ345H5GxM64tL4pRJ6HB9731F529I2oWW1JuV3oUn0puVwnUm74lL7ndL33d223FL12FKy2tKwmxJxmVEwF5HvGNItWRItGlJpm9FpXJImXq2pl+UhX6Ie5GJdJmJZ6mKX6+JUbyJcKRFrFl1mmh7hIh6ooNjsllplnU2lnM3vHRHwlhMu15MrmZNm3dMhotMc6FMtHyTwVUptVsnp2WYs2hmnWdpmnA3lHRntEiUnGSJkHeJf42JdZiKZq6MVbmMt2V0rVKKpmSNo3iNsVlpk3Y2knk3tnNIvVtMtGJMpW9NkIVMeptMY7BMl4KFsVqLwXdJynpO03Jq2HJv2nBH0ndK04KFyX+It4eKppGKqY1lpJ65p6i7uJm253dO2oJL4HiO2YaG2nyeyJyVv5W74XiH23yK7XRN3ntOxohLs5NHsaO3qqG2po9H0olK23JO1oVMzHZNvKBJrZVHzXUXwnuYuK0ar60XsJJJrKhKq5tKpauVrX6bypRKxpROwo2HvYGLwomauYydyXyGwHlHsYNKq4VNoIOLmaKInoqbrZi5tZS+0XNLy31Ozn5Mwn1Oz39Nw4ZOxntFuHiGrIGHoZBHn4W0m6O4mqm6v45Jx31Ov4eHv36NwIiYu32crpy1o5a81HUZxIEZ1HJMv4xMrHtIpbCJn6CHraKGuXqNzXxMx3JLy3VLvHRLr5CGrI+G0GsXv5eYr5wXpKsVmZRJtpSItpCNznVJxXJLtJxJpYtGx3k6toU5qZY4toVF1GdNvodIwHNJtpCHs3GKpalKon9JsouIr3iMrppDqIO3poe1noW5rJQ3p4I3v3SZtX2ZqapFnqsWopBLnaRHpZm4vYpkznNuw5RuuHttrZRoo4e6m61nkqJqy28Wx2qYz4VMw4pMsZJMlJlGnqZMpZNGx2xKu4RJu3tIs45KqoK2paO2n6A5wJCIuXeKtpOLqXyLpKKImYNJ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';
+  var HOP = 0.25, PI = Math.PI, TAU = 2 * PI;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coverOnly = /[?&]cover\b/.test(location.search);
+  if (coverOnly) document.documentElement.classList.add('cover-only');
+
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function fmt(s) { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function rng(seed) {
+    return function () {
+      seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function canvas(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h || w; return c; }
+
+  // ---- the record, measured every quarter second: loudness, brightness, the pitch it leans on
+  var raw = atob(FLOOR), N = raw.length / 3;
+  var DB = new Float32Array(N), HZ = new Float32Array(N), PC = new Uint8Array(N), SH = new Float32Array(N);
+  for (var i = 0; i < N; i++) {
+    var a = raw.charCodeAt(3 * i), b = raw.charCodeAt(3 * i + 1), c = raw.charCodeAt(3 * i + 2);
+    DB[i] = a / 255 * 66 - 72;
+    HZ[i] = b ? 150 * Math.exp(b / 255 * Math.log(4000 / 150)) : 0;
+    PC[i] = c >> 4; SH[i] = (c & 15) / 15;
+  }
+  var SPAN = N * HOP;
+
+  // ---- the floor, in units of the cover's side. The spiral runs from the rim inward at
+  // an even walking pace: equal arc length for every quarter second.
+  var R_OUT = 0.405, R_IN = 0.088, TURNS = 20, D = (R_OUT - R_IN) / TURNS, TH = TAU * TURNS;
+  var R_FLOOR = 0.423, R_RING = 0.444, R_HUB = 0.058;
+  var A4 = D / (2 * TAU), LEN = R_OUT * TH - A4 * TH * TH;
+  function rAt(th) { return R_OUT - D * th / TAU; }
+  function thAtS(s) { return (R_OUT - Math.sqrt(R_OUT * R_OUT - 4 * A4 * s)) / (2 * A4); }
+  function thAt(t) { return thAtS(clamp(t / SPAN, 0, 1) * LEN); }
+  function timeAtTh(th) { return (R_OUT * th - A4 * th * th) / LEN * SPAN; }
+  function at(th, r) { var p = th - PI / 2; return [0.5 + r * Math.cos(p), 0.5 + r * Math.sin(p)]; }
+  // a point on the cover to the moment under it, or -1 off the spiral
+  function timeAtPoint(x, y) {
+    var dx = x - 0.5, dy = y - 0.5, rho = Math.sqrt(dx * dx + dy * dy);
+    if (rho > R_OUT + 0.7 * D || rho < R_IN - 0.7 * D) return -1;
+    var phi = ((Math.atan2(dy, dx) + PI / 2) % TAU + TAU) % TAU;
+    var k = clamp(Math.round((R_OUT - rho) / D - phi / TAU), 0, TURNS - 1), th = phi + TAU * k;
+    if (th > TH) th -= TAU;
+    if (Math.abs(rAt(th) - rho) > 0.75 * D) return -1;
+    return clamp(timeAtTh(th), 0, SPAN);
+  }
+
+  // ---- inks: G and D in earth colours, E in the record's last blue, the rest between,
+  // around the circle of fifths. A note held weakly is greyer and thinner.
+  var INK = ['#6F4126', '#674A64', '#A67624', '#7C3A3C', '#2E5C86', '#9C5A2A', '#5C5372', '#5B4330', '#6E3C55', '#6E7A42', '#8E4331', '#4E5C6B'];
+  var GRAPHITE = [104, 98, 90];
+  var styles = {};
+  function rgb(hex) { return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]; }
+  function ink(pc, share, alpha) {
+    var q = Math.round(share * 15), key = pc * 16 + q + '|' + alpha;
+    if (styles[key]) return styles[key];
+    var s = q / 15, g = Math.pow(1 - s, 0.9) * 0.85, c = rgb(INK[pc]);
+    var m = c.map(function (v, j) { return Math.round(v * (1 - g) + GRAPHITE[j] * g); });
+    return (styles[key] = 'rgba(' + m.join(',') + ',' + (alpha * (0.52 + 0.46 * Math.pow(s, 0.7))).toFixed(3) + ')');
+  }
+
+  // A pen stroke along a quadratic curve: pressed at the start, lifted at the end.
+  function quill(g, x0, y0, cx, cy, x1, y1, w) {
+    var L = [], R = [], n = 6;
+    for (var k = 0; k <= n; k++) {
+      var t = k / n, u = 1 - t;
+      var x = u * u * x0 + 2 * u * t * cx + t * t * x1, y = u * u * y0 + 2 * u * t * cy + t * t * y1;
+      var dx = u * (cx - x0) + t * (x1 - cx), dy = u * (cy - y0) + t * (y1 - cy), l = Math.sqrt(dx * dx + dy * dy) || 1;
+      var h = w * (0.16 + 0.84 * Math.pow(Math.sin(PI * (0.07 + 0.86 * t)), 0.6)) * (1.14 - 0.32 * t) / 2;
+      L.push(x - dy / l * h, y + dx / l * h); R.push(x + dy / l * h, y - dx / l * h);
+    }
+    g.moveTo(L[0], L[1]);
+    for (k = 2; k < L.length; k += 2) g.lineTo(L[k], L[k + 1]);
+    for (k = R.length - 2; k >= 0; k -= 2) g.lineTo(R[k], R[k + 1]);
+    g.closePath();
+  }
+
+  // ---- the marks, planned once: the same drawing on every load and at every size
+  var M = (function () {
+    var r = rng(1892), m = {th: new Float32Array(N), len: new Float32Array(N), lean: new Float32Array(N),
+      w: new Float32Array(N), dr: new Float32Array(N), bow: new Float32Array(N), asym: new Float32Array(N), u: new Float32Array(N)};
+    var step = LEN / N;
+    for (var i = 0; i < N; i++) {
+      var th0 = thAtS((i + 0.5) * step);
+      m.th[i] = th0 + (r() - 0.5) * 0.5 * step / rAt(th0);
+      var f = Math.pow(clamp((DB[i] + 50) / 40, 0, 1), 1.45);
+      m.len[i] = D * 1.42 * f * (0.9 + 0.2 * r());
+      var lean = HZ[i] > 0 ? clamp(Math.log(HZ[i] / 1000) / Math.log(2.6), -1, 1) : 0;
+      m.lean[i] = lean * 0.58 + (r() - 0.5) * 0.14;
+      m.w[i] = 0.0016 * (0.5 + 0.5 * SH[i]) * (0.65 + 0.45 * f) * (0.8 + 0.4 * r());
+      m.dr[i] = (r() - 0.5) * 0.12 * D;
+      m.bow[i] = (r() - 0.5) * 0.14;
+      m.asym[i] = (r() - 0.5) * 0.3;
+      m.u[i] = (r() - 0.5) * 2;
+    }
+    return m;
+  })();
+
+  function standing(g) {
+    for (var i = 0; i < N; i++) {
+      var len = M.len[i];
+      if (len < 0.0007) continue;
+      var r = rAt(M.th[i]) + M.dr[i], p = M.th[i] - PI / 2, cx = 0.5 + r * Math.cos(p), cy = 0.5 + r * Math.sin(p);
+      var q = p + M.lean[i], ux = Math.cos(q), uy = Math.sin(q), h = len / 2;
+      var x0 = cx + ux * h * (1 + M.asym[i]), y0 = cy + uy * h * (1 + M.asym[i]);
+      var x1 = cx - ux * h * (1 - M.asym[i]), y1 = cy - uy * h * (1 - M.asym[i]);
+      var b = M.bow[i] * len, mx = (x0 + x1) / 2 - uy * b, my = (y0 + y1) / 2 + ux * b;
+      g.beginPath(); quill(g, x0, y0, mx, my, x1, y1, M.w[i]);
+      g.fillStyle = ink(PC[i], SH[i], 0.95); g.fill();
+    }
+  }
+  // threshed: the same straw beaten flat along the path, and the grain loose beside it
+  function flattened(g) {
+    var r = rng(1961), grain = [];
+    for (var i = 0; i < N; i++) {
+      var len = M.len[i];
+      if (len < 0.0007) continue;
+      var off = M.u[i] * Math.min(0.4 * D, 0.5 * len), rr = rAt(M.th[i]) + M.dr[i] * 0.5 + off;
+      var lf = len * 0.85, d = lf / 2 / rr, tilt = M.lean[i] * len * 0.09;
+      var p0 = at(M.th[i] - d, rr - tilt), p1 = at(M.th[i] + d, rr + tilt), pm = at(M.th[i], rr + M.bow[i] * len * 0.25);
+      g.beginPath(); quill(g, p0[0], p0[1], 2 * pm[0] - (p0[0] + p1[0]) / 2, 2 * pm[1] - (p0[1] + p1[1]) / 2, p1[0], p1[1], M.w[i] * 0.9);
+      g.fillStyle = ink(PC[i], SH[i], 0.82); g.fill();
+      if (SH[i] > 0.5 && r() < 0.2) grain.push(at(M.th[i] + (r() - 0.5) * 2 * d, rAt(M.th[i]) + (r() - 0.5) * 0.85 * D), 0.0007 + r() * 0.0005);
+    }
+    g.fillStyle = 'rgba(176, 128, 40, 0.85)';
+    for (var k = 0; k < grain.length; k += 2) {
+      g.beginPath(); g.ellipse(grain[k][0], grain[k][1], grain[k + 1] * 1.4, grain[k + 1], k, 0, TAU); g.fill();
+    }
+  }
+
+  // ---- paper, floor, stones
+  function blots(g, S, n, alpha, seed, color) {
+    var r = rng(seed), c = canvas(n), x = c.getContext('2d'), img = x.createImageData(n, n);
+    for (var i = 0; i < n * n; i++) { img.data[4 * i] = color[0]; img.data[4 * i + 1] = color[1]; img.data[4 * i + 2] = color[2]; img.data[4 * i + 3] = Math.pow(r(), 1.6) * 255; }
+    x.putImageData(img, 0, 0);
+    g.save(); g.globalAlpha = alpha; g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+    g.filter = 'blur(' + (S / n * 0.35).toFixed(1) + 'px)';
+    g.drawImage(c, -S * 0.08, -S * 0.08, S * 1.16, S * 1.16);
+    g.restore();
+  }
+  function grainTile(size, seed, strength) {
+    var r = rng(seed), c = canvas(size), x = c.getContext('2d'), img = x.createImageData(size, size), d = img.data;
+    for (var i = 0; i < size * size; i++) {
+      var v = r();
+      if (v < 0.5) { d[4 * i] = 70; d[4 * i + 1] = 55; d[4 * i + 2] = 40; d[4 * i + 3] = Math.pow(r(), 3) * 46 * strength; }
+      else { d[4 * i] = 255; d[4 * i + 1] = 252; d[4 * i + 2] = 244; d[4 * i + 3] = Math.pow(r(), 3) * 40 * strength; }
+    }
+    x.putImageData(img, 0, 0);
+    return c;
+  }
+  function paper(g, S) {
+    g.fillStyle = '#EBE3D4'; g.fillRect(0, 0, S, S);
+    blots(g, S, 6, 0.10, 11, [176, 150, 112]);
+    blots(g, S, 19, 0.07, 12, [160, 132, 96]);
+    blots(g, S, 64, 0.05, 13, [255, 252, 244]);
+    g.fillStyle = g.createPattern(grainTile(256, 14, 1), 'repeat'); g.fillRect(0, 0, S, S);
+    var r = rng(15);
+    g.lineCap = 'round';
+    for (var k = 0; k < 520; k++) {
+      var x = r() * S, y = r() * S, a = r() * TAU, l = (0.006 + r() * 0.026) * S, bend = (r() - 0.5) * l * 0.5;
+      g.beginPath(); g.moveTo(x, y);
+      g.quadraticCurveTo(x + Math.cos(a) * l / 2 - Math.sin(a) * bend, y + Math.sin(a) * l / 2 + Math.cos(a) * bend, x + Math.cos(a) * l, y + Math.sin(a) * l);
+      g.strokeStyle = r() < 0.6 ? 'rgba(120, 98, 74, 0.07)' : 'rgba(255, 253, 247, 0.32)';
+      g.lineWidth = S * (0.0004 + r() * 0.0005); g.stroke();
+    }
+  }
+  function floorWash(g, S, beaten) {
+    g.save();
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.clip();
+    g.fillStyle = beaten ? 'rgba(150, 118, 78, 0.27)' : 'rgba(178, 148, 104, 0.19)';
+    g.fillRect(0, 0, S, S);
+    blots(g, S, 28, beaten ? 0.16 : 0.12, beaten ? 22 : 21, [130, 100, 66]);
+    g.filter = 'blur(' + (S * 0.004).toFixed(1) + 'px)';
+    g.strokeStyle = 'rgba(128, 96, 60, 0.22)'; g.lineWidth = S * 0.01;
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.stroke();
+    g.restore();
+  }
+  function blob(g, cx, cy, hl, hd, rot, r, k) {
+    var pts = [], m = [];
+    for (var j = 0; j < k; j++) m.push(1 + (r() - 0.5) * 0.42);
+    for (j = 0; j < k; j++) {
+      var s = (m[(j + k - 1) % k] + 3 * m[j] + m[(j + 1) % k]) / 5, a = TAU * (j + (r() - 0.5) * 0.3) / k;
+      var x = Math.cos(a) * hl * s, y = Math.sin(a) * hd * s;
+      pts.push([cx + x * Math.cos(rot) - y * Math.sin(rot), cy + x * Math.sin(rot) + y * Math.cos(rot)]);
+    }
+    function mid(p, q) { return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; }
+    var st = mid(pts[k - 1], pts[0]), path = new Path2D();
+    path.moveTo(st[0], st[1]);
+    for (j = 0; j < k; j++) { var e = mid(pts[j], pts[(j + 1) % k]); path.quadraticCurveTo(pts[j][0], pts[j][1], e[0], e[1]); }
+    path.closePath();
+    return path;
+  }
+  var TONES = ['#A79C8B', '#9A8F80', '#B2A897', '#8F877A', '#A99B84', '#B4AB9C', '#9F9686', '#ABA08C'];
+  function stone(g, S, cx, cy, hl, hd, rot, r, tone, line) {
+    var e = Math.max(hl, hd);
+    g.save();
+    g.shadowColor = 'rgba(58, 42, 26, 0.3)'; g.shadowBlur = S * 0.004; g.shadowOffsetX = S * 0.0012; g.shadowOffsetY = S * 0.002;
+    var path = blob(g, cx, cy, hl, hd, rot, r, 10);
+    g.fillStyle = tone; g.fill(path);
+    g.restore();
+    g.save(); g.clip(path);
+    var sh = g.createLinearGradient(cx - e, cy - e, cx + e, cy + e);
+    sh.addColorStop(0, 'rgba(255, 250, 240, 0.26)'); sh.addColorStop(0.5, 'rgba(255, 250, 240, 0)'); sh.addColorStop(1, 'rgba(58, 46, 34, 0.24)');
+    g.fillStyle = sh; g.fillRect(cx - e * 1.5, cy - e * 1.5, e * 3, e * 3);
+    var dots = Math.round(e / 0.004 / S * 6) + 3;
+    for (var k = 0; k < dots; k++) {
+      g.fillStyle = r() < 0.5 ? 'rgba(66, 54, 42, 0.16)' : 'rgba(250, 246, 236, 0.22)';
+      g.beginPath(); g.arc(cx + (r() - 0.5) * hl * 1.6, cy + (r() - 0.5) * hd * 1.6, S * (0.0003 + r() * 0.0006), 0, TAU); g.fill();
+    }
+    if (r() < 0.3) {  // a vein
+      var va = r() * PI;
+      g.strokeStyle = 'rgba(66, 54, 42, 0.2)'; g.lineWidth = S * 0.0005;
+      g.beginPath(); g.moveTo(cx - Math.cos(va) * e, cy - Math.sin(va) * e);
+      g.quadraticCurveTo(cx + (r() - 0.5) * e * 0.6, cy + (r() - 0.5) * e * 0.6, cx + Math.cos(va) * e, cy + Math.sin(va) * e); g.stroke();
+    }
+    g.restore();
+    g.save(); g.lineJoin = 'round';
+    g.strokeStyle = 'rgba(56, 44, 34, 0.66)'; g.lineWidth = S * line; g.stroke(path);
+    g.translate(S * 0.0006, S * 0.0005); g.strokeStyle = 'rgba(56, 44, 34, 0.2)'; g.lineWidth = S * line * 0.7; g.stroke(path);
+    g.restore();
+  }
+  function ring(g, S) {
+    var r = rng(1979), a = 0, items = [];
+    while (a < TAU - 0.02) {
+      var hl = 0.0155 + 0.0095 * r(), hd = 0.0125 + 0.006 * r(), rc = R_RING + (r() - 0.5) * 0.005;
+      var step = (2 * hl * 0.97 + 0.0028) / rc;
+      if (a + step > TAU) { step = TAU - a; hl = (step * rc - 0.0028) / 1.94; }
+      items.push([a + step / 2, rc, hl, hd]); a += step;
+    }
+    items.forEach(function (s, j) {
+      var p = at(s[0], s[1]);
+      stone(g, S, p[0] * S, p[1] * S, s[2] * S, s[3] * S, s[0] + (r() - 0.5) * 0.12, r, TONES[Math.floor(r() * TONES.length)], 0.0010);
+      if (r() < 0.35) {  // a pebble in the joint, on the outside
+        var q = at(s[0] + s[2] / s[1] + 0.0012 / s[1], s[1] + 0.012 + r() * 0.004), z = 0.0022 + r() * 0.002;
+        stone(g, S, q[0] * S, q[1] * S, z * S * 1.2, z * S, r() * TAU, r, TONES[Math.floor(r() * TONES.length)], 0.0009);
+      }
+    });
+  }
+  // a numbered pebble at the head of every track
+  var STARTS = [], ACC = 0;
+  REC.tracks.forEach(function (t) { STARTS.push(ACC / REC.rate); ACC += t.frames; });
+  var TOTAL = ACC / REC.rate;
+  function pebbles(g, S) {
+    var r = rng(1958);
+    STARTS.forEach(function (t, i) {
+      var th = thAt(t + 0.1), p = at(th, rAt(th)), z = 0.0084;
+      stone(g, S, p[0] * S, p[1] * S, z * S * 1.12, z * S, th + (r() - 0.5) * 0.5, r, '#D9D1C2', 0.0009);
+      g.fillStyle = 'rgba(58, 46, 36, 0.9)';
+      g.font = 'italic 500 ' + (S * 0.0122).toFixed(1) + 'px "EB Garamond", Garamond, serif';
+      g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(String(i + 1), p[0] * S, p[1] * S + S * 0.0003);
+    });
+  }
+  function hub(g, S) {
+    var r = rng(2026);
+    stone(g, S, S / 2, S / 2, R_HUB * S * 1.02, R_HUB * S, 0.4, r, '#A59A88', 0.0015);
+    g.save();
+    g.strokeStyle = 'rgba(78, 64, 50, 0.32)'; g.lineWidth = S * 0.0011;
+    g.beginPath(); g.ellipse(S / 2, S / 2, R_HUB * 0.68 * S, R_HUB * 0.66 * S, 0.3, 0.3, TAU - 0.5); g.stroke();
+    g.beginPath(); g.arc(S / 2, S / 2, S * 0.0068, 0, TAU);
+    g.fillStyle = 'rgba(48, 38, 30, 0.9)'; g.fill();
+    g.strokeStyle = 'rgba(255, 252, 244, 0.45)'; g.lineWidth = S * 0.0011;
+    g.beginPath(); g.arc(S / 2 + S * 0.0008, S / 2 + S * 0.001, S * 0.0072, 0.2, 1.9); g.stroke();
+    g.restore();
+  }
+
+  // ---- the title, lettered with a broad nib held at thirty degrees
+  var LETTERS = {
+    E: {w: 0.64, s: [[[0.09, 0.03], [0.085, 0.5], [0.09, 0.97]], [[-0.04, 0.025], [0.3, 0.02], [0.56, 0.025]], [[0.56, 0.02], [0.575, 0.1], [0.585, 0.17]],
+      [[0.09, 0.495], [0.28, 0.49], [0.45, 0.495]], [[0.45, 0.43], [0.452, 0.5], [0.45, 0.565]], [[-0.04, 0.975], [0.3, 0.975], [0.61, 0.97]], [[0.61, 0.975], [0.625, 0.88], [0.64, 0.8]]]},
+    R: {w: 0.7, s: [[[0.09, 0.03], [0.087, 0.5], [0.09, 0.97]], [[-0.04, 0.025], [0.1, 0.02], [0.3, 0.02]], [[0.3, 0.02], [0.67, 0.03], [0.66, 0.26], [0.62, 0.5], [0.1, 0.505]],
+      [[0.3, 0.5], [0.45, 0.62], [0.55, 0.88], [0.73, 0.975]], [[-0.05, 0.975], [0.1, 0.975], [0.23, 0.975]]]},
+    A: {w: 0.78, s: [[[0.02, 0.97], [0.2, 0.48], [0.37, 0.0]], [[0.35, 0.0], [0.55, 0.5], [0.74, 0.97]], [[0.19, 0.64], [0.38, 0.635], [0.57, 0.64]],
+      [[-0.08, 0.975], [0.02, 0.975], [0.12, 0.975]], [[0.62, 0.975], [0.74, 0.975], [0.86, 0.975]]]}
+  };
+  function smooth(pts, n) {  // a Catmull-Rom path through the stroke's points
+    var out = [];
+    for (var j = 0; j < pts.length - 1; j++) {
+      var p0 = pts[Math.max(0, j - 1)], p1 = pts[j], p2 = pts[j + 1], p3 = pts[Math.min(pts.length - 1, j + 2)];
+      for (var k = 0; k < n; k++) {
+        var t = k / n, t2 = t * t, t3 = t2 * t;
+        out.push([0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+                  0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]);
+      }
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+  function letter(g, ch, x0, y0, h, r) {
+    var L = LETTERS[ch], nib = 0.14 * h, na = -PI / 6;
+    g.beginPath();
+    L.s.forEach(function (stroke) {
+      var ph = r() * TAU, pts = smooth(stroke, 24).map(function (p, k) {
+        return [x0 + (p[0] + 0.0035 * Math.sin(ph + k * 0.21)) * h, y0 + (p[1] + 0.0035 * Math.cos(ph + k * 0.17)) * h];
+      });
+      for (var k = 0; k < pts.length - 1; k++) {
+        var w = nib * (0.94 + 0.06 * Math.sin(ph + k * 0.13)) / 2, nx = Math.cos(na) * w, ny = Math.sin(na) * w;
+        var a = pts[k], b = pts[k + 1];
+        var q = [[a[0] - nx, a[1] - ny], [a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] - nx, b[1] - ny]];
+        var cross = (q[1][0] - q[0][0]) * (q[2][1] - q[0][1]) - (q[1][1] - q[0][1]) * (q[2][0] - q[0][0]);
+        if (cross < 0) q.reverse();
+        g.moveTo(q[0][0], q[0][1]); g.lineTo(q[1][0], q[1][1]); g.lineTo(q[2][0], q[2][1]); g.lineTo(q[3][0], q[3][1]); g.closePath();
+      }
+    });
+    g.fill('nonzero');
+    return L.w * h;
+  }
+  function title(g, S) {
+    var r = rng(43), h = 0.054 * S, x = 0.052 * S, y = 0.05 * S;
+    g.fillStyle = 'rgba(52, 38, 28, 0.94)';
+    x += letter(g, 'E', x, y, h, r) + 0.2 * h;
+    x += letter(g, 'R', x, y + 0.004 * h, h, r) + 0.17 * h;
+    letter(g, 'A', x, y - 0.003 * h, h, r);
+    g.font = 'italic 400 ' + (S * 0.024).toFixed(1) + 'px "EB Garamond", Garamond, serif';
+    g.textAlign = 'right'; g.textBaseline = 'alphabetic';
+    g.fillStyle = 'rgba(70, 58, 48, 0.85)';
+    g.fillText('Claude', S * 0.952, S * 0.962);
+  }
+
+  // Ink laid on with a little bleed into the paper.
+  var inkLayer = null;
+  function inked(g, S, draw) {
+    if (!inkLayer || inkLayer.width !== S) inkLayer = canvas(S);
+    var x = inkLayer.getContext('2d');
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, S, S);
+    draw(x, S);
+    g.save(); g.globalCompositeOperation = 'multiply';
+    g.filter = 'blur(' + Math.max(0.6, S * 0.0011).toFixed(2) + 'px)'; g.globalAlpha = 0.42; g.drawImage(inkLayer, 0, 0);
+    g.filter = 'none'; g.globalAlpha = 0.95; g.drawImage(inkLayer, 0, 0);
+    g.restore();
+  }
+  function unit(draw) { return function (x, S) { x.setTransform(S, 0, 0, S, 0, 0); draw(x); }; }
+
+  var base = null, played = null, SIZE = 0;
+  function render(S) {
+    var t0 = performance.now();
+    base = canvas(S); played = canvas(S);
+    var g = base.getContext('2d'), p = played.getContext('2d');
+    paper(g, S);
+    p.drawImage(base, 0, 0);
+    floorWash(g, S, false); floorWash(p, S, true);
+    inked(g, S, unit(standing)); inked(p, S, unit(flattened));
+    pebbles(g, S); pebbles(p, S);
+    ring(g, S); hub(g, S); inked(g, S, title);
+    SIZE = S;
+    console.log('era: floor drawn at ' + S + 'px in ' + Math.round(performance.now() - t0) + ' ms');
+  }
+
+  // ---- the visible cover: the floor as drawn, the threshed part over it, the walker
+  var cover = document.getElementById('cover'), vis = document.getElementById('floor'), v = vis.getContext('2d');
+  var tip = document.getElementById('tip');
+  var view = {pos: 0, walked: false, hover: -1, pulse: 0};
+  function threshedPath(g, S, t) {
+    var th = thAt(t), steps = 220;
+    g.beginPath(); g.arc(S / 2, S / 2, R_FLOOR * S, 0, TAU); g.clip();
+    g.beginPath(); g.rect(0, 0, S, S);
+    for (var k = 0; k <= steps; k++) {
+      var a = th - TAU + TAU * k / steps, r = a < 0 ? R_FLOOR + 0.01 : rAt(a) - D / 2, q = at(a, r);
+      k ? g.lineTo(q[0] * S, q[1] * S) : g.moveTo(q[0] * S, q[1] * S);
+    }
+    g.closePath(); g.clip('evenodd');
+  }
+  function draw() {
+    if (!base) return;
+    var S = SIZE;
+    v.drawImage(base, 0, 0);
+    if (view.pos > 0.2) { v.save(); threshedPath(v, S, view.pos); v.drawImage(played, 0, 0); v.restore(); }
+    if (view.hover >= 0) {
+      var th = thAt(view.hover), q = at(th, rAt(th));
+      v.strokeStyle = 'rgba(46, 38, 30, 0.6)'; v.lineWidth = S * 0.0016;
+      v.beginPath(); v.arc(q[0] * S, q[1] * S, S * 0.0105, 0, TAU); v.stroke();
+    }
+    if (view.walked) {
+      var th2 = thAt(view.pos), w = at(th2, rAt(th2)), breathe = reduce ? 0 : Math.sin(view.pulse) * 0.0018;
+      v.fillStyle = 'rgba(241, 236, 227, 0.55)';
+      v.beginPath(); v.arc(w[0] * S, w[1] * S, S * (0.0125 + breathe), 0, TAU); v.fill();
+      v.strokeStyle = 'rgba(46, 38, 30, 0.55)'; v.lineWidth = S * 0.0014; v.stroke();
+      v.fillStyle = '#2E2620';
+      v.beginPath(); v.arc(w[0] * S, w[1] * S, S * 0.0052, 0, TAU); v.fill();
+    }
+  }
+  function size() {
+    var w = cover.getBoundingClientRect().width, dpr = window.devicePixelRatio || 1;
+    var S = Math.round(Math.min(coverOnly ? 4096 : 2400, w * dpr));
+    if (S < 64 || S === SIZE) return;
+    vis.width = vis.height = S;
+    render(S); draw();
+  }
+
+  var fontsReady = document.fonts && document.fonts.load
+    ? Promise.race([Promise.all([document.fonts.load('italic 500 40px "EB Garamond"'), document.fonts.load('italic 400 40px "EB Garamond"')]),
+                    new Promise(function (res) { setTimeout(res, 2500); })])
+    : Promise.resolve();
+  fontsReady.then(function () {
+    size();
+    document.documentElement.dataset.drawn = '1';
+    var pending = 0;
+    window.addEventListener('resize', function () { clearTimeout(pending); pending = setTimeout(size, 250); });
+    drawKey();
+  });
+
+  // the page's own paper grain
+  try {
+    var tile = grainTile(220, 7, 0.4);
+    document.body.style.setProperty('--grain', 'url(' + tile.toDataURL() + ')');
+  } catch (e) {}
+
+  // the inks, as a key in the colophon
+  function drawKey() {
+    var c = document.getElementById('key');
+    if (!c) return;
+    var W = 720, H = 150, k = c.getContext('2d'), order = [3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8];
+    var names = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'B♭', 'B'];
+    k.fillStyle = '#EDE8E0'; k.fillRect(0, 0, W, H);
+    k.fillStyle = k.createPattern(grainTile(128, 9, 0.8), 'repeat'); k.fillRect(0, 0, W, H);
+    var r = rng(12);
+    inked(k, W, function (x) {
+      order.forEach(function (pc, j) {
+        var cx = 30 + j * 60;
+        for (var s = 0; s < 9; s++) {
+          var len = 54 + r() * 14, a = (r() - 0.5) * 0.35, sx = cx - 15 + s * 3.6, cy = 58;
+          var dx = Math.sin(a) * len / 2, dy = Math.cos(a) * len / 2;
+          x.beginPath(); quill(x, sx + dx, cy - dy, sx + (r() - 0.5) * 3, cy, sx - dx, cy + dy, 2.2 + r() * 0.8);
+          x.fillStyle = ink(pc, 1, 0.95); x.fill();
+        }
+      });
+    });
+    k.font = 'italic 400 24px "EB Garamond", Garamond, serif'; k.textAlign = 'center'; k.textBaseline = 'alphabetic';
+    k.fillStyle = '#5A5048';
+    order.forEach(function (pc, j) { k.fillText(names[pc], 30 + j * 60, 128); });
+  }
+
+  // ---- the record: its cuts are decoded one ahead and scheduled sample-exact on one
+  // AudioContext, so the roll plays without seams. Only the playing and the next track
+  // are held decoded (a long track is ~100 MB of samples).
+  function session(meta, handlers) {
+    if (!('mediaSession' in navigator)) return;
+    try { navigator.mediaSession.metadata = new MediaMetadata(meta); } catch (e) {}
+    ['play', 'pause', 'nexttrack', 'previoustrack'].forEach(function (action) {
+      try { navigator.mediaSession.setActionHandler(action, handlers[action] || null); } catch (e) {}
+    });
+  }
+  var RATE = REC.rate, T = REC.tracks;
+  var deck = document.getElementById('deck'), strip = document.getElementById('strip');
+  var seek = deck.querySelector('.seek'), msg = deck.querySelector('.msg');
+  var rows = [].slice.call(document.querySelectorAll('.tracklist li'));
+  var notes = [].slice.call(document.querySelectorAll('.note'));
+  var ctx = null, cache = {}, segs = [], gen = 0, playing = false, cur = 0, dragging = false, timer = null, held = 0;
+
+  function context() {
+    if (ctx) return ctx;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    try { ctx = new AC({sampleRate: RATE}); } catch (e) { ctx = new AC(); }
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    return ctx;
+  }
+  function load(i) {
+    if (!cache[i]) {
+      cache[i] = fetch(T[i].url).then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.arrayBuffer();
+      }).then(function (ab) {
+        return new Promise(function (res, rej) { ctx.decodeAudioData(ab, res, rej); });
+      });
+      cache[i].catch(function () { delete cache[i]; });
+    }
+    return cache[i];
+  }
+  // Browsers differ on whether they trim the encoder's priming samples; the tag's
+  // length and skip say where the music starts in either case.
+  function trim(buf, i) {
+    var k = buf.sampleRate / RATE, frames = Math.round(T[i].frames * k), extra = buf.length - frames;
+    return {off: extra > 0 ? Math.min(Math.round(T[i].skip * k), extra) / buf.sampleRate : 0, dur: T[i].frames / RATE};
+  }
+  function schedule(i, buf, t0, from) {
+    var tr = trim(buf, i), at = t0 + from, earliest = ctx.currentTime + 0.02;
+    if (at < earliest) { t0 += earliest - at; at = earliest; }  // late: shift the clock rather than drop music
+    var src = ctx.createBufferSource();
+    src.buffer = buf; src.connect(ctx.destination);
+    src.start(at, tr.off + from, tr.dur - from);
+    var seg = {i: i, t0: t0, end: t0 + tr.dur, src: src, next: false}, g = gen;
+    if (i === T.length - 1) src.onended = function () { if (g === gen) finish(); };
+    segs.push(seg);
+  }
+  function stopAll() {
+    gen++;
+    segs.forEach(function (s) { s.src.onended = null; try { s.src.stop(); } catch (e) {} });
+    segs = [];
+  }
+  function playFrom(i, from) {
+    context();
+    stopAll();
+    var g = gen;
+    held = STARTS[i] + from;
+    setPlaying(true); paint(i, from); claim(); msg.textContent = 'loading';
+    ctx.resume();
+    load(i).then(function (buf) {
+      if (g !== gen) return;
+      msg.textContent = '';
+      schedule(i, buf, ctx.currentTime + 0.05 - from, from);
+      tick();
+    }, function () { if (g === gen) { msg.textContent = 'could not load; tap to retry'; setPlaying(false); } });
+  }
+  function live() {
+    var t = ctx.currentTime;
+    return segs.filter(function (s) { return s.t0 <= t; }).pop() || segs[0];
+  }
+  function tick() {
+    if (!ctx || !segs.length) return;
+    var t = ctx.currentTime;
+    segs = segs.filter(function (s) { return s.end > t - 0.5; });
+    if (!segs.length) { setPlaying(false); return; }  // the next track never arrived; play resumes from here
+    var now = live(), last = segs[segs.length - 1];
+    if (last === now && !last.next && !(last.retry > t) && last.i + 1 < T.length) {
+      last.next = true;
+      var g = gen, n = last.i + 1, t0 = last.end;
+      load(n).then(function (buf) { if (g === gen) { msg.textContent = ''; schedule(n, buf, t0, 0); } },
+                   function () {
+                     if (g !== gen) return;
+                     now.next = false; now.retry = ctx.currentTime + 3;
+                     msg.textContent = 'could not load the next track; retrying';
+                   });
+    }
+    Object.keys(cache).forEach(function (k) { if (k < now.i || k > now.i + 1) delete cache[k]; });
+    paint(now.i, Math.max(0, t - now.t0));
+  }
+  // where the record is now, to the frame
+  function position() {
+    if (!ctx || !segs.length) return held;
+    var s = live();
+    return STARTS[s.i] + clamp(ctx.currentTime - s.t0, 0, T[s.i].frames / RATE);
+  }
+  var titles = [].slice.call(document.querySelectorAll('.title')), clocks = [].slice.call(document.querySelectorAll('.pos'));
+  function paint(i, from) {
+    if (i !== cur || !rows[i].classList.contains('on')) {
+      rows.forEach(function (r, j) { r.classList.toggle('on', j === i); });
+      notes.forEach(function (r, j) { r.classList.toggle('on', j === i); });
+      cur = i;
+      titles.forEach(function (a) { a.textContent = (i + 1) + ' · ' + T[i].title; a.href = '#t' + (i + 1); });
+      if (playing) claim();
+    }
+    var at = STARTS[i] + from;
+    held = at;
+    clocks.forEach(function (c) { c.textContent = fmt(at); });
+    if (!dragging) seek.value = Math.floor(at);
+  }
+  function setPlaying(on) {
+    playing = on;
+    deck.classList.toggle('playing', on); strip.classList.toggle('playing', on);
+    [deck, strip].forEach(function (el) { el.querySelector('.play').setAttribute('aria-label', on ? 'Pause' : 'Play'); });
+    clearInterval(timer);
+    if (on) { timer = setInterval(tick, 250); view.walked = true; walk(); }
+    follow();
+  }
+  function pause() { if (ctx && playing) { ctx.suspend(); setPlaying(false); } }
+  function resume() {
+    if (!segs.length) return jump(held);
+    ctx.resume(); setPlaying(true); claim();
+  }
+  function finish() { stopAll(); setPlaying(false); paint(0, 0); held = 0; view.pos = 0; view.walked = false; draw(); }
+  function jump(at) {
+    at = clamp(at, 0, TOTAL - 0.1);
+    var i = 0;
+    while (i + 1 < T.length && STARTS[i + 1] <= at) i++;
+    playFrom(i, at - STARTS[i]);
+  }
+  [deck, strip].forEach(function (el) { el.querySelector('.play').addEventListener('click', function () { playing ? pause() : resume(); }); });
+  document.querySelectorAll('.go').forEach(function (b) {
+    b.addEventListener('click', function () { playFrom(+b.closest('[data-i]').dataset.i, 0); });
+  });
+  seek.addEventListener('input', function () {
+    dragging = true;
+    clocks.forEach(function (c) { c.textContent = fmt(+seek.value); });
+    if (!playing) { view.pos = +seek.value; view.walked = true; draw(); }
+  });
+  seek.addEventListener('change', function () { dragging = false; jump(+seek.value); });
+  function claim() {
+    session({title: T[cur].title, artist: 'Claude', album: 'Era'}, {
+      play: resume, pause: pause,
+      nexttrack: function () { if (cur + 1 < T.length) playFrom(cur + 1, 0); },
+      previoustrack: function () { playFrom(cur, 0); }});
+  }
+
+  // the walker keeps pace with the record: every frame, or once a second if motion is reduced
+  var walking = false, lastStep = 0;
+  function walk() {
+    if (walking) return;
+    walking = true;
+    (function step(now) {
+      if (!playing) { walking = false; view.pos = position(); draw(); return; }
+      if (!reduce || now - lastStep > 1000) {
+        lastStep = now; view.pos = position(); view.pulse = now / 640; draw();
+      }
+      requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  // hover shows the moment under the pointer; a click or tap plays from it
+  function pointAt(e) {
+    var b = vis.getBoundingClientRect();
+    return {x: (e.clientX - b.left) / b.width, y: (e.clientY - b.top) / b.height, px: e.clientX - b.left, py: e.clientY - b.top};
+  }
+  function trackAt(t) { var i = 0; while (i + 1 < T.length && STARTS[i + 1] <= t) i++; return i; }
+  function showTip(p, t) {
+    var i = trackAt(t);
+    tip.innerHTML = '';
+    var n = document.createElement('i'); n.textContent = (i + 1) + ' · ' + T[i].title;
+    var s = document.createElement('span'); s.className = 't'; s.textContent = fmt(t - STARTS[i]);
+    tip.appendChild(n); tip.appendChild(s);
+    tip.hidden = false;
+    var w = tip.offsetWidth, W = cover.clientWidth;
+    tip.style.left = clamp(p.px, w / 2 + 4, W - w / 2 - 4) + 'px';
+    tip.style.top = Math.max(p.py, 52) + 'px';
+  }
+  function hideTip() { tip.hidden = true; cover.classList.remove('over'); if (view.hover >= 0) { view.hover = -1; draw(); } }
+  vis.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse') return;
+    var p = pointAt(e), t = timeAtPoint(p.x, p.y);
+    if (t < 0) return hideTip();
+    cover.classList.add('over'); view.hover = t; showTip(p, t); draw();
+  });
+  vis.addEventListener('pointerleave', hideTip);
+  var tapTimer = 0;
+  vis.addEventListener('click', function (e) {
+    var p = pointAt(e), t = timeAtPoint(p.x, p.y);
+    if (t < 0) return;
+    view.pos = t; view.walked = true;
+    jump(t);
+    showTip(p, t);
+    clearTimeout(tapTimer);
+    if (e.pointerType !== 'mouse') tapTimer = setTimeout(hideTip, 1600);
+  });
+
+  // when the sleeve scrolls away, the deck follows as a strip along the bottom
+  var deckSeen = true;
+  function follow() { strip.classList.toggle('shown', !deckSeen && (playing || held > 0)); }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { deckSeen = es[0].isIntersecting; follow(); }).observe(deck);
+  }
+
+  // for rendering stills: era.view(seconds) shows the floor threshed up to that moment
+  window.era = {view: function (t) { view.pos = t; view.walked = t > 0; draw(); }, timeAtPoint: timeAtPoint, at: function (t) { var th = thAt(t); return at(th, rAt(th)); }};
+})();
+</script>
+</body>
+</html>
