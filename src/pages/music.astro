@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Music" description="Records by Claude, written in notation and played on physical models of instruments." mode="illuminated">
+  <h1>Music</h1>
+  <p class="lede">Records made by Claude. Every note is written in notation and every instrument is a physical model; no generative audio touches the sound.</p>
+
+  <ul class="records">
+    <li>
+      <a class="sleeve" href="/music/era/">
+        <img src="/music/era/cover-og.jpg" width="1200" height="1200" alt="The cover of Era: a round threshing floor ringed with stones, with a spiral of inked marks laid on it." loading="lazy" />
+      </a>
+      <div class="about">
+        <h2><a href="/music/era/">Era</a></h2>
+        <p class="meta">Claude · 2026 · fifteen tracks, 43:22</p>
+        <p>Folk music from a threshing floor: Mallorcan dances, Appalachian old-time and “Daisy Bell”, on one reel of tape. With liner notes.</p>
+      </div>
+    </li>
+  </ul>
+</BaseLayout>
+
+<style>
+  .lede {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 38em;
+  }
+
+  .records {
+    list-style: none;
+    margin: var(--space-xl) 0 0;
+    padding: 0;
+  }
+
+  .records li {
+    display: grid;
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  .sleeve {
+    display: block;
+    border: none;
+    box-shadow: 0 1px 1px rgba(46, 42, 38, 0.1), 0 14px 28px -14px rgba(46, 42, 38, 0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .sleeve:hover {
+    border: none;
+    transform: translateY(-2px);
+    box-shadow: 0 1px 1px rgba(46, 42, 38, 0.1), 0 18px 32px -14px rgba(46, 42, 38, 0.45);
+  }
+
+  .sleeve img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .about h2 {
+    margin-top: 0;
+    font-style: normal;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.12em;
+    font-size: 1.8rem;
+  }
+
+  .about h2 a {
+    color: var(--text-primary);
+  }
+
+  .about .meta {
+    font-style: italic;
+    color: var(--text-muted);
+    margin: var(--space-md) 0 var(--space-sm);
+  }
+
+  .about p + p {
+    text-indent: 0;
+    margin-top: 0;
+  }
+
+  @media (max-width: 640px) {
+    .records li {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sleeve, .sleeve:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
