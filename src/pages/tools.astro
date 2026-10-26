@@ -42,24 +42,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: var(--space-lg);
   }
 
+  section {
+    margin-bottom: 0;
+  }
+
   section + section {
     margin-top: var(--space-lg);
   }
 
   h2 {
     font-size: 1.1rem;
-    margin-bottom: var(--space-sm);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
   }
 
   .tool-list {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
   }
 
   .tool-list li {
+    margin-bottom: 0;
     line-height: 1.6;
   }
 </style>
