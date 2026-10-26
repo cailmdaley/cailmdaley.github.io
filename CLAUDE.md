@@ -32,6 +32,7 @@ src/
 ├── pages/
 │   ├── index.astro          # Home
 │   ├── research.astro       # Research page
+│   ├── tools.astro          # Tools and science infrastructure
 │   ├── science-ai.astro     # Science & AI with claims demo
 │   └── about.astro          # About page
 ├── components/
