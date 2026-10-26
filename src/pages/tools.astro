@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Tools" description="Tools Cail Daley builds and contributes to: scientific pipelines, agent orchestration, and verifiable AI-mediated science." mode="laboratory">
+  <h1>Tools</h1>
+  <p class="subtitle italic text-muted">Things I've built</p>
+
+  <section>
+    <h2>Agents &amp; working memory</h2>
+    <ul class="tool-list">
+      <li><a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.</li>
+      <li><a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.</li>
+      <li><a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Science infrastructure</h2>
+    <ul class="tool-list">
+      <li><a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.</li>
+      <li><a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.</li>
+      <li><a href="https://github.com/LightconeResearch">Lightcone Research tools</a> — open-source tools for verifiable AI-mediated science, built with the core team.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Evidence &amp; reports</h2>
+    <ul class="tool-list">
+      <li><a href="/science-ai">Epistemic claims demo</a> — an interactive graph of claims, dependencies, evidence and uncertainty.</li>
+      <li><a href="https://github.com/cailmdaley/unions-bmodes-mystra">UNIONS B-mode MySTRA report</a> — a public report mirror for the agent-produced B-mode validation paper.</li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-xs);
+  }
+
+  .subtitle {
+    margin-bottom: var(--space-lg);
+  }
+
+  section + section {
+    margin-top: var(--space-lg);
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .tool-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .tool-list li {
+    line-height: 1.6;
+  }
+</style>
