@@ -6,7 +6,7 @@ const page = await getEntry('pages', 'index');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title="Home" description="Cail Daley — observational cosmologist researching gravitational lensing, CMB analysis, and AI in scientific methodology." mode={page.data.mode}>
+<BaseLayout title="Home" description="Cail Daley — observational cosmologist at CEA Paris-Saclay, working on UNIONS cosmic shear, Euclid × CMB lensing, and verifiable AI-mediated science." mode={page.data.mode}>
   <section class="hero">
     <h1>{page.data.title}</h1>
     <p class="tagline italic">{page.data.subtitle}</p>
@@ -20,16 +20,12 @@ const { Content } = await page.render();
     <h2>Current Work</h2>
     <ul class="work-list">
       <li>
-        <a href="/research#cmb-lensing" class="tag">cmb</a>
-        <span class="work-desc">SPT-3G CMB lensing</span>
-      </li>
-      <li>
         <a href="/research#optical-cosmic-shear" class="tag">optical</a>
         <span class="work-desc">UNIONS cosmic shear</span>
       </li>
       <li>
         <a href="/research#cmb--galaxy-cross-correlations" class="tag">cross-corr</a>
-        <span class="work-desc">Euclid × CMB cross-correlations</span>
+        <span class="work-desc">Euclid × SPT-3G 6×2pt</span>
       </li>
       <li>
         <a href="/research#kinematic-lensing" class="tag">spectroscopy</a>
@@ -38,7 +34,9 @@ const { Content } = await page.render();
     </ul>
     <p class="links">
       <a href="/cv.pdf">CV</a> ·
-      <a href="https://cailmdaley.github.io/talks/">Talks</a>
+      <a href="/publication-list.pdf">Publications</a> ·
+      <a href="https://cailmdaley.github.io/talks/">Talks</a> ·
+      <a href="/tools">Tools</a>
     </p>
   </section>
 </BaseLayout>

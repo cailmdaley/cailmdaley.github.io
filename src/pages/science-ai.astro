@@ -9,6 +9,7 @@ const { Content } = await page.render();
 <BaseLayout title={page.data.title} description="Epistemic claims dashboard — tracking scientific methodology, AI alignment, and experimental philosophy through structured evidence." mode={page.data.mode}>
   <h1 class="page-title">{page.data.title}</h1>
   <p class="demo-intro" set:html={page.data.demoIntro} />
+  <p class="demo-intro">My <a href="https://github.com/cailmdaley/unions-bmodes-mystra">UNIONS B-mode validation paper</a> was carried out end to end by AI agents; the <a href="/tools">Tools page</a> collects some of the infrastructure I build for this kind of work.</p>
 
   <section class="demo">
     <h2 class="demo-title"><span class="drop-cap" data-letter="E">E</span>pistemic Claims</h2>

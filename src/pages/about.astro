@@ -6,7 +6,7 @@ const page = await getEntry('pages', 'about');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title={page.data.title} description="Cail Daley — postdoctoral researcher in observational cosmology at Universit\u00e9 Paris Cit\u00e9 and Institut d'Astrophysique de Paris." mode={page.data.mode}>
+<BaseLayout title={page.data.title} description="Cail Daley — postdoctoral researcher in observational cosmology at CosmoStat, CEA Paris-Saclay." mode={page.data.mode}>
   <div class="portrait">
     <img src="/portrait.jpg" alt="Cail Daley" />
   </div>
@@ -18,8 +18,8 @@ const { Content } = await page.render();
 
   <section class="contact">
     <h2>Contact</h2>
-    <p><a href="mailto:cail.daley@u-paris.fr">cail.daley@u-paris.fr</a></p>
-    <p><a href="https://github.com/cailmdaley">GitHub</a> · <a href="https://cailmdaley.github.io/talks/">Talks</a> · <a href="/cv.pdf">CV</a></p>
+    <p><a href="mailto:cail.daley@cea.fr">cail.daley@cea.fr</a></p>
+    <p><a href="https://github.com/cailmdaley">GitHub</a> · <a href="https://cailmdaley.github.io/talks/">Talks</a> · <a href="/cv.pdf">CV</a> · <a href="/publication-list.pdf">Publications</a> · <a href="https://orcid.org/0000-0002-3760-2086">ORCID</a></p>
   </section>
 
   </BaseLayout>
