@@ -14,11 +14,13 @@ Generous negative space is not emptiness but listening—the visual equivalent o
 
 ## Color and Material
 
-The palette lives in the liminal hour: dawn colors before full light, twilight before dark. Weathered surfaces that record time's passage—oak that's held weight, paper that's held ink, stone that's held weather. Accent colors arrive like data points: deliberate, sparse, meaningful. Each hue must justify itself the way evidence justifies confidence. The warmth comes from natural materials, the precision from restraint. Creek water, graphite, mountain fog, the gold of morning light on old wood.
+The palette lives in the liminal hour: the porch of a West Virginia farm on a wet morning. A little violet on the far ridge, mist pooled in the hollows, hemlock ridges stepping nearer, the gravel of the drive gone richer where the rain darkened it. Colour arrives the way watercolour arrives: in transparent glazes on cold-press paper, pigment pooled at the drying edge, granulating into the tooth, lifted back out where the fog sits. Accent colors arrive like data points: deliberate, sparse, meaningful. Each hue must justify itself the way evidence justifies confidence. Creek water after rain, graphite, mountain fog, the gold of morning light on old wood.
+
+Nothing moves. The painting is a still image; the page is a sheet of paper laid over it. Stillness is part of the patience.
 
 ## Typography and Mark
 
-Text operates at multiple scales of certainty. Headlines in small-caps signal orientation without shouting. Body text at legible sizes invites sustained attention. Monospace appears for precision—code, measurements, technical notation—and disappears when prose wants room to move. The letterforms themselves carry history: serifs that remember centuries of human thought, constructed with the care of someone at the absolute top of their field. Drop caps illuminate beginnings. Marginalia annotates. Every typographic choice reflects hours of refinement, the painstaking attention of master-level craft.
+Text operates at multiple scales of certainty. Headlines in small-caps signal orientation without shouting; section heads stand upright over a single creek-water brush mark. There are no italics: emphasis comes from weight, from small capitals, from the hand of the brush. Body text at legible sizes invites sustained attention. Monospace appears for precision—code, measurements, technical notation—and disappears when prose wants room to move. The letterforms themselves carry history: serifs that remember centuries of human thought, constructed with the care of someone at the absolute top of their field. Drop caps illuminate beginnings. Marginalia annotates. Every typographic choice reflects hours of refinement, the painstaking attention of master-level craft.
 
 ## Rhythm and Accumulation
 
@@ -98,7 +100,7 @@ Two subcategories extend from the core philosophy. They share the same foundatio
 
 Both modes rest on the same ground:
 
-**The Porch Morning Palette**: Weathered wood, drafting paper, creek water, mountain mist. Neither mode abandons this foundation—Laboratory contracts it toward graphite, Illuminated warms it toward gold, but both remain within the same color world.
+**The Porch Morning Palette**: Watercolour paper, creek water, violet ridges, mountain mist, rain-darkened gravel. Neither mode abandons this foundation—Laboratory contracts it toward graphite, Illuminated warms it toward gold, but both remain within the same color world.
 
 **EB Garamond Typography**: The same typeface family throughout. Laboratory mode uses it straight; Illuminated mode uses its decorative initials and swash variants. Consistent letterforms, different registers of formality.
 
@@ -137,4 +139,4 @@ The modes are not walls but gradients. A research page might have Laboratory fig
 
 ---
 
-*Built on the "Porch Morning" foundation: weathered wood workbench, drafting paper, purple mountain ridges through mist, creek winding through the valley. Two modes of attention—Laboratory and Illuminated—extending from the same practice of Observational Patience.*
+*Built on the "Porch Morning" foundation: a watercolour of the view from the porch—violet ridges through mist, creek winding through the valley, gravel darkened by rain—with the work set on a sheet of the same paper. Two modes of attention—Laboratory and Illuminated—extending from the same practice of Observational Patience.*
