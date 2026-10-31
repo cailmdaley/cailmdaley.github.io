@@ -252,11 +252,14 @@ def landscape():
 def paper():
     N = 512
     s = Sheet(N, N, seed=7, periodic=True)
-    # a whisper of uneven sizing, then the tooth
-    s.wash(np.ones((N, N), np.float32) * 0.5 * (1 + 0.3 * s.noise(110, 3)), "#E9E1D2",
-           density=0.10, edge=0, gran=0.12, vary=0.0)
-    img = s.render(light=0.012)
-    save(img, OUT / "paper.webp", quality=78)
+    # under text the sheet must stay quiet: a fine tooth, no blotches.
+    # The sizing is even to within a breath, and the tooth is mostly the
+    # finest grain, with only a trace of the coarser pits that read as mottling.
+    s.tooth = 0.85 * smooth_noise(s.rng, N, N, 1.3, True) + 0.15 * smooth_noise(s.rng, N, N, 4.0, True)
+    s.wash(np.ones((N, N), np.float32) * 0.5 * (1 + 0.04 * s.noise(110, 3)), "#E9E1D2",
+           density=0.10, edge=0, gran=0.08, vary=0.0)
+    img = s.render(light=0.010)
+    save(img, OUT / "paper.webp", quality=90)
 
 
 # ---------------------------------------------------------------- brush marks
