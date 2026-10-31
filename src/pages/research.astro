@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Research" description="Weak gravitational lensing research: UNIONS cosmic shear, Euclid × SPT-3G 6×2pt, kinematic lensing, and SPT-3G CMB lensing." mode="laboratory">
+<BaseLayout title="Research" description="Weak gravitational lensing research: UNIONS cosmic shear, Euclid × SPT-3G cross-correlations, kinematic lensing, and SPT-3G CMB lensing." mode="laboratory">
   <h1>Research</h1>
   <p class="subtitle text-muted">Weak gravitational lensing</p>
 
@@ -13,36 +13,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <section class="projects">
-    <article class="card wash" id="cmb-lensing">
-      <h2>CMB Lensing</h2>
-      <p class="collab">SPT-3G</p>
-      <p>
-        Photons from the cosmic microwave background have been traveling for 13.8 billion years, deflected along the way by the gravitational potential wells of large-scale structure. These arcminute-scale deflections are coherent on degree scales, breaking the Gaussian statistics of the primordial CMB and introducing correlations between different angular scales. The quadratic estimator exploits these correlations to reconstruct the projected matter distribution: a map of all the mass between us and the surface of last scattering.
-      </p>
-      <figure>
-        <img src="/cmb-lensing-kappa.png" alt="Wiener-filtered CMB lensing convergence map from SPT-3G" />
-        <figcaption>CMB lensing convergence κ̂ from the SPT-3G 2-year Main field, showing signal-dominated scales.</figcaption>
-      </figure>
-      <p>
-        During my PhD I contributed to CMB lensing with the South Pole Telescope collaboration, whose 10-meter dish and third-generation 16,000-detector camera deliver arcminute resolution at millimeter wavelengths. The SPT-3G 2-year Main analysis produced the deepest CMB lensing maps per-pixel to date. The lensing power spectrum measures the amplitude of cosmic structure and is sensitive to the sum of neutrino masses. Cross-correlations with galaxy surveys like Euclid trace how structure grew across billions of years of cosmic evolution.
-      </p>
-    </article>
-
-    <article class="card wash" id="cmb--galaxy-cross-correlations">
-      <h2>CMB × Galaxy Cross-correlations</h2>
-      <p class="collab">Euclid + SPT-3G</p>
-      <p>
-        380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
-      </p>
-      <div class="panorama">
-        <img src="/universe-evolution.png" alt="Evolution of the universe" />
-      </div>
-      <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
-      <p>
-        I'm leading a Euclid × SPT-3G cross-correlation paper (6×2pt), a joint effort between the two collaborations. The end-to-end blinded analysis combines Euclid shear and galaxy clustering with SPT-3G CMB lensing, aiming for results by mid-2027. These measurements independently calibrate Euclid's shear and tighten constraints on structure growth.
-      </p>
-    </article>
-
     <article class="card wash" id="optical-cosmic-shear">
       <h2>Optical Cosmic Shear</h2>
       <p class="collab">UNIONS</p>
@@ -62,6 +32,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </figure>
     </article>
 
+    <article class="card wash" id="cmb--galaxy-cross-correlations">
+      <h2>CMB × Galaxy Cross-correlations</h2>
+      <p class="collab">Euclid + SPT-3G</p>
+      <p>
+        380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
+      </p>
+      <div class="panorama">
+        <img src="/universe-evolution.png" alt="Evolution of the universe" />
+      </div>
+      <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
+      <p>
+        I'm leading a Euclid × SPT-3G cross-correlation paper, a joint effort between the two collaborations. The end-to-end blinded analysis combines Euclid shear and galaxy clustering with SPT-3G CMB lensing, aiming for results by mid-2027. These measurements independently calibrate Euclid's shear and tighten constraints on structure growth.
+      </p>
+    </article>
+
     <article class="card wash" id="kinematic-lensing">
       <h2>Kinematic Lensing</h2>
       <p class="collab">TOSCA</p>
@@ -74,6 +59,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </figure>
       <p>
         With master's student Jordy Ram (2024–25), we improved a symmetry-based kinematic lensing method and showed it applies to elliptical galaxies as well as spirals. I'm supervising Serena Nakhle (2025–present) on its first application to integral-field survey data from SAMI and WiFeS.
+      </p>
+    </article>
+
+    <article class="card wash" id="cmb-lensing">
+      <h2>CMB Lensing</h2>
+      <p class="collab">SPT-3G</p>
+      <p>
+        Photons from the cosmic microwave background have been traveling for 13.8 billion years, deflected along the way by the gravitational potential wells of large-scale structure. These arcminute-scale deflections are coherent on degree scales, breaking the Gaussian statistics of the primordial CMB and introducing correlations between different angular scales. The quadratic estimator exploits these correlations to reconstruct the projected matter distribution: a map of all the mass between us and the surface of last scattering.
+      </p>
+      <figure>
+        <img src="/cmb-lensing-kappa.png" alt="Wiener-filtered CMB lensing convergence map from SPT-3G" />
+        <figcaption>CMB lensing convergence κ̂ from the SPT-3G 2-year Main field, showing signal-dominated scales.</figcaption>
+      </figure>
+      <p>
+        During my PhD I contributed to CMB lensing with the South Pole Telescope collaboration, whose 10-meter dish and third-generation 16,000-detector camera deliver arcminute resolution at millimeter wavelengths. My thesis work contributed to the SPT-3G D1 lensing analysis (<a href="https://arxiv.org/abs/2608.31136">Omori et al. 2026</a>), built on the deepest CMB lensing maps per pixel to date. The lensing power spectrum measures the amplitude of cosmic structure and is sensitive to the sum of neutrino masses. Cross-correlations with galaxy surveys like Euclid trace how structure grew across billions of years of cosmic evolution.
       </p>
     </article>
   </section>
