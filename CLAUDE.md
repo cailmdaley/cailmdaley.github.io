@@ -133,7 +133,7 @@ npm run preview  # Preview production build
 
 ## Conventions
 
-- Sheet (`.container`) max-width: 100ch; `<BaseLayout wide>` gives 118ch (Research, whose panels carry inset figures)
+- Sheet (`.container`) max-width: 94ch; `<BaseLayout wide>` gives 110ch (Research, whose panels carry inset figures)
 - `.wash` gives a glazed panel; set `--wash: r, g, b` for the pigment
 - Figures blend into the paper with `mix-blend-mode: multiply`
 - Nothing animates or reacts to scroll, except on Research: the mass-map globe and the scroll-driven cross-correlation panorama (`.scroll-reveal`)
