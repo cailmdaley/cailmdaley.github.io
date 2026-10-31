@@ -1,29 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import plate from '../../data/almanac-map.json';
 
-// Each tool is one field on Plate I, in the order of plate.fields.agentic / .science.
 const agentic = [
-  { name: 'felt', href: 'https://cailmdaley.github.io/felt/',
-    html: `<a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.` },
-  { name: 'Shuttle', href: 'https://github.com/cailmdaley/shuttle',
-    html: `<a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.` },
-  { name: 'hark', href: 'https://github.com/cailmdaley/hark',
-    html: `<a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.` },
+  { html: `<a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.` },
+  { html: `<a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.` },
+  { html: `<a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.` },
 ];
 
 const science = [
-  { name: 'UNIONS dashboard', href: 'https://unions-wl.github.io/production/status.html',
-    html: `<a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.` },
-  { name: 'ShapePipe', href: 'https://github.com/CosmoStat/shapepipe',
-    html: `<a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.` },
-  { name: 'B-mode paper', href: 'https://arxiv.org/abs/2604.03227',
-    html: `<a href="https://arxiv.org/abs/2604.03227">UNIONS B-mode validation paper</a> — also published reproducibly as a <a href="https://myst-viewer.vercel.app/cailmdaley/unions-bmodes-mystra">MySTRA report</a>.` },
+  { html: `<a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.` },
+  { html: `<a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.` },
+  { html: `<a href="https://arxiv.org/abs/2604.03227">UNIONS B-mode validation paper</a> — also published reproducibly as a <a href="https://myst-viewer.vercel.app/cailmdaley/unions-bmodes-mystra">MySTRA report</a>.` },
 ];
 
-// Dated writing; the newest piece is the planted rows of the orchard.
+// Dated writing, newest first.
 const writing = [
-  { name: 'Science & AI', href: '/almanac/science-ai', date: '2025-12-05', label: 'Dec 2025',
+  { date: '2025-12-05', label: 'Dec 2025',
     html: `<a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.` },
 ];
 
@@ -54,13 +46,6 @@ const ticks = MONTHS.map((_, i) => {
   return `M ${(CX + r0 * Math.cos(a)).toFixed(1)},${(CY + r0 * Math.sin(a)).toFixed(1)} L ${(CX + r1 * Math.cos(a)).toFixed(1)},${(CY + r1 * Math.sin(a)).toFixed(1)}`;
 }).join(' ');
 
-const [W, H] = plate.viewBox;
-const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H * 100).toFixed(2)}%`;
-const fields = [
-  ...plate.fields.agentic.map((f, i) => ({ ...f, item: agentic[i], key: `agentic-${i}` })),
-  ...plate.fields.science.map((f, i) => ({ ...f, item: science[i], key: `science-${i}` })),
-  ...plate.fields.writing.map((f, i) => ({ ...f, item: writing[i], key: `writing-${i}` })),
-];
 ---
 
 <BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
@@ -68,7 +53,6 @@ const fields = [
 
   <header class="title-page">
     <p class="number">Number One</p>
-    <p class="owner">Cail Daley's</p>
     <h1>Almanac</h1>
     <p class="year">
       <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="5.2" /><circle class="dot" r="1.3" /><path d="M0,-11V-8M0,8V11M-11,0H-8M8,0H11M-7.8,-7.8L-5.7,-5.7M5.7,5.7L7.8,7.8M-7.8,7.8L-5.7,5.7M5.7,-5.7L7.8,-7.8" /></svg>
@@ -94,34 +78,6 @@ const fields = [
     <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, &amp; sundry Writings</p>
   </header>
 
-  <figure class="plate" aria-label="Plate I, a painted map of the holdings: a valley between wooded ridges, with agentic tools as fields on the west bank of the creek, science infrastructure on the east bank, and writing as an orchard below.">
-    <div class="chart">
-      <img src="/paint/almanac-map.webp" alt="" width={W} height={H} loading="lazy" />
-      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
-        {fields.map((f) => (
-          <a href={f.item.href} tabindex="-1"><path class={`field f-${f.key}`} d={f.d} /></a>
-        ))}
-        <g class="compass" transform={`translate(${W - 96} 76)`}>
-          <circle r="26" />
-          <path d="M0,-40 L5.5,0 L0,40 L-5.5,0 Z" />
-          <path class="fill" d="M0,-40 L5.5,0 L-5.5,0 Z" />
-          <path d="M-31,0 L31,0" />
-          <text y="-47">N</text>
-        </g>
-      </svg>
-
-      <a class="label region-label" href="#agentic" style={at(plate.regions.agentic.label)}>Agentic tools</a>
-      <a class="label region-label" href="#science" style={at(plate.regions.science.label)}>Science infrastructure</a>
-      <a class="label region-label" href="#writing" style={at(plate.regions.writing.label)}>Writing</a>
-      <span class="label uncharted-label" style={at(plate.regions.uncharted.label)}>uncharted</span>
-      {fields.map((f) => (
-        <a class={`label field-label l-${f.key}`} href={f.item.href} style={at(f.label)}>
-          {f.item.name}{'date' in f.item && <span class="year">{(f.item as { date: string }).date.slice(0, 4)}</span>}
-        </a>
-      ))}
-    </div>
-    <figcaption><span class="plate-no">Plate I.</span> The holdings: a valley between the ridges, agentic tools in the long lots on the west bank of the creek and science infrastructure across the ford on the east; writing in the orchard below the farmhouse.</figcaption>
-  </figure>
 
   <section id="agentic">
     <h2>Agentic tools</h2>
@@ -157,7 +113,7 @@ const fields = [
     --rule: rgba(110, 84, 46, 0.55);
     position: relative;
     text-align: center;
-    margin: 0 0 var(--space-md);
+    margin: 0 0 var(--space-lg);
     padding: 1.4rem 1.6rem 1.5rem;
     border: 1px solid rgba(110, 84, 46, 0.6);
     outline: 1px solid rgba(110, 84, 46, 0.4);
@@ -195,12 +151,6 @@ const fields = [
     border-bottom: 1px solid var(--rule);
   }
 
-  .owner {
-    font-size: 1.05rem;
-    letter-spacing: 0.14em;
-    font-variant-caps: small-caps;
-    color: var(--umber);
-  }
 
   .title-page h1 {
     font-size: 3.4rem;
@@ -298,154 +248,6 @@ const fields = [
     margin: 0 0 var(--space-lg);
   }
 
-  /* ---- Plate I: printed onto the sheet, bleeding into its margins ---- */
-  .plate {
-    margin: 0 -1.6rem var(--space-lg);
-  }
-
-  .chart {
-    position: relative;
-    container-type: inline-size;
-  }
-
-  .plate img {
-    display: block;
-    width: 100%;
-    height: auto;
-    mix-blend-mode: multiply;
-  }
-
-  .plate svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .plate svg a {
-    border: none;
-  }
-
-  .plate figcaption {
-    margin: 0.5rem 1.6rem 0;
-    font-size: 0.88rem;
-    line-height: 1.55;
-    color: var(--text-muted);
-  }
-
-  .plate-no {
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
-
-  /* Fields deepen under the pointer, as if glazed once more */
-  .field {
-    fill: rgba(150, 110, 60, 0);
-    stroke: rgba(70, 60, 50, 0);
-    stroke-width: 2;
-    mix-blend-mode: multiply;
-    cursor: pointer;
-  }
-
-  .field:hover {
-    fill: rgba(150, 110, 60, 0.2);
-    stroke: rgba(70, 60, 50, 0.45);
-  }
-
-  .compass circle,
-  .compass path {
-    fill: none;
-    stroke: rgba(70, 60, 50, 0.55);
-    stroke-width: 1.5;
-  }
-
-  .compass .fill {
-    fill: rgba(70, 60, 50, 0.45);
-  }
-
-  .compass text {
-    font-family: var(--font-serif);
-    font-size: 22px;
-    text-anchor: middle;
-    fill: rgba(46, 42, 38, 0.75);
-  }
-
-  /* Lettering: each name is set on a patch of paper lifted out of the paint,
-     and sized with the plate so it keeps its place at every width */
-  .label {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-    border: none;
-    line-height: 1.15;
-    text-align: center;
-    padding: 0.08em 0.5em 0.14em;
-    border-radius: 0.7em;
-    background: rgba(242, 237, 227, 0.88);
-    box-shadow: 0 0 0.45em 0.3em rgba(242, 237, 227, 0.75);
-  }
-
-  .region-label {
-    font-size: clamp(10.5px, 2.15cqw, 15.5px);
-    font-weight: 600;
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.16em;
-    color: var(--text-primary);
-  }
-
-  .field-label {
-    font-size: clamp(11px, 2.3cqw, 16px);
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--text-primary);
-  }
-
-  .field-label .year {
-    display: block;
-    font-size: 0.78em;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--text-secondary);
-  }
-
-  .label:hover {
-    color: var(--creek-wet);
-  }
-
-  .uncharted-label {
-    font-size: clamp(10px, 2.05cqw, 14.5px);
-    font-weight: 500;
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.28em;
-    color: var(--text-secondary);
-    background: rgba(242, 237, 227, 0.6);
-    box-shadow: 0 0 0.5em 0.35em rgba(242, 237, 227, 0.5);
-  }
-
-  /* A label and its field light together */
-  .plate:has(.l-agentic-0:hover) .f-agentic-0,
-  .plate:has(.l-agentic-1:hover) .f-agentic-1,
-  .plate:has(.l-agentic-2:hover) .f-agentic-2,
-  .plate:has(.l-science-0:hover) .f-science-0,
-  .plate:has(.l-science-1:hover) .f-science-1,
-  .plate:has(.l-science-2:hover) .f-science-2,
-  .plate:has(.l-writing-0:hover) .f-writing-0 {
-    fill: rgba(150, 110, 60, 0.2);
-    stroke: rgba(70, 60, 50, 0.45);
-  }
-
-  .plate:has(.f-agentic-0:hover) .l-agentic-0,
-  .plate:has(.f-agentic-1:hover) .l-agentic-1,
-  .plate:has(.f-agentic-2:hover) .l-agentic-2,
-  .plate:has(.f-science-0:hover) .l-science-0,
-  .plate:has(.f-science-1:hover) .l-science-1,
-  .plate:has(.f-science-2:hover) .l-science-2,
-  .plate:has(.f-writing-0:hover) .l-writing-0 {
-    color: var(--creek-wet);
-  }
-
   /* ---- The lists: the full account ---- */
   section {
     margin: 0;
@@ -490,17 +292,7 @@ const fields = [
     font-variant-numeric: lining-nums tabular-nums;
   }
 
-  @media (max-width: 768px) {
-    .plate {
-      margin: 0 -0.8rem var(--space-lg);
-    }
-
-    .plate figcaption {
-      margin: 0.5rem 0.8rem 0;
-    }
-  }
-
-  /* Phone: a narrower cover, and a plate without its compass */
+  /* Phone: a narrower cover */
   @media (max-width: 600px) {
     .title-page {
       padding: 1rem 0.9rem 1.1rem;
@@ -519,20 +311,5 @@ const fields = [
       letter-spacing: 0.14em;
     }
 
-    .plate {
-      margin: 0 -0.5rem var(--space-md);
-    }
-
-    .plate figcaption {
-      margin: 0.5rem 0.5rem 0;
-    }
-
-    .region-label {
-      letter-spacing: 0.08em;
-    }
-
-    .compass {
-      display: none;
-    }
   }
 </style>

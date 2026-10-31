@@ -18,7 +18,7 @@ The palette lives in the liminal hour: the porch of a West Virginia farm on a we
 
 Nothing moves. The painting is a still image; the page is a sheet of paper laid over it. Stillness is part of the patience.
 
-One thing turns: the mass map of the sky on the Research page, a globe that revolves slowly the way the sky does, and stops in your hand when you reach for it. It is the exception that earns its motion, because the map is of a sphere and only reads as one when it turns. For readers who ask for reduced motion it holds still.
+Two things move. One is the mass map of the sky on the Research page, a globe that revolves slowly the way the sky does, and stops in your hand when you reach for it. It is the exception that earns its motion, because the map is of a sphere and only reads as one when it turns. For readers who ask for reduced motion it holds still. The other is the panorama of cosmic history beside the cross-correlations, which drifts from recombination toward the present as the page scrolls past it.
 
 ## Typography and Mark
 

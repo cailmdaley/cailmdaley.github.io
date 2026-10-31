@@ -66,7 +66,7 @@
   --space-2xl: 8rem;
 
   /* The sheet */
-  --sheet-width: 85ch;
+  --sheet-width: 100ch;
   --sheet-top: clamp(2rem, 7vh, 4.5rem);
 }
 
@@ -282,6 +282,10 @@ li::marker {
     0 0 0 1px rgba(110, 100, 88, 0.08),
     0 1px 2px rgba(46, 42, 38, 0.06),
     0 10px 40px -12px rgba(46, 42, 38, 0.22);
+}
+
+.container.wide {
+  max-width: 118ch;
 }
 
 .container-wide {
