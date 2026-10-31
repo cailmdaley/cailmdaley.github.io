@@ -18,7 +18,8 @@ Outputs:
     public/paint/landscape.webp   porch-morning ridges behind every page
     public/paint/paper.webp       tileable watercolour-paper grain for the page sheet
     public/paint/stroke.webp      a creek-water brush mark (alpha) for rules and the active nav item
-    public/paint/almanac-cover.webp the roundel on the Almanac's title page
+    public/paint/almanac-cover.webp the roundel on the Almanac's title page (RGBA)
+    public/paint/almanac-glaze.webp the golden glaze of the title page
     public/paint/almanac-map.webp the Almanac's plate of the holdings
     src/data/almanac-map.json     region outlines and mark positions for the map overlay
 """
@@ -166,7 +167,7 @@ class Sheet:
 
 def save(img, path, quality=82, size=None):
     path.parent.mkdir(parents=True, exist_ok=True)
-    im = Image.fromarray((img * 255 + 0.5).astype(np.uint8))
+    im = Image.fromarray((np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8))
     if size:
         im = im.resize(size, Image.LANCZOS)
     im.save(path, "WEBP", quality=quality, method=6)
@@ -384,8 +385,43 @@ def cover():
         ring = np.stack([N / 2 + rad * np.cos(a), N / 2 + rad * np.sin(a)], 1)
         s.stroke(ring, "#7E7062", width=wdt, density=dn, soft=0.5)
 
+    # The roundel is a vignette set into the yellow cover: inside the disc it
+    # keeps its own paper, so it is saved opaque there; outside, only the
+    # pencil rings remain, as ink with alpha.
+    img = s.render(light=0.0)
+    ink = hex_rgb("#7E7062")
+    dark = np.clip(1 - img / PAPER[None, None, :], 0, 1).max(axis=2) / (1 - ink / PAPER).max()
+    alpha = np.maximum(disc, np.clip(dark, 0, 1) * (rr > R))
+    rgb = np.where((rr > R)[..., None], ink[None, None, :], img)
+    rgba = np.concatenate([rgb, alpha[..., None]], axis=2)
+    save(rgba, OUT / "almanac-cover.webp", quality=88, size=(800, 800))
+
+    glaze()
+
+
+def glaze():
+    """The golden glaze of the Almanac's title page.
+
+    Farmers' almanacs come in a yellow cover; this one is laid in gamboge over
+    raw sienna, a little uneven, darker where the wash dried at its rim, with
+    the paper left bare in a ragged margin inside the ruled border. Rendered
+    white-normalised for multiply blending and stretched to the title page, so
+    the variation is kept broad and the granulation fine.
+    """
+    Hh, Ww = 1100, 900
+    s = Sheet(Hh, Ww, seed=1792)
+    yy, xx = s.yy, s.xx
+    inset = 16
+    edge = np.minimum.reduce([xx - inset, Ww - inset - xx, yy - inset, Hh - inset - yy])
+    m = soft_step(edge + 2.2 * s.noise(40, 3) + 0.8 * s.noise(6, 2), 1.6)
+    s.wash(m, "#E3BD62", density=0.72, edge=0.9, edge_width=10.0, gran=0.22, vary=0.16, vary_scale=320)
+    # a second, warmer glaze pooled toward the foot of the page, as the board tilted
+    foot = np.clip((yy / Hh - 0.25) / 0.75, 0, 1) ** 1.5
+    s.wash(m * foot * (0.7 + 0.3 * s.noise(200, 2)), "#D9A65A", density=0.22, edge=0, gran=0.1, vary=0.2, vary_scale=260)
+    # light lifted where the sun sits behind the lettering
+    s.lift(np.exp(-(((xx - Ww / 2) / (0.45 * Ww)) ** 2 + ((yy - 0.18 * Hh) / (0.2 * Hh)) ** 2)), 0.18)
     img = np.clip(s.render(light=0.0) / PAPER[None, None, :], 0, 1)
-    save(img, OUT / "almanac-cover.webp", quality=84, size=(800, 800))
+    save(img, OUT / "almanac-glaze.webp", quality=84)
 
 
 # ---------------------------------------------------------------- map
@@ -463,29 +499,32 @@ def dab_mask(s, pts, radius, jitter=0.25):
 
 
 def mapplate():
-    """Plate I of the Almanac: the holdings, in plan, with the hills drawn in elevation.
+    """Plate I of the Almanac: the holdings, a valley in plan with its hills in elevation.
 
-    The creek runs down from the woods under the ridge. West of it lie the tool
-    fields in two blocks either side of the lane: agentic tools above, science
-    infrastructure below, one field per tool in the order of the `agentic` and
-    `science` arrays in `almanac/index.astro`. East of the creek is the orchard
-    of writing, its first rows planted, the rest left in meadow for what comes.
-    The farmhouse sits by the ford; the far corner is left to mist.
+    The creek comes out of the far ridges at the head of the valley and runs
+    down the middle of the plate; wooded ridges frame it on either side. The
+    tool fields are long lots running from the creek up onto the lower slopes:
+    agentic tools on the west bank, science infrastructure on the east, one
+    field per tool in the order of the `agentic` and `science` arrays in
+    `almanac/index.astro`. Below them on the west side is the orchard of
+    writing, its first rows planted and the rest left in meadow for what comes;
+    the farmhouse sits by the ford, and the lower east corner is left to mist.
     """
     from scipy.ndimage import distance_transform_edt
 
-    H, W = 1000, 1600
+    H, W = 1100, 1600
     s = Sheet(H, W, seed=2026)
     rng = s.rng
     yy, xx = s.yy, s.xx
     P = lambda fx, fy: np.array([fx * W, fy * H])
+    HEAD = 0.20  # where the valley opens out of the far ridges
 
-    # ---- the hills along the top, drawn in elevation as old estate maps do
+    # ---- the far ridges across the head of the valley, drawn in elevation
     for cy, col, dens, octs, canopy, fall in [
-        (0.075, "#B5ABCB", 0.55, [(420, 18), (140, 7)], 0.0, 0.05),
-        (0.125, "#9D90BB", 0.68, [(330, 22), (110, 8), (35, 3)], 0.0, 0.06),
-        (0.180, "#8A9DA6", 0.70, [(300, 20), (90, 7), (25, 3)], 1.2, 0.06),
-        (0.235, "#6F8A84", 0.72, [(260, 16), (70, 6), (18, 3)], 2.2, 0.06),
+        (0.060, "#B5ABCB", 0.55, [(420, 18), (140, 7)], 0.0, 0.05),
+        (0.100, "#9D90BB", 0.68, [(330, 22), (110, 8), (35, 3)], 0.0, 0.06),
+        (0.145, "#8A9DA6", 0.70, [(300, 20), (90, 7), (25, 3)], 1.2, 0.06),
+        (0.190, "#6F8A84", 0.72, [(260, 16), (70, 6), (18, 3)], 2.2, 0.06),
     ]:
         crest = cy * H + ridge_profile(rng, W, octs)
         if canopy:
@@ -494,17 +533,30 @@ def mapplate():
         m = soft_step(depth, 1.6)
         s.wash(m * np.exp(-np.clip(depth, 0, None) / (fall * H)), col, density=dens, edge=0.8,
                edge_width=2.2, gran=0.15, vary=0.2, cover=0.5 * m * np.exp(-np.clip(depth, 0, None) / (0.03 * H)))
-        band = np.exp(-((yy - crest[None, :] - 0.045 * H) / (0.018 * H)) ** 2)
+        band = np.exp(-((yy - crest[None, :] - 0.04 * H) / (0.016 * H)) ** 2)
         s.lift(band * np.clip(0.6 + 0.7 * s.noise(100, 2), 0, 1), 0.75)
 
-    # ---- the valley floor: a pale wash of meadow, wet-in-wet
-    floor = soft_step(yy - (0.28 * H + 25 * s.noise(200, 2)), 40)
-    s.wash(floor * (0.6 + 0.4 * s.noise(220, 2)), "#DCDABF", density=0.42, edge=0, gran=0.15, vary=0.35, vary_scale=180)
+    # ---- the ridges either side: the foot of each slope closes in toward the head
+    fy = np.clip(yy / H, HEAD, 1)
+    pinch = np.exp(-(fy - HEAD) / 0.10)
+    foot_l = W * (0.105 + 0.27 * pinch) + 28 * s.noise(260, 2) + 8 * s.noise(40, 2)
+    foot_r = W * (0.895 - 0.27 * pinch) + 28 * s.noise(260, 2) + 8 * s.noise(40, 2)
+    below_head = soft_step(yy - HEAD * H + 6 * s.noise(30, 2), 6)
+    up_l = np.clip((foot_l - xx) / np.maximum(foot_l, 1), 0, 1)          # 0 at the foot, 1 at the plate edge
+    up_r = np.clip((xx - foot_r) / np.maximum(W - foot_r, 1), 0, 1)
+    slope_l = soft_step(foot_l - xx, 3) * below_head
+    slope_r = soft_step(xx - foot_r, 3) * below_head
+    slopes = np.maximum(slope_l, slope_r)
+    up = np.maximum(up_l, up_r)
 
-    # ---- the creek, from the woods under the ridge down past the ford
-    t = np.linspace(0, 1, 500)
-    cx = W * (0.600 - 0.10 * t + 0.040 * np.sin(t * 7.0 + 0.4) + 0.012 * np.sin(t * 23 + 1.0))
-    cy = H * (0.27 + 0.76 * t)
+    # ---- the valley floor: a pale wash of meadow, wet-in-wet
+    floor = soft_step(yy - (HEAD * H + 20 * s.noise(200, 2)), 30) * (1 - slopes)
+    s.wash(floor * (0.6 + 0.4 * s.noise(220, 2)), "#D6D6B4", density=0.55, edge=0, gran=0.15, vary=0.35, vary_scale=180)
+
+    # ---- the creek, out of the head of the valley and down its floor
+    t = np.linspace(0, 1, 600)
+    cx = W * (0.500 + 0.020 * t + 0.040 * np.sin(t * 6.5 + 0.3) + 0.010 * np.sin(t * 21 + 1.0))
+    cy = H * (HEAD - 0.005 + (1.03 - HEAD) * t)
     creek = np.stack([cx, cy], 1)
     dist = np.full((H, W), 1e4, np.float32)
     rad = np.zeros((H, W), np.float32)
@@ -516,10 +568,25 @@ def mapplate():
         dd = np.hypot(xx[y0:y1, x0:x1] - x, yy[y0:y1, x0:x1] - y)
         closer = dd < dist[y0:y1, x0:x1]
         dist[y0:y1, x0:x1] = np.where(closer, dd, dist[y0:y1, x0:x1])
-        rad[y0:y1, x0:x1] = np.where(closer, 2.0 + 5.5 * tt, rad[y0:y1, x0:x1])
-    water = np.clip((rad + 1.2 * s.noise(8, 2) - dist) / 1.0 + 0.5, 0, 1) * soft_step(yy - 0.275 * H, 4)
+        rad[y0:y1, x0:x1] = np.where(closer, 2.0 + 6.0 * tt, rad[y0:y1, x0:x1])
+    water = np.clip((rad + 1.2 * s.noise(8, 2) - dist) / 1.0 + 0.5, 0, 1) * soft_step(yy - HEAD * H, 4)
     banks = np.exp(-np.clip(dist - rad, 0, None) / 18.0) * (dist < 200)
     s.wash(banks * (0.7 + 0.3 * s.noise(30, 2)), "#A5B79D", density=0.5, edge=0, gran=0.3, vary=0.3)
+
+    # ---- the slopes, under their woods: deeper toward the crest, and the
+    # east-facing slope (west of the creek) catches the morning while the
+    # other stays in shade; violet where each ridge turns over at the edge
+    s.wash(slope_l * (0.30 + 0.70 * up_l), "#86A096", density=0.45, edge=0.5, edge_width=3, gran=0.25, vary=0.25, vary_scale=140)
+    s.wash(slope_r * (0.40 + 0.60 * up_r), "#71898C", density=0.55, edge=0.5, edge_width=3, gran=0.25, vary=0.25, vary_scale=140)
+    s.wash(slopes * np.clip((up - 0.5) / 0.5, 0, 1) ** 1.2, "#9D90BB", density=0.45, edge=0, gran=0.15, vary=0.3, vary_scale=160)
+    # spurs: the slopes fold into ridges and hollows running down to the valley floor;
+    # the shaded flank of each spur takes a darker glaze, mist lies in the hollows
+    u_l = yy + 0.75 * (foot_l - xx)
+    u_r = yy + 0.75 * (xx - foot_r)
+    fold = np.where(xx < W / 2, np.sin(2 * np.pi * u_l / 210 + 1.2 * s.noise(220, 2)),
+                    np.sin(2 * np.pi * u_r / 230 + 2.0 + 1.2 * s.noise(220, 2)))
+    s.wash(slopes * np.clip(fold, 0, 1) ** 1.5 * (0.4 + 0.6 * up), "#4F6B66", density=0.45, edge=0, gran=0.2, vary=0.3, vary_scale=90)
+    hollows = slopes * np.clip(-fold - 0.3, 0, 1) * np.clip(1.1 - 1.4 * up, 0, 1)
 
     def densify(pts, wobble, closed=True):
         """A hand-drawn line through the given corners, densified and wavered."""
@@ -535,113 +602,136 @@ def mapplate():
         out = np.array(out)
         return out + wobble * np.stack([noise_loop(rng, len(out), 9), noise_loop(rng, len(out), 9)], 1)
 
-    def block(corners, cuts):
-        """A block of fields: a quadrilateral (TL, TR, BR, BL) cut into strips across its width."""
+    def block(corners, n):
+        """A block of long lots: a quadrilateral (TL, TR, BR, BL) cut into n strips down its height."""
         tl, tr, br, bl = (P(*c) for c in corners)
-        fr = [0.0, *cuts, 1.0]
-        top = [tl + (tr - tl) * f for f in fr]
-        bot = [bl + (br - bl) * f for f in fr]
-        cells = [densify([top[i], top[i + 1], bot[i + 1], bot[i]], 3.0) for i in range(len(fr) - 1)]
+        fr = np.linspace(0, 1, n + 1)
+        left = [tl + (bl - tl) * f for f in fr]
+        right = [tr + (br - tr) * f for f in fr]
+        cells = [densify([left[i], right[i], right[i + 1], left[i + 1]], 3.0) for i in range(n)]
         return densify([tl, tr, br, bl], 4.0), cells
 
-    agentic, agentic_cells = block([(0.060, 0.375), (0.470, 0.360), (0.455, 0.565), (0.045, 0.585)], [0.34, 0.68])
-    science, science_cells = block([(0.050, 0.665), (0.455, 0.650), (0.430, 0.865), (0.080, 0.885)], [0.33, 0.66])
+    agentic, agentic_cells = block([(0.150, 0.300), (0.462, 0.318), (0.468, 0.545), (0.118, 0.532)], 3)
+    science, science_cells = block([(0.578, 0.330), (0.865, 0.312), (0.890, 0.550), (0.570, 0.565)], 3)
+
+    # Writing: the orchard on the lower west side, fenced; the first rows are planted
+    oc, ow, oh, rot = P(0.275, 0.775), 0.255 * W, 0.235 * H, -0.035
+    c_, s_ = np.cos(rot), np.sin(rot)
+    corner = lambda u, v: oc + np.array([c_ * u * ow / 2 - s_ * v * oh / 2, s_ * u * ow / 2 + c_ * v * oh / 2])
+    writing = densify([corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1)], 3.0)
+    plot = densify([corner(-1, -1), corner(1, -1), corner(1, -0.05), corner(-1, -0.05)], 2.0)
+
+    # Uncharted: the lower east corner, left to the mist
+    uncharted = blob(*P(0.80, 0.86), 0.15 * W, 0.12 * H, rng, wob=0.12, rot=-0.1)
+    um = gaussian_filter(poly_mask(uncharted, H, W), 16.0)
+
+    # Clearings: wherever a field or the orchard is cut out of the woods
+    clear = np.zeros((H, W), np.float32)
+    for cell in [agentic, science, writing]:
+        clear = np.maximum(clear, poly_mask(cell, H, W))
+    clear = np.clip(gaussian_filter(clear, 6) * 2.2, 0, 1)
+    s.lift(clear * slopes, 0.75)
+    s.wash(clear * slopes, "#DCDABF", density=0.42, edge=0, gran=0.15, vary=0.3, vary_scale=120)
 
     # Each field its own crop: (colour, texture, furrow angle)
     paint = [
-        ("#CDB97E", "furrow", 0.25), ("#A9B784", "plain", 0.0), ("#C9A774", "furrow", 1.35),
-        ("#B7BE8E", "stipple", 0.0), ("#D4C391", "furrow", -0.15), ("#9EB29A", "furrow", 1.5),
+        ("#CDB97E", "furrow", 0.06), ("#A9B784", "plain", 0.0), ("#C9A774", "furrow", 1.50),
+        ("#B7BE8E", "stipple", 0.0), ("#D4C391", "furrow", -0.05), ("#9EB29A", "furrow", 1.45),
     ]
     hedge_pts = []
     for cell, (col, tex, ang) in zip(agentic_cells + science_cells, paint):
         cm = poly_mask(cell, H, W)
         inner = distance_transform_edt(cm)
-        fm = soft_step(inner - 6 + 2.0 * s.noise(10, 2), 2.0) * cm
-        s.wash(fm, col, density=0.75, edge=0.9, edge_width=3.0, gran=0.45, vary=0.3, vary_scale=70)
+        fm = soft_step(inner - 5 + 2.0 * s.noise(10, 2), 2.0) * cm
+        s.wash(fm, col, density=0.62, edge=0.9, edge_width=3.0, gran=0.4, vary=0.3, vary_scale=70)
         if tex == "furrow":
             ca, sa = np.cos(ang), np.sin(ang)
             stripe = 0.5 + 0.5 * np.sin((xx * ca + yy * sa) / 4.0 + 0.6 * s.noise(60, 2))
-            s.wash(fm * stripe ** 4 * soft_step(inner - 13, 3), col, density=0.5, edge=0, gran=0.4, vary=0.2)
+            s.wash(fm * stripe ** 4 * soft_step(inner - 12, 3), col, density=0.35, edge=0, gran=0.4, vary=0.2)
         elif tex == "stipple":
-            dots = (rng.random((H, W)) > 0.986).astype(np.float32)
+            dots = (rng.random((H, W)) > 0.988).astype(np.float32)
             dots = np.clip(gaussian_filter(dots, 1.2) * 10, 0, 1)
-            s.wash(dots * soft_step(inner - 12, 2), "#7C8F62", density=0.55, edge=0, gran=0.2, vary=0)
+            s.wash(dots * soft_step(inner - 10, 2), "#7C8F62", density=0.45, edge=0, gran=0.2, vary=0)
         # hedgerows: a close line of small hemlock dabs along every field edge
         for a, b in zip(cell, np.roll(cell, -1, axis=0)):
             n = int(np.hypot(*(b - a)) // 7)
             for k in range(n):
                 if rng.random() < 0.7:
                     hedge_pts.append(a + (b - a) * (k + 0.5) / max(n, 1) + rng.normal(0, 1.2, 2))
-    s.wash(dab_mask(s, hedge_pts, 3.4, jitter=0.3), "#62806A", density=0.6, edge=0.8, edge_width=1.0, gran=0.3, vary=0.25, vary_scale=30)
+    s.wash(dab_mask(s, hedge_pts, 3.2, jitter=0.3), "#62806A", density=0.6, edge=0.8, edge_width=1.0, gran=0.3, vary=0.25, vary_scale=30)
 
-    # Writing: the orchard across the creek, fenced; the first rows are planted
-    oc, ow, oh, rot = P(0.765, 0.485), 0.205 * W, 0.30 * H, -0.06
-    c_, s_ = np.cos(rot), np.sin(rot)
-    corner = lambda u, v: oc + np.array([c_ * u * ow / 2 - s_ * v * oh / 2, s_ * u * ow / 2 + c_ * v * oh / 2])
-    writing = densify([corner(-1, -1), corner(1, -1), corner(1, 1), corner(-1, 1)], 3.0)
+    # The orchard: meadow inside the fence, rows of trees in the planted plot
     wm = gaussian_filter(poly_mask(writing, H, W), 2.0)
-    s.wash(wm, "#C3CB9F", density=0.45, edge=0.8, edge_width=4.0, gran=0.3, vary=0.3, vary_scale=90)
-    plot = densify([corner(-1, -1), corner(1, -1), corner(1, 0.05), corner(-1, 0.05)], 2.0)
+    s.wash(wm, "#C3CB9F", density=0.40, edge=0.8, edge_width=4.0, gran=0.3, vary=0.3, vary_scale=90)
     pm = poly_mask(plot, H, W)
     pin = distance_transform_edt(pm)
-    s.wash(soft_step(pin - 6, 2) * pm * (0.8 + 0.2 * s.noise(40, 2)), "#AFC08E", density=0.5, edge=0.6, gran=0.3)
+    s.wash(soft_step(pin - 6, 2) * pm * (0.8 + 0.2 * s.noise(40, 2)), "#AFC08E", density=0.45, edge=0.6, gran=0.3)
     trees = []
-    for i in range(-6, 7):
-        for j in range(-4, 1):
-            q = corner(i / 6.6, (j + 0.5) / 4.4 - 0.05) + rng.normal(0, 1.2, 2)
+    for i in range(-7, 8):
+        for j in range(-4, 0):
+            q = corner(i / 7.6, (j + 0.5) / 4.2) + rng.normal(0, 1.2, 2)
             if pin[int(q[1]), int(q[0])] > 10:
                 trees.append(q)
-    s.wash(dab_mask(s, trees, 6.0, jitter=0.1), "#6C8A5E", density=0.8, edge=1.0, edge_width=1.5, gran=0.35, vary=0.2, vary_scale=40)
-    # the post-and-rail fence
+    s.wash(dab_mask(s, trees, 5.6, jitter=0.1), "#6C8A5E", density=0.75, edge=1.0, edge_width=1.5, gran=0.35, vary=0.2, vary_scale=40)
     fence = np.vstack([writing, writing[:1]])
     s.stroke(fence, "#8E7B66", width=1.6, density=0.55, soft=0.4)
 
-    # Uncharted: left as paper, only the mist that hides it
-    uncharted = blob(*P(0.83, 0.845), 0.15 * W, 0.13 * H, rng, wob=0.12, rot=-0.1)
-    um = gaussian_filter(poly_mask(uncharted, H, W), 16.0)
-    s.lift(um, 0.85)
-    s.wash(um * np.clip(0.5 + 0.6 * s.noise(60, 2), 0, 1), "#CFC8DD", density=0.55, edge=0, gran=0.05, vary=0.3)
-
-    # Woods: the forest margin under the ridge, a woodlot, and trees along the creek.
-    # Each is a soft wash for the canopy with crowns dabbed into it.
-    def woodland(mask, n, r):
+    # Woods: a canopy wash with crowns dabbed into it, over the slopes and the head of the valley
+    def woodland(mask, n, r, density=0.5):
         ys, xs = np.nonzero(mask > 0.5)
         if not len(xs):
             return
         pick = rng.choice(len(xs), size=min(n, len(xs)), replace=False)
-        crowns = dab_mask(s, np.stack([xs[pick], ys[pick]], 1).astype(float), r, jitter=0.25)
+        crowns = dab_mask(s, np.stack([xs[pick], ys[pick]], 1).astype(float), r, jitter=0.25) * mask
         body = gaussian_filter(mask, 3.0) * (0.6 + 0.4 * s.noise(30, 2))
-        s.wash(np.clip(body * 0.5 + crowns, 0, 1), "#6F8C72", density=0.6, edge=0.8, edge_width=2.0, gran=0.35, vary=0.3, vary_scale=30)
+        s.wash(np.clip(body * 0.3 + crowns, 0, 1), "#6F8C72", density=density, edge=0.8, edge_width=2.0, gran=0.35, vary=0.3, vary_scale=30)
         shade = np.clip(crowns - np.roll(np.roll(crowns, -4, axis=0), -3, axis=1), 0, 1)
-        s.wash(gaussian_filter(shade, 1.0), "#3F5C4E", density=0.6, edge=0.3, gran=0.3, vary=0.2)
+        s.wash(gaussian_filter(shade, 1.0), "#3F5C4E", density=0.45, edge=0.3, gran=0.3, vary=0.2)
 
-    edge_y = 0.30 * H + 14 * s.noise(90, 2) + 10 * s.noise(25, 2)
-    margin = soft_step(edge_y - yy, 2) * soft_step(yy - 0.245 * H, 6)
-    margin *= 1 - np.clip(water * 3, 0, 1)
-    woodland(margin, 520, 6.5)
-    lot = gaussian_filter(poly_mask(blob(*P(0.03, 0.96), 0.09 * W, 0.09 * H, rng, wob=0.2), H, W), 2)
-    woodland(lot, 120, 7.0)
-    lot2 = gaussian_filter(poly_mask(blob(*P(0.97, 0.36), 0.05 * W, 0.08 * H, rng, wob=0.2), H, W), 2)
-    woodland(lot2, 70, 6.5)
+    keep = (1 - clear) * (1 - np.clip(water * 3, 0, 1)) * (1 - um * 0.9)
+    head = soft_step(HEAD * H + 0.05 * H + 12 * s.noise(90, 2) + 8 * s.noise(25, 2) - yy, 2) * soft_step(yy - (HEAD - 0.03) * H, 6)
+    # the woods thin toward the crest, where the ridge turns over into violet
+    canopy = np.clip(slopes * soft_step(0.8 - up + 0.15 * s.noise(80, 2), 0.15) + head, 0, 1) * keep
+    woodland(canopy, 3400, 5.5)
+    # mist in the hollows, lifted after the woods so it lies over them
+    s.lift(gaussian_filter(hollows, 6) * np.clip(0.6 + 0.6 * s.noise(70, 2), 0, 1), 0.55)
     river_trees = []
     for (x, y), tt in zip(creek[::4], t[::4]):
-        if 0.30 * H < y < 0.97 * H and rng.random() < 0.85:
+        if (HEAD + 0.03) * H < y < 0.98 * H and rng.random() < 0.8:
             side = rng.choice([-1, 1])
             off = (14 + 6 * tt + rng.normal(0, 3)) * side
             q = np.array([x + off, y + rng.normal(0, 3)])
-            if 0 <= q[1] < H and 0 <= q[0] < W:
+            if 0 <= q[1] < H and 0 <= q[0] < W and clear[int(q[1]), int(q[0])] < 0.3:
                 river_trees.append(q)
-    s.wash(dab_mask(s, river_trees, 6.5, jitter=0.25), "#6F8C72", density=0.65, edge=0.9, edge_width=1.5, gran=0.35, vary=0.3, vary_scale=30)
+    # a few lone trees standing out in the bottomland
+    for _ in range(40):
+        q = P(rng.uniform(0.12, 0.88), rng.uniform(0.30, 0.97))
+        xi, yi = int(q[0]), int(q[1])
+        if clear[yi, xi] < 0.05 and slopes[yi, xi] < 0.1 and dist[yi, xi] > 40 and um[yi, xi] < 0.2:
+            river_trees.append(q)
+    s.wash(dab_mask(s, river_trees, 6.0, jitter=0.25), "#6F8C72", density=0.6, edge=0.9, edge_width=1.5, gran=0.35, vary=0.3, vary_scale=30)
+
+    # Mist: pooled at the head of the valley and in the hollow of the lower east corner
+    s.lift(np.exp(-((yy - (HEAD + 0.035) * H) / (0.025 * H)) ** 2) * np.clip(0.5 + 0.7 * s.noise(120, 2), 0, 1), 0.6)
+    s.lift(um, 0.85)
+    s.wash(um * np.clip(0.5 + 0.6 * s.noise(60, 2), 0, 1), "#CFC8DD", density=0.55, edge=0, gran=0.05, vary=0.3)
 
     # The water itself, last, so it reads through everything
     s.wash(water, "#5A7B7B", density=1.0, edge=1.0, edge_width=1.5, gran=0.3, vary=0.2, vary_scale=50, cover=0.6 * water)
 
-    # The farmhouse by the ford, and the gravel lane: west over the ford between
-    # the tool blocks, north-east to the orchard gate
-    house = P(0.585, 0.745)
-    lane_w = np.array([house + [-14, -6], P(0.52, 0.64), P(0.45, 0.615), P(0.25, 0.618), P(0.05, 0.625)])
-    lane_e = np.array([house + [10, -12], P(0.62, 0.69), P(0.665, 0.655), corner(-0.55, 1)])
-    for ln in (lane_w, lane_e):
+    # The farmhouse by the ford, and the gravel lane: up the valley from the
+    # bottom of the plate, west to the orchard gate, north to the agentic lots,
+    # and over the ford to the science lots
+    def creek_x(fy_):
+        return float(np.interp(fy_ * H, cy, cx))
+    house = np.array([creek_x(0.635) - 48, 0.635 * H])
+    lanes = [
+        np.array([P(0.43, 1.02), P(0.445, 0.86), P(0.452, 0.74), house + [0, 16]]),
+        np.array([house + [-16, 6], P(0.40, 0.645), corner(0.55, -1)]),
+        np.array([house + [-6, -14], P(0.43, 0.59), P(0.40, 0.548)]),
+        np.array([house + [18, 2], [creek_x(0.628), 0.628 * H], P(0.585, 0.60), P(0.62, 0.568)]),
+    ]
+    for ln in lanes:
         sm = np.array([np.interp(np.linspace(0, len(ln) - 1, 80), np.arange(len(ln)), ln[:, k]) for k in (0, 1)]).T
         s.stroke(sm, "#A89577", width=5, density=0.55)
     hx, hy = house
@@ -672,15 +762,16 @@ def mapplate():
     data = {
         "viewBox": [W, H],
         "regions": {
-            "agentic": {"d": path_d(agentic), "label": at(0.255, 0.335)},
-            "science": {"d": path_d(science), "label": at(0.245, 0.925)},
-            "writing": {"d": path_d(writing), "label": at(0.765, 0.675)},
+            "agentic": {"d": path_d(agentic), "label": at(0.300, 0.268)},
+            "science": {"d": path_d(science), "label": at(0.725, 0.278)},
+            "writing": {"d": path_d(writing), "label": [round(float(corner(0, 1)[0]), 1), round(float(corner(0, 1)[1] + 0.035 * H), 1)]},
             "uncharted": {"d": path_d(uncharted), "label": centroid(uncharted)},
         },
         "fields": {
             "agentic": [{"d": path_d(c), "label": centroid(c)} for c in agentic_cells],
             "science": [{"d": path_d(c), "label": centroid(c)} for c in science_cells],
-            "writing": [{"d": path_d(plot), "label": centroid(plot)}],
+            # the label of a planted piece sits in the open meadow just below its rows
+            "writing": [{"d": path_d(plot), "label": [round(float(v), 1) for v in corner(0, 0.42)]}],
         },
         "house": [round(hx, 1), round(hy, 1)],
     }

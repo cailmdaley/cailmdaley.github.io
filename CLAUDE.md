@@ -34,7 +34,7 @@ src/
 │   ├── index.astro          # Home
 │   ├── research.astro       # Research: one glazed panel per project
 │   ├── almanac/
-│   │   ├── index.astro      # Almanac: title page, Plate I (the holdings map), tool and writing lists
+│   │   ├── index.astro      # Almanacs: intro, this year's title page, Plate I (the holdings map), tool and writing lists
 │   │   └── science-ai.astro # Science & AI with claims demo
 │   └── about.astro          # About page
 ├── data/
@@ -46,7 +46,7 @@ scripts/
 └── paint.py                 # Seeded watercolour renderer for everything in public/paint/
 
 public/
-├── paint/                   # landscape.webp, paper.webp, stroke.webp, almanac-cover.webp, almanac-map.webp
+├── paint/                   # landscape.webp, paper.webp, stroke.webp, almanac-cover.webp, almanac-glaze.webp, almanac-map.webp
 ├── globe/                   # sky.webp, globe.webp (scripts/globe.py)
 └── claims-demo/
     ├── index.html           # Standalone D3 visualization
@@ -60,10 +60,11 @@ public/
 - `landscape.webp` — behind every page; on phones it shows as a band above the sheet
 - `paper.webp` — tileable grain for the sheet
 - `stroke.webp` — creek-water brush mark (alpha) under h2, dividers and the active nav item
-- `almanac-cover.webp` — the roundel on the Almanac's title page: sunrise and the waning moon over the ridges, seen over the porch rail. The month ring around it, and all the title-page lettering, are HTML/SVG in `almanac/index.astro`; the year and its place after Leap Year are reckoned at build time.
-- `almanac-map.webp` + `src/data/almanac-map.json` — Plate I of the Almanac, the holdings. Bare paper renders white so the plate prints onto the sheet with `mix-blend-mode: multiply`. Tools are strip fields in two blocks either side of the lane (agentic tools above, science infrastructure below; one field per tool, in the order of the `agentic` and `science` arrays in `almanac/index.astro`), writing is a fenced orchard across the creek, and an uncharted corner is left to mist. Adding a tool means adding a cut to its block in `mapplate()` and re-rendering.
+- `almanac-cover.webp` — the roundel on the almanac's title page: sunrise and the waning moon over the ridges, seen over the porch rail. It is RGBA, a vignette with its own paper set into the yellow cover (normal blending, not multiply). The month ring around it, and all the title-page lettering, are HTML/SVG in `almanac/index.astro`; the year and its place after Leap Year are reckoned at build time.
+- `almanac-glaze.webp` — the yellow of the title page, a gamboge-over-sienna glaze in the manner of a farmer's almanac cover; rendered white-normalised and stretched to the title page with `mix-blend-mode: multiply`. Rendered by the `cover` plate.
+- `almanac-map.webp` + `src/data/almanac-map.json` — Plate I, the holdings: a valley between wooded ridges that fold into spurs and turn violet at the crest, the creek coming out of the far ridges and running down the valley floor. Bare paper renders white so the plate prints onto the sheet with `mix-blend-mode: multiply`. Tools are long lots running from the creek onto the lower slopes, agentic tools on the west bank and science infrastructure on the east (one field per tool, in the order of the `agentic` and `science` arrays in `almanac/index.astro`); writing is a fenced orchard below the farmhouse, its label set in the open meadow under the planted rows; the lower east corner is left to mist. Adding a tool means raising its block's strip count in `mapplate()` and re-rendering. Map labels sit on paper knockouts and are sized in container units (`cqw`) so they scale with the plate.
 
-The name "Almanac" appears in the nav (BaseLayout), the page title, and the title page's h1.
+The page is "Almanacs", one almanac a year: the plural names it in the nav (BaseLayout) and the page title, and the URL is `/almanac`. The title page's h1 is the singular "Almanac" of the current year's number. Home (`src/content/pages/index.md`) links to it as "the Almanac".
 
 ## Mass-map globe (`/research`)
 

@@ -63,7 +63,9 @@ const fields = [
 ];
 ---
 
-<BaseLayout title="Almanac" description="Cail Daley's almanac: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
+<BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
+  <p class="intro">An almanac is a compendium of useful information: astronomical data, forecasts, recipes, articles on current topics, folklore. When I was growing up on a farm in West Virginia, the farmer's almanac was always lying around. These are mine.</p>
+
   <header class="title-page">
     <p class="number">Number One</p>
     <p class="owner">Cail Daley's</p>
@@ -90,12 +92,9 @@ const fields = [
     </div>
 
     <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, &amp; sundry Writings</p>
-    <p class="calc">Calculated for the meridian of Paris-Saclay, and will serve without sensible error for the hills of West Virginia.</p>
   </header>
 
-  <p class="intro">An almanac is a book kept current year by year, setting the sky's calendar beside practical know-how and short pieces of writing; this one holds the tools I build and what I write around the science. I grew up on a farm in West Virginia, and there was always a farmer's almanac lying around.</p>
-
-  <figure class="plate" aria-label="Plate I, a painted map of the holdings: agentic tools and science infrastructure as fields west of the creek, writing as an orchard to the east.">
+  <figure class="plate" aria-label="Plate I, a painted map of the holdings: a valley between wooded ridges, with agentic tools as fields on the west bank of the creek, science infrastructure on the east bank, and writing as an orchard below.">
     <div class="chart">
       <img src="/paint/almanac-map.webp" alt="" width={W} height={H} loading="lazy" />
       <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
@@ -121,7 +120,7 @@ const fields = [
         </a>
       ))}
     </div>
-    <figcaption><span class="plate-no">Plate I.</span> The holdings: agentic tools and science infrastructure in the fields west of the creek, either side of the lane; writing in the orchard across the ford.</figcaption>
+    <figcaption><span class="plate-no">Plate I.</span> The holdings: a valley between the ridges, agentic tools in the long lots on the west bank of the creek and science infrastructure across the ford on the east; writing in the orchard below the farmhouse.</figcaption>
   </figure>
 
   <section id="agentic">
@@ -154,14 +153,30 @@ const fields = [
 <style>
   /* ---- The title page: a rule-boxed almanac cover ---- */
   .title-page {
+    --umber: #5E4A2E;
+    --rule: rgba(110, 84, 46, 0.55);
     position: relative;
     text-align: center;
-    margin: 0 0 var(--space-lg);
-    padding: 1.3rem 1.6rem 1.4rem;
-    border: 1px solid rgba(126, 112, 98, 0.55);
-    outline: 1px solid rgba(126, 112, 98, 0.35);
+    margin: 0 0 var(--space-md);
+    padding: 1.4rem 1.6rem 1.5rem;
+    border: 1px solid rgba(110, 84, 46, 0.6);
+    outline: 1px solid rgba(110, 84, 46, 0.4);
     outline-offset: 4px;
     color: var(--text-primary);
+  }
+
+  /* The yellow cover: a gamboge glaze printed into the sheet */
+  .title-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('/paint/almanac-glaze.webp') center / 100% 100% no-repeat;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .title-page > * {
+    position: relative;
   }
 
   .title-page p {
@@ -174,17 +189,17 @@ const fields = [
     font-size: 0.82rem;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.32em;
-    color: var(--text-muted);
+    color: var(--umber);
     padding-bottom: 0.55rem;
     margin-bottom: 0.85rem !important;
-    border-bottom: 1px solid rgba(126, 112, 98, 0.4);
+    border-bottom: 1px solid var(--rule);
   }
 
   .owner {
     font-size: 1.05rem;
     letter-spacing: 0.14em;
     font-variant-caps: small-caps;
-    color: var(--text-secondary);
+    color: var(--umber);
   }
 
   .title-page h1 {
@@ -210,26 +225,26 @@ const fields = [
     height: 1.15rem;
     flex: none;
     fill: none;
-    stroke: var(--ochre);
+    stroke: #8A5A1E;
     stroke-width: 1.4;
     stroke-linecap: round;
   }
 
   .glyph .dot,
   .glyph .fill {
-    fill: var(--ochre);
+    fill: #8A5A1E;
     stroke: none;
   }
 
   .glyph .fill {
-    fill: var(--slate);
+    fill: #5F6E78;
   }
 
   .leap {
     font-size: 0.92rem;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.14em;
-    color: var(--text-muted);
+    color: var(--umber);
     margin-top: 0.15rem !important;
   }
 
@@ -245,7 +260,6 @@ const fields = [
     inset: 0;
     width: 100%;
     height: 100%;
-    mix-blend-mode: multiply;
   }
 
   .roundel svg {
@@ -261,11 +275,11 @@ const fields = [
     font-size: 25px;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.22em;
-    fill: var(--text-muted);
+    fill: var(--umber);
   }
 
   .roundel .ticks {
-    stroke: rgba(126, 112, 98, 0.7);
+    stroke: rgba(110, 84, 46, 0.75);
     stroke-width: 1.6;
     fill: none;
   }
@@ -276,22 +290,12 @@ const fields = [
     font-size: 1.02rem;
     font-variant-caps: small-caps;
     letter-spacing: 0.05em;
-    color: var(--text-secondary);
-  }
-
-  .calc {
-    max-width: 27rem;
-    margin: 0.85rem auto 0 !important;
-    padding-top: 0.7rem;
-    border-top: 1px solid rgba(126, 112, 98, 0.4);
-    font-size: 0.9rem;
-    color: var(--text-muted);
+    color: var(--umber);
   }
 
   .intro {
     text-indent: 0;
-    margin-bottom: var(--space-lg);
-    color: var(--text-secondary);
+    margin: 0 0 var(--space-lg);
   }
 
   /* ---- Plate I: printed onto the sheet, bleeding into its margins ---- */
@@ -301,6 +305,7 @@ const fields = [
 
   .chart {
     position: relative;
+    container-type: inline-size;
   }
 
   .plate img {
@@ -345,8 +350,8 @@ const fields = [
   }
 
   .field:hover {
-    fill: rgba(150, 110, 60, 0.16);
-    stroke: rgba(70, 60, 50, 0.35);
+    fill: rgba(150, 110, 60, 0.2);
+    stroke: rgba(70, 60, 50, 0.45);
   }
 
   .compass circle,
@@ -367,22 +372,23 @@ const fields = [
     fill: rgba(46, 42, 38, 0.75);
   }
 
-  /* Lettering */
+  /* Lettering: each name is set on a patch of paper lifted out of the paint,
+     and sized with the plate so it keeps its place at every width */
   .label {
     position: absolute;
     transform: translate(-50%, -50%);
     white-space: nowrap;
     border: none;
-    line-height: 1.1;
+    line-height: 1.15;
     text-align: center;
-    text-shadow:
-      0 0 3px rgba(242, 237, 227, 0.95),
-      0 0 6px rgba(242, 237, 227, 0.9),
-      0 0 10px rgba(242, 237, 227, 0.7);
+    padding: 0.08em 0.5em 0.14em;
+    border-radius: 0.7em;
+    background: rgba(242, 237, 227, 0.88);
+    box-shadow: 0 0 0.45em 0.3em rgba(242, 237, 227, 0.75);
   }
 
   .region-label {
-    font-size: 0.98rem;
+    font-size: clamp(10.5px, 2.15cqw, 15.5px);
     font-weight: 600;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.16em;
@@ -390,19 +396,16 @@ const fields = [
   }
 
   .field-label {
-    white-space: normal;
-    width: max-content;
-    max-width: 5.4em;
-    font-size: 0.82rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    font-size: clamp(11px, 2.3cqw, 16px);
+    font-weight: 600;
+    letter-spacing: 0.01em;
     color: var(--text-primary);
   }
 
   .field-label .year {
     display: block;
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.78em;
+    font-weight: 500;
     letter-spacing: 0.08em;
     color: var(--text-secondary);
   }
@@ -412,10 +415,13 @@ const fields = [
   }
 
   .uncharted-label {
-    font-size: 0.85rem;
+    font-size: clamp(10px, 2.05cqw, 14.5px);
+    font-weight: 500;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.28em;
-    color: var(--text-muted);
+    color: var(--text-secondary);
+    background: rgba(242, 237, 227, 0.6);
+    box-shadow: 0 0 0.5em 0.35em rgba(242, 237, 227, 0.5);
   }
 
   /* A label and its field light together */
@@ -426,8 +432,18 @@ const fields = [
   .plate:has(.l-science-1:hover) .f-science-1,
   .plate:has(.l-science-2:hover) .f-science-2,
   .plate:has(.l-writing-0:hover) .f-writing-0 {
-    fill: rgba(150, 110, 60, 0.16);
-    stroke: rgba(70, 60, 50, 0.35);
+    fill: rgba(150, 110, 60, 0.2);
+    stroke: rgba(70, 60, 50, 0.45);
+  }
+
+  .plate:has(.f-agentic-0:hover) .l-agentic-0,
+  .plate:has(.f-agentic-1:hover) .l-agentic-1,
+  .plate:has(.f-agentic-2:hover) .l-agentic-2,
+  .plate:has(.f-science-0:hover) .l-science-0,
+  .plate:has(.f-science-1:hover) .l-science-1,
+  .plate:has(.f-science-2:hover) .l-science-2,
+  .plate:has(.f-writing-0:hover) .l-writing-0 {
+    color: var(--creek-wet);
   }
 
   /* ---- The lists: the full account ---- */
@@ -482,13 +498,9 @@ const fields = [
     .plate figcaption {
       margin: 0.5rem 0.8rem 0;
     }
-
-    .field-label {
-      font-size: 0.72rem;
-    }
   }
 
-  /* Phone: a narrower cover, and only the regions are lettered on the plate */
+  /* Phone: a narrower cover, and a plate without its compass */
   @media (max-width: 600px) {
     .title-page {
       padding: 1rem 0.9rem 1.1rem;
@@ -515,13 +527,7 @@ const fields = [
       margin: 0.5rem 0.5rem 0;
     }
 
-    .field-label,
-    .uncharted-label {
-      display: none;
-    }
-
     .region-label {
-      font-size: 0.78rem;
       letter-spacing: 0.08em;
     }
 
