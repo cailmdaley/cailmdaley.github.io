@@ -12,7 +12,7 @@ Personal site built on the "Observational Patience" design philosophy.
 
 See `design/design-philosophy.md` for the full manifesto. Key points:
 
-**Porch Morning, in watercolour**: the view from a West Virginia porch on a misty morning — violet on the far ridge, mist pooled in the hollows, hemlock ridges, gravel darkened by rain — painted as transparent glazes on cold-press paper. Content sits on a sheet of that paper (#F2EDE3) laid over the painting; the accent is creek water after rain (#476B6B). Nothing is animated: the painting is a still image, and only link colours change on hover.
+**Porch Morning, in watercolour**: the view from a West Virginia porch on a misty morning — violet on the far ridge, mist pooled in the hollows, hemlock ridges, gravel darkened by rain — painted as transparent glazes on cold-press paper. Content sits on a sheet of that paper (#F2EDE3) laid over the painting; the accent is creek water after rain (#476B6B). Nothing is animated: the painting is a still image, and only link colours change on hover. The one exception is the UNIONS mass-map globe on Research, which turns slowly and answers the hand (see below).
 
 **Two Modes**:
 - **Laboratory** - Scientific work, data, technical analysis. After Cajal. Sepia/graphite tones.
@@ -62,6 +62,13 @@ public/
 - `almanac-map.webp` + `src/data/almanac-map.json` — the Almanac map. Bare paper renders white so the plate prints onto the sheet with `mix-blend-mode: multiply`. Tools are a patchwork of fields (one Voronoi field per tool, in the order of the `tools` array in `almanac/index.astro`), writing is an orchard across the creek, and an uncharted corner is left to mist. Adding a tool means adding a seed in `mapplate()` and re-rendering.
 
 The name "Almanac" appears in the nav (BaseLayout), the page title, and the map cartouche.
+
+## Mass-map globe (`/research`)
+
+The Optical Cosmic Shear card carries the UNIONS κ_E mass map on an interactive celestial globe, over the Gaia EDR3 sky. It is the site's one moving thing: it turns slowly (about 5°/s), pauses off screen, and does not turn at all under `prefers-reduced-motion`. Drag (or arrow keys) turns it; pinch, ctrl+wheel (trackpad pinch), `+`/`-`, or the wheel once the globe is focused zoom it, so the wheel never takes over page scrolling. On touch, a vertical swipe scrolls the page until the globe is zoomed in.
+
+- `scripts/globe.py` (`uv run scripts/globe.py`) bakes `public/globe/sky.webp`, one 2048×1024 equirectangular texture in equatorial coordinates (Gaia sky with the mass map composited inside the footprint), and `public/globe/globe.webp`, a still of the opening view that shows until WebGL draws and stands in without JS or WebGL2. The map follows the demo video's recipe (60′ mask-normalised smoothing, unit σ, amplitude blinded) in the site's colours: voids ridge violet, mean mist, peaks hemlock and creek green. Inputs default to the files in the loom and `~/Downloads`; pass `--kappa` and `--gaia` to point elsewhere.
+- `src/scripts/globe.ts` is a self-written WebGL2 renderer: one fragment shader ray-casts an orthographic sphere and samples the texture with seam-safe gradients. Textures load only when the globe nears the viewport. The opening view (`data-elev`, `data-phi`) matches `ELEV, PHI` in `globe.py`. RA increases to the left, as in the video.
 
 ## Claims Demo (`/claims-demo/`)
 
@@ -129,7 +136,7 @@ npm run preview  # Preview production build
 - Sheet (`.container`) max-width: 85ch
 - `.wash` gives a glazed panel; set `--wash: r, g, b` for the pigment
 - Figures blend into the paper with `mix-blend-mode: multiply`
-- Nothing animates or reacts to scroll
+- Nothing animates or reacts to scroll, except the mass-map globe on Research
 - Drop caps only on major section starts (h1 level)
 - Illuminated mode uses F1 (gold overlay) + F2 (dark letter) fonts layered
 - Iframe embeds should have no padding, match container width exactly

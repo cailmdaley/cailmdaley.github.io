@@ -18,6 +18,8 @@ The palette lives in the liminal hour: the porch of a West Virginia farm on a we
 
 Nothing moves. The painting is a still image; the page is a sheet of paper laid over it. Stillness is part of the patience.
 
+One thing turns: the mass map of the sky on the Research page, a globe that revolves slowly the way the sky does, and stops in your hand when you reach for it. It is the exception that earns its motion, because the map is of a sphere and only reads as one when it turns. For readers who ask for reduced motion it holds still.
+
 ## Typography and Mark
 
 Text operates at multiple scales of certainty. Headlines in small-caps signal orientation without shouting; section heads stand upright over a single creek-water brush mark. There are no italics: emphasis comes from weight, from small capitals, from the hand of the brush. Body text at legible sizes invites sustained attention. Monospace appears for precision—code, measurements, technical notation—and disappears when prose wants room to move. The letterforms themselves carry history: serifs that remember centuries of human thought, constructed with the care of someone at the absolute top of their field. Drop caps illuminate beginnings. Marginalia annotates. Every typographic choice reflects hours of refinement, the painstaking attention of master-level craft.
