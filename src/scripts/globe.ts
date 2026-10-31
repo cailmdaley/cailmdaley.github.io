@@ -46,7 +46,7 @@ void main() {
 
 const SPIN_DEG_PER_S = 5;      // the idle turn: a little over a minute per revolution
 const IDLE_MS = 3500;          // after the visitor lets go, the turn resumes
-const ZOOM_MIN = 1, ZOOM_MAX = 8;
+const ZOOM_MIN = 1, ZOOM_MAX = 5;
 
 function shader(gl: WebGL2RenderingContext, type: number, src: string) {
   const s = gl.createShader(type)!;
