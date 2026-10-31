@@ -50,7 +50,7 @@ LO, HI = -1.6, 3.5             # display range, in units of the shown map's σ
 MAP_ALPHA = 0.94               # opacity of the map over the sky
 
 # The opening view (data-elev, data-phi on /research): camera latitude and the RA it faces.
-ELEV, PHI = 34.0, 160.0
+ELEV, PHI = 55.0, 195.0
 STILL = 720                    # fallback still, px
 
 # low κ → high κ: voids in ridge violet, the mean in morning mist, mass
@@ -128,7 +128,7 @@ def gaia_sky(v, gaia_path):
     # quieter and a little warmer, as in the video; the night lifted from black to slate ink
     grey = s.mean(-1, keepdims=True)
     s = (grey + 0.8 * (s - grey)) * np.array([0.92, 0.89, 0.84])
-    return np.array([44, 48, 55]) / 255.0 + 0.9 * s
+    return np.array([40, 44, 52]) / 255.0 + 1.35 * s
 
 
 def bake(kappa_path, gaia_path):
