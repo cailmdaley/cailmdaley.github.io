@@ -1,18 +1,21 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getEntry } from 'astro:content';
 
 const page = await getEntry('pages', 'science-ai');
 const { Content } = await page.render();
+const date = page.data.date;
+const dateLabel = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <BaseLayout title={page.data.title} description="Epistemic claims dashboard — tracking scientific methodology, AI alignment, and experimental philosophy through structured evidence." mode={page.data.mode}>
   <h1 class="page-title">{page.data.title}</h1>
+  {date && <p class="dateline"><time datetime={date.toISOString().slice(0, 10)}>{dateLabel}</time></p>}
   <p class="demo-intro" set:html={page.data.demoIntro} />
 
   <section class="demo">
     <h2 class="demo-title"><span class="drop-cap" data-letter="E">E</span>pistemic Claims</h2>
-    {page.data.subtitle && <p class="demo-subtitle italic text-muted">{page.data.subtitle}</p>}
+    {page.data.subtitle && <p class="demo-subtitle text-muted">{page.data.subtitle}</p>}
     <div class="demo-frame">
       <iframe src="/claims-demo/index.html" title="Claims Dashboard Demo" scrolling="no"></iframe>
     </div>
@@ -39,6 +42,14 @@ const { Content } = await page.render();
     margin-bottom: 0.25rem;
   }
 
+  .dateline {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+    text-indent: 0;
+  }
+
   .demo-subtitle {
     margin-top: 0.25rem;
     margin-bottom: 0.5rem;
@@ -62,15 +73,6 @@ const { Content } = await page.render();
     font-style: normal;
     letter-spacing: 0.05em;
     margin-bottom: var(--space-sm);
-  }
-
-  .demo-title::after {
-    content: '';
-    display: block;
-    width: 17ch;
-    height: 1px;
-    background: linear-gradient(to right, var(--border), transparent);
-    margin-top: 0.4rem;
   }
 
   .demo-title .drop-cap {

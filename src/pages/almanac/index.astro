@@ -1,0 +1,315 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const agentic = [
+  { html: `<a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.` },
+  { html: `<a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.` },
+  { html: `<a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.` },
+];
+
+const science = [
+  { html: `<a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.` },
+  { html: `<a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.` },
+  { html: `<a href="https://arxiv.org/abs/2604.03227">UNIONS B-mode validation paper</a> — also published reproducibly as a <a href="https://myst-viewer.vercel.app/cailmdaley/unions-bmodes-mystra">MySTRA report</a>.` },
+];
+
+// Dated writing, newest first.
+const writing = [
+  { date: '2025-12-05', label: 'Dec 2025',
+    html: `<a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.` },
+];
+
+// The title page is reckoned for the year the site was built.
+const year = new Date().getFullYear();
+const sinceLeap = year % 4;
+const ordinal = ['', 'first', 'second', 'third'][sinceLeap];
+const leapLine = sinceLeap ? `being the ${ordinal} after Leap Year` : 'being Leap Year';
+
+// The month ring: January at the top, running clockwise like the year.
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December'];
+const CX = 500, CY = 500, R_TOP = 468, R_BOT = 490;
+const ring = MONTHS.map((m, i) => {
+  const deg = -90 + 30 * i;
+  const top = Math.sin(deg * Math.PI / 180) <= 1e-9;
+  // the top path starts at the bottom and runs clockwise; the bottom one starts at the top and runs back
+  const frac = top ? (((deg - 90) % 360) + 360) % 360 / 360 : (((270 - deg) % 360) + 360) % 360 / 360;
+  return { m, top, offset: `${(frac * 100).toFixed(3)}%` };
+});
+const circle = (r: number, sweep: 0 | 1) => {
+  const y0 = sweep ? CY + r : CY - r, y1 = sweep ? CY - r : CY + r;
+  return `M ${CX},${y0} A ${r} ${r} 0 1 ${sweep} ${CX},${y1} A ${r} ${r} 0 1 ${sweep} ${CX},${y0}`;
+};
+const ticks = MONTHS.map((_, i) => {
+  const a = (-105 + 30 * i) * Math.PI / 180;
+  const [r0, r1] = [447, 458];
+  return `M ${(CX + r0 * Math.cos(a)).toFixed(1)},${(CY + r0 * Math.sin(a)).toFixed(1)} L ${(CX + r1 * Math.cos(a)).toFixed(1)},${(CY + r1 * Math.sin(a)).toFixed(1)}`;
+}).join(' ');
+
+---
+
+<BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
+  <p class="intro">An almanac is a compendium of useful information: astronomical data, forecasts, recipes, articles on current topics, folklore. When I was growing up on a farm in West Virginia, the farmer's almanac was always lying around. These are mine.</p>
+
+  <header class="title-page">
+    <p class="number">Number One</p>
+    <h1>Almanac</h1>
+    <p class="year">
+      <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="5.2" /><circle class="dot" r="1.3" /><path d="M0,-11V-8M0,8V11M-11,0H-8M8,0H11M-7.8,-7.8L-5.7,-5.7M5.7,5.7L7.8,7.8M-7.8,7.8L-5.7,5.7M5.7,-5.7L7.8,-7.8" /></svg>
+      <span>for the Year {year}</span>
+      <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><path class="fill" d="M3,-7.42 A8,8 0 1,0 3,7.42 A7.69,7.69 0 0,1 3,-7.42 Z" /></svg>
+    </p>
+    <p class="leap">{leapLine}</p>
+
+    <div class="roundel">
+      <img src="/paint/almanac-cover.webp" width="800" height="800" alt="A painted roundel: the sun rising over misty violet and hemlock ridges, a waning crescent moon still up, seen over a porch rail." />
+      <svg viewBox="0 0 1000 1000" aria-hidden="true">
+        <defs>
+          <path id="ring-top" d={circle(R_TOP, 1)} />
+          <path id="ring-bot" d={circle(R_BOT, 0)} />
+        </defs>
+        <path class="ticks" d={ticks} />
+        {ring.map((r) => (
+          <text><textPath href={r.top ? '#ring-top' : '#ring-bot'} startOffset={r.offset} text-anchor="middle">{r.m}</textPath></text>
+        ))}
+      </svg>
+    </div>
+
+    <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, &amp; sundry Writings</p>
+  </header>
+
+
+  <section id="agentic">
+    <h2>Agentic tools</h2>
+    <ul class="entries">
+      {agentic.map((t) => <li set:html={t.html} />)}
+    </ul>
+  </section>
+
+  <section id="science">
+    <h2>Science infrastructure</h2>
+    <ul class="entries">
+      {science.map((t) => <li set:html={t.html} />)}
+    </ul>
+  </section>
+
+  <section id="writing">
+    <h2>Writing</h2>
+    <ul class="entries dated">
+      {writing.map((w) => (
+        <li>
+          <time datetime={w.date}>{w.label}</time>
+          <span set:html={w.html} />
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- The title page: a rule-boxed almanac cover ---- */
+  .title-page {
+    --umber: #5E4A2E;
+    --rule: rgba(110, 84, 46, 0.55);
+    position: relative;
+    text-align: center;
+    margin: 0 0 var(--space-lg);
+    padding: 1.4rem 1.6rem 1.5rem;
+    border: 1px solid rgba(110, 84, 46, 0.6);
+    outline: 1px solid rgba(110, 84, 46, 0.4);
+    outline-offset: 4px;
+    color: var(--text-primary);
+  }
+
+  /* The yellow cover: a gamboge glaze printed into the sheet */
+  .title-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('/paint/almanac-glaze.webp') center / 100% 100% no-repeat;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .title-page > * {
+    position: relative;
+  }
+
+  .title-page p {
+    text-indent: 0;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .number {
+    font-size: 0.82rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.32em;
+    color: var(--umber);
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.85rem !important;
+    border-bottom: 1px solid var(--rule);
+  }
+
+
+  .title-page h1 {
+    font-size: 3.4rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin: 0.1rem 0 0.35rem;
+    padding-left: 0.1em; /* balance the trailing letter-space */
+  }
+
+  .year {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .glyph {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: none;
+    fill: none;
+    stroke: #8A5A1E;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+
+  .glyph .dot,
+  .glyph .fill {
+    fill: #8A5A1E;
+    stroke: none;
+  }
+
+  .glyph .fill {
+    fill: #5F6E78;
+  }
+
+  .leap {
+    font-size: 0.92rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    color: var(--umber);
+    margin-top: 0.15rem !important;
+  }
+
+  .roundel {
+    position: relative;
+    width: min(21rem, 100%);
+    margin: 0.9rem auto 0.7rem;
+    aspect-ratio: 1;
+  }
+
+  .roundel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .roundel svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .roundel text {
+    font-family: var(--font-serif);
+    font-size: 25px;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.22em;
+    fill: var(--umber);
+  }
+
+  .roundel .ticks {
+    stroke: rgba(110, 84, 46, 0.75);
+    stroke-width: 1.6;
+    fill: none;
+  }
+
+  .contents {
+    max-width: 24rem;
+    margin: 0 auto !important;
+    font-size: 1.02rem;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.05em;
+    color: var(--umber);
+  }
+
+  .intro {
+    text-indent: 0;
+    margin: 0 0 var(--space-lg);
+  }
+
+  /* ---- The lists: the full account ---- */
+  section {
+    margin: 0;
+    scroll-margin-top: var(--space-lg);
+  }
+
+  section + section {
+    margin-top: var(--space-lg);
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    line-height: 1.6;
+  }
+
+  .entries li {
+    margin-bottom: 0;
+  }
+
+  .dated li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-sm);
+    align-items: baseline;
+  }
+
+  .dated time {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* Phone: a narrower cover */
+  @media (max-width: 600px) {
+    .title-page {
+      padding: 1rem 0.9rem 1.1rem;
+    }
+
+    .title-page h1 {
+      font-size: 2.6rem;
+    }
+
+    .year {
+      font-size: 1.1rem;
+    }
+
+    .roundel text {
+      font-size: 30px;
+      letter-spacing: 0.14em;
+    }
+
+  }
+</style>

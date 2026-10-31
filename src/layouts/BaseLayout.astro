@@ -1,16 +1,17 @@
 ---
-import RidgeParallax from '../components/RidgeParallax.astro';
-
 interface Props {
   title: string;
   description?: string;
   mode?: 'laboratory' | 'illuminated' | 'blended';
+  /** a broader sheet, for pages whose panels carry inset figures */
+  wide?: boolean;
 }
 
 const {
   title,
   description = "Observational cosmology, AI & science, alignment & philosophy.",
-  mode = 'blended'
+  mode = 'blended',
+  wide = false
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
@@ -29,15 +30,17 @@ const currentPath = Astro.url.pathname;
   <meta name="twitter:card" content="summary" />
   <title>{title} — Cail Daley</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preload" as="image" href="/paint/landscape.webp" type="image/webp" />
+  <meta name="theme-color" content="#F2EDE3" />
 </head>
 <body class={mode}>
-  <RidgeParallax />
-  <div class="container">
+  <div class="landscape" aria-hidden="true"></div>
+  <div class:list={["container", { wide }]}>
     <header>
       <nav>
         <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
         <a href="/research" class:list={[{ active: currentPath.startsWith('/research') }]}>Research</a>
-        <a href="/science-ai" class:list={[{ active: currentPath === '/science-ai' }]}>Science & AI</a>
+        <a href="/almanac" class:list={[{ active: currentPath.startsWith('/almanac') }]}>Almanacs</a>
         <a href="/about" class:list={[{ active: currentPath === '/about' }]}>About</a>
       </nav>
     </header>

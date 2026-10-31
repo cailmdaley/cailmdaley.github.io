@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileLinks from '../components/ProfileLinks.astro';
 import { getEntry } from 'astro:content';
 
 const page = await getEntry('pages', 'index');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title="Home" description="Cail Daley — observational cosmologist researching gravitational lensing, CMB analysis, and AI in scientific methodology." mode={page.data.mode}>
+<BaseLayout title="Home" description="Cail Daley — observational cosmologist at CEA Paris-Saclay, working on UNIONS cosmic shear, Euclid × CMB lensing, and verifiable AI-mediated science." mode={page.data.mode}>
   <section class="hero">
     <h1>{page.data.title}</h1>
-    <p class="tagline italic">{page.data.subtitle}</p>
+    <p class="tagline">{page.data.subtitle}</p>
   </section>
 
   <section class="intro">
@@ -20,16 +21,12 @@ const { Content } = await page.render();
     <h2>Current Work</h2>
     <ul class="work-list">
       <li>
-        <a href="/research#cmb-lensing" class="tag">cmb</a>
-        <span class="work-desc">SPT-3G CMB lensing</span>
-      </li>
-      <li>
         <a href="/research#optical-cosmic-shear" class="tag">optical</a>
         <span class="work-desc">UNIONS cosmic shear</span>
       </li>
       <li>
         <a href="/research#cmb--galaxy-cross-correlations" class="tag">cross-corr</a>
-        <span class="work-desc">Euclid × CMB cross-correlations</span>
+        <span class="work-desc">Euclid × SPT-3G cross-correlations</span>
       </li>
       <li>
         <a href="/research#kinematic-lensing" class="tag">spectroscopy</a>
@@ -37,8 +34,7 @@ const { Content } = await page.render();
       </li>
     </ul>
     <p class="links">
-      <a href="/cv.pdf">CV</a> ·
-      <a href="https://cailmdaley.github.io/talks/">Talks</a>
+      <ProfileLinks />
     </p>
   </section>
 </BaseLayout>
@@ -86,6 +82,7 @@ const { Content } = await page.render();
 
   .work-list {
     list-style: none;
+    margin-left: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
@@ -98,20 +95,15 @@ const { Content } = await page.render();
   }
 
   .work-list .tag {
-    font-family: var(--font-serif);
-    font-size: 0.8rem;
-    font-variant-caps: all-petite-caps;
-    letter-spacing: 0.03em;
-    background: var(--bg-secondary);
-    padding: 0.2em 0.5em;
-    border-radius: 2px;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: background 0.15s ease;
+    min-width: 6.6rem;
+    text-align: center;
+    border-bottom: none;
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
   .work-list .tag:hover {
-    background: var(--border-light);
+    background: rgba(71, 107, 107, 0.18);
+    color: var(--text-primary);
   }
 
   .work-desc {

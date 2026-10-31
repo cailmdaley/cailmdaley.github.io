@@ -12,15 +12,16 @@ Personal site built on the "Observational Patience" design philosophy.
 
 See `design/design-philosophy.md` for the full manifesto. Key points:
 
-**Porch Morning Palette**: Weathered wood, drafting paper, creek water, mountain mist. Warm natural tones with cold creek accent (#5A7B7B).
+**Porch Morning, in watercolour**: the view from a West Virginia porch on a misty morning — violet on the far ridge, mist pooled in the hollows, hemlock ridges, gravel darkened by rain — painted as transparent glazes on cold-press paper. Content sits on a sheet of that paper (#F2EDE3) laid over the painting; the accent is creek water after rain (#476B6B). Nothing is animated: the painting is a still image, and only link colours change on hover. Two things on Research move: the UNIONS mass-map globe, which turns slowly and answers the hand (see below), and the cross-correlation panorama, which pans across cosmic time as the page scrolls.
 
 **Two Modes**:
 - **Laboratory** - Scientific work, data, technical analysis. After Cajal. Sepia/graphite tones.
 - **Illuminated** - Philosophy, AI alignment, creative writing. After manuscripts. Gold accents, drop caps.
 
 **Typography**:
+- No italics anywhere (`grep -rn italic src public` finds only comments in global.css); emphasis is weight, small capitals, or a brush mark
+- Small caps for h1; h2 upright at weight 600 over a creek-water brush stroke; h3 in all-small-caps
 - Drop caps use EBGaramondInitials F1/F2 fonts (layered effect)
-- Small-caps for h1, italic for h2
 - Oldstyle numerals throughout
 
 ## Project Structure
@@ -28,22 +29,46 @@ See `design/design-philosophy.md` for the full manifesto. Key points:
 ```
 src/
 ├── layouts/
-│   └── BaseLayout.astro     # Main layout with ridge parallax background
+│   └── BaseLayout.astro     # Layout: fixed painted landscape behind the paper sheet
 ├── pages/
 │   ├── index.astro          # Home
-│   ├── research.astro       # Research page
-│   ├── science-ai.astro     # Science & AI with claims demo
+│   ├── research.astro       # Research: one glazed panel per project
+│   ├── almanac/
+│   │   ├── index.astro      # Almanacs: intro, this year's title page, tool and writing lists
+│   │   └── science-ai.astro # Science & AI with claims demo
 │   └── about.astro          # About page
-├── components/
-│   └── RidgeParallax.astro  # Parallax mountain ridges background
 └── styles/
     └── global.css           # Design tokens and base styles
 
+scripts/
+└── paint.py                 # Seeded watercolour renderer for everything in public/paint/
+
 public/
+├── paint/                   # landscape.webp, paper.webp, stroke.webp, almanac-cover.webp, almanac-glaze.webp
+├── globe/                   # sky.webp, globe.webp (scripts/globe.py)
 └── claims-demo/
     ├── index.html           # Standalone D3 visualization
     └── EBGaramond-*.otf     # Local fonts for drop caps
 ```
+
+## Painted assets (`scripts/paint.py`)
+
+`uv run scripts/paint.py [landscape|paper|stroke|cover]` re-renders the plates; every plate is seeded, so a run reproduces the committed files. Pigment is optical density on paper (colour = paper · e^(−absorbance)), so washes glaze like transparent watercolour; each wash has edge darkening, granulation into the paper tooth and low-frequency unevenness, and mist is painted by lifting density out.
+
+- `landscape.webp` — behind every page; on phones it shows as a band above the sheet
+- `paper.webp` — tileable grain for the sheet
+- `stroke.webp` — creek-water brush mark (alpha) under h2, dividers and the active nav item
+- `almanac-cover.webp` — the roundel on the almanac's title page: sunrise and the waning moon over the ridges, seen over the porch rail. It is RGBA, a vignette with its own paper set into the yellow cover (normal blending, not multiply). The month ring around it, and all the title-page lettering, are HTML/SVG in `almanac/index.astro`; the year and its place after Leap Year are reckoned at build time.
+- `almanac-glaze.webp` — the yellow of the title page, a gamboge-over-sienna glaze in the manner of a farmer's almanac cover; rendered white-normalised and stretched to the title page with `mix-blend-mode: multiply`. Rendered by the `cover` plate.
+
+The page is "Almanacs", one almanac a year: the plural names it in the nav (BaseLayout) and the page title, and the URL is `/almanac`. The title page's h1 is the singular "Almanac" of the current year's number. Home (`src/content/pages/index.md`) links to it as "the Almanacs".
+
+## Mass-map globe (`/research`)
+
+The Optical Cosmic Shear card carries the UNIONS κ_E mass map on an interactive celestial globe, over the Gaia EDR3 all-sky map. It is the site's one moving thing: it turns slowly (about 5°/s), pauses off screen, and does not turn at all under `prefers-reduced-motion`. Drag (or arrow keys) turns it; pinch, ctrl+wheel (trackpad pinch), `+`/`-`, or the wheel once the globe is focused zoom it, so the wheel never takes over page scrolling. On touch, a vertical swipe scrolls the page until the globe is zoomed in.
+
+- `scripts/globe.py` (`uv run scripts/globe.py`) bakes `public/globe/sky.webp`, one 2048×1024 equirectangular texture in equatorial coordinates (Gaia sky with the mass map composited inside the footprint), and `public/globe/globe.webp`, a still of the opening view that shows until WebGL draws and stands in without JS or WebGL2. The map follows the demo video's recipe (60′ mask-normalised smoothing, unit σ, amplitude blinded) in the video's press palette, pale cyan for underdense sky to deep blue for the mass peaks. Inputs default to the files in the loom and `~/Downloads`; pass `--kappa` and `--gaia` to point elsewhere.
+- `src/scripts/globe.ts` is a self-written WebGL2 renderer: one fragment shader ray-casts an orthographic sphere and samples the texture with seam-safe gradients. Textures load only when the globe nears the viewport. The opening view (`data-elev`, `data-phi`) matches `ELEV, PHI` in `globe.py`. RA increases to the left, as in the video.
 
 ## Claims Demo (`/claims-demo/`)
 
@@ -84,13 +109,13 @@ Interactive DAG visualization for epistemic claims. Embedded via iframe on scien
 From `global.css`:
 
 ```css
---bg-card: #EDE8E0;        /* Drafting paper */
---bg-secondary: #BEB0A0;   /* Aged pine */
+--paper: #F2EDE3;          /* Cold-press sheet (also --bg-card) */
 --text-primary: #2E2A26;   /* Graphite */
 --text-secondary: #4A4540;
---text-muted: #7A7368;
---border: #A89888;         /* Pencil rule */
---accent: #5A7B7B;         /* Creek water */
+--text-muted: #6E675F;
+--border-light: #D9CFBF;   /* Pencil rule */
+--accent: #476B6B;         /* Creek water after rain (--creek); --creek-wet on hover */
+--ridge: #9D90BB;  --slate: #8A9DA6;  --hemlock: #587466;  --gravel: #B4A48C;
 
 /* Correctness colors (1-5 scale) */
 --correctness-1: #A87070;  /* Red - low */
@@ -108,7 +133,10 @@ npm run preview  # Preview production build
 
 ## Conventions
 
-- Container max-width: 85ch
+- Sheet (`.container`) max-width: 94ch; `<BaseLayout wide>` gives 110ch (Research, whose panels carry inset figures)
+- `.wash` gives a glazed panel; set `--wash: r, g, b` for the pigment
+- Figures blend into the paper with `mix-blend-mode: multiply`
+- Nothing animates or reacts to scroll, except on Research: the mass-map globe and the scroll-driven cross-correlation panorama (`.scroll-reveal`)
 - Drop caps only on major section starts (h1 level)
 - Illuminated mode uses F1 (gold overlay) + F2 (dark letter) fonts layered
 - Iframe embeds should have no padding, match container width exactly

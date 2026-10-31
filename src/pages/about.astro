@@ -1,25 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileLinks from '../components/ProfileLinks.astro';
 import { getEntry } from 'astro:content';
 
 const page = await getEntry('pages', 'about');
 const { Content } = await page.render();
 ---
 
-<BaseLayout title={page.data.title} description="Cail Daley — postdoctoral researcher in observational cosmology at Universit\u00e9 Paris Cit\u00e9 and Institut d'Astrophysique de Paris." mode={page.data.mode}>
-  <div class="portrait">
-    <img src="/portrait.jpg" alt="Cail Daley" />
+<BaseLayout title={page.data.title} description="Cail Daley — postdoctoral researcher in observational cosmology at CosmoStat, CEA Paris-Saclay." mode={page.data.mode}>
+  <div class="intro">
+    <h1>{page.data.title}</h1>
+    <div class="portrait">
+      <img src="/portrait.jpg" alt="Cail Daley" />
+    </div>
+    <section class="bio">
+      <Content />
+    </section>
   </div>
-  <h1>{page.data.title}</h1>
-
-  <section class="bio">
-    <Content />
-  </section>
 
   <section class="contact">
     <h2>Contact</h2>
-    <p><a href="mailto:cail.daley@u-paris.fr">cail.daley@u-paris.fr</a></p>
-    <p><a href="https://github.com/cailmdaley">GitHub</a> · <a href="https://cailmdaley.github.io/talks/">Talks</a> · <a href="/cv.pdf">CV</a></p>
+    <p><a href="mailto:cail.daley@cea.fr">cail.daley@cea.fr</a></p>
+    <p><ProfileLinks /></p>
   </section>
 
   </BaseLayout>
@@ -29,28 +31,65 @@ const { Content } = await page.render();
     margin-bottom: var(--space-lg);
   }
 
+  /* The title and first two paragraphs sit beside the portrait; the rest run full width below it */
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 40%;
+    column-gap: var(--space-lg);
+    align-items: start;
+    margin-bottom: var(--space-lg);
+  }
+
+  .intro .bio {
+    display: contents;
+  }
+
+  .intro > h1,
+  .bio :global(p) {
+    grid-column: 1;
+  }
+
+  /* The portrait fills its rows exactly, so it ends where the second paragraph does */
   .portrait {
-    float: right;
-    width: 40%;
-    margin: 0 0 var(--space-md) var(--space-lg);
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: stretch;
+    position: relative;
+    margin: 0 0 var(--space-md);
   }
 
   .portrait img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 35%;
     border-radius: 4px;
   }
 
-  @media (max-width: 600px) {
-    .portrait {
-      float: none;
-      width: 60%;
-      margin: 0 auto var(--space-lg);
-    }
+  .bio :global(p:nth-of-type(n+3)) {
+    grid-column: 1 / -1;
   }
 
-  .bio {
-    margin-bottom: var(--space-xl);
+
+
+  @media (max-width: 600px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      grid-row: 1;
+      grid-column: 1;
+      width: 60%;
+      margin: 0 auto var(--space-lg);
+      aspect-ratio: 3 / 4;
+    }
+
+    .intro > h1 {
+      grid-row: 2;
+    }
   }
 
   .bio :global(p) {
@@ -60,8 +99,9 @@ const { Content } = await page.render();
     text-indent: 0;
   }
 
-  .bio :global(p + p) {
-    margin-top: var(--space-md);
+  /* grid items keep their margins (no collapsing), so each paragraph carries one gap below */
+  .bio :global(p) {
+    margin: 0 0 var(--space-md);
   }
 
   .contact {

@@ -10,6 +10,7 @@ const pages = defineCollection({
     collaboration: z.string().optional(),
     order: z.number().optional(),
     demoIntro: z.string().optional(),
+    date: z.coerce.date().optional(),
   }),
 });
 
