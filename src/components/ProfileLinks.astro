@@ -1,0 +1,11 @@
+---
+// The profile links shared by Home and About.
+const links = [
+  ['GitHub', 'https://github.com/cailmdaley'],
+  ['Talks', 'https://cailmdaley.github.io/talks/'],
+  ['CV', '/cv.pdf'],
+  ['Publications', '/publication-list.pdf'],
+  ['ORCID', 'https://orcid.org/0000-0002-3760-2086'],
+];
+---
+{links.map(([label, href], i) => <>{i > 0 && ' · '}<a href={href}>{label}</a></>)}

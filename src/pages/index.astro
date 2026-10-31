@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProfileLinks from '../components/ProfileLinks.astro';
 import { getEntry } from 'astro:content';
 
 const page = await getEntry('pages', 'index');
@@ -33,9 +34,7 @@ const { Content } = await page.render();
       </li>
     </ul>
     <p class="links">
-      <a href="/cv.pdf">CV</a> ·
-      <a href="/publication-list.pdf">Publications</a> ·
-      <a href="https://cailmdaley.github.io/talks/">Talks</a>
+      <ProfileLinks />
     </p>
   </section>
 </BaseLayout>
