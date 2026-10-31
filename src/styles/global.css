@@ -102,7 +102,7 @@ h1 {
 
 h2 {
   font-size: 1.5rem;
-  font-style: italic;
+  font-weight: 500;
   color: var(--text-secondary);
   margin-top: var(--space-xl);
   margin-bottom: var(--space-md);
@@ -159,16 +159,12 @@ p + p {
   color: var(--text-secondary);
 }
 
-/* Improve italic legibility globally */
-em, i, .italic {
-  letter-spacing: 0.01em;  /* tiny bit of breathing room */
+/* The site uses no italics: emphasis is carried by weight */
+em, i {
+  font-style: normal;
+  font-weight: 500;
 }
 
-/* Small italic text needs more help */
-.text-small em,
-.text-small i,
-small em,
-small i,
 figcaption {
   letter-spacing: 0.015em;
   color: var(--text-secondary);  /* not muted - needs contrast */
@@ -237,7 +233,6 @@ blockquote {
   border-left: none;
   padding: var(--space-lg) var(--space-xl);
   margin: var(--space-xl) calc(-1 * var(--space-md));
-  font-style: italic;
   font-size: 1.15rem;
   line-height: 1.9;
   color: var(--text-secondary);
@@ -262,9 +257,7 @@ blockquote::before {
   font-family: var(--font-serif);
 }
 
-/* Emphasis - a moment of attention */
 em {
-  font-style: italic;
   color: var(--text-primary);
 }
 
@@ -282,7 +275,6 @@ small, .text-small {
 /* Figure captions - quiet notation */
 figcaption {
   font-size: 0.85rem;
-  font-style: italic;
   color: var(--text-muted);
   margin-top: var(--space-sm);
   text-align: center;
@@ -333,10 +325,6 @@ li::marker {
 
 .text-small {
   font-size: 0.85rem;
-}
-
-.italic {
-  font-style: italic;
 }
 
 .small-caps {
@@ -397,6 +385,7 @@ nav {
 }
 
 nav a {
+  font-size: 1.15rem;
   font-variant: small-caps;
   text-transform: lowercase;
   letter-spacing: 0.06em;

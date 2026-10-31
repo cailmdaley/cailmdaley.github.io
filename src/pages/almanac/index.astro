@@ -1,34 +1,31 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Tools" description="Tools Cail Daley builds and contributes to: scientific pipelines, agent orchestration, and verifiable AI-mediated science." mode="laboratory">
-  <h1>Tools</h1>
-  <p class="subtitle italic text-muted">Things I've built</p>
+<BaseLayout title="Almanac" description="Things Cail Daley makes outside the research papers: tools for scientific pipelines and agent orchestration, and dated writing on AI and science." mode="blended">
+  <h1>Almanac</h1>
+  <p class="intro">What I make around the science: the tools I build to get the work done, and writing on what changes when machines start doing science too.</p>
 
   <section>
-    <h2>Agents &amp; working memory</h2>
-    <ul class="tool-list">
+    <h2>Tools &amp; infrastructure</h2>
+    <ul class="entries">
       <li><a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.</li>
       <li><a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.</li>
       <li><a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Science infrastructure</h2>
-    <ul class="tool-list">
       <li><a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.</li>
       <li><a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.</li>
       <li><a href="https://github.com/LightconeResearch">Lightcone Research tools</a> — open-source tools for verifiable AI-mediated science, built with the core team.</li>
+      <li><a href="https://github.com/cailmdaley/unions-bmodes-mystra">UNIONS B-mode MySTRA report</a> — a public report mirror for the agent-produced B-mode validation paper.</li>
     </ul>
   </section>
 
   <section>
-    <h2>Evidence &amp; reports</h2>
-    <ul class="tool-list">
-      <li><a href="/science-ai">Epistemic claims demo</a> — an interactive graph of claims, dependencies, evidence and uncertainty.</li>
-      <li><a href="https://github.com/cailmdaley/unions-bmodes-mystra">UNIONS B-mode MySTRA report</a> — a public report mirror for the agent-produced B-mode validation paper.</li>
+    <h2>Writing</h2>
+    <ul class="entries dated">
+      <li>
+        <time datetime="2025-12-05">Dec 2025</time>
+        <span><a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.</span>
+      </li>
     </ul>
   </section>
 </BaseLayout>
@@ -38,12 +35,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: var(--space-xs);
   }
 
-  .subtitle {
+  .intro {
+    text-indent: 0;
     margin-bottom: var(--space-lg);
+    color: var(--text-secondary);
   }
 
   section {
-    margin-bottom: 0;
+    margin: 0;
   }
 
   section + section {
@@ -56,17 +55,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: var(--space-md);
   }
 
-  .tool-list {
+  .entries {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    line-height: 1.6;
   }
 
-  .tool-list li {
+  .entries li {
     margin-bottom: 0;
-    line-height: 1.6;
+  }
+
+  .dated li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-sm);
+    align-items: baseline;
+  }
+
+  .dated time {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-variant-numeric: lining-nums tabular-nums;
   }
 </style>

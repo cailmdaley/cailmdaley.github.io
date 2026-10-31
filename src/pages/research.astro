@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="Research" description="Weak gravitational lensing research: UNIONS cosmic shear, Euclid × SPT-3G 6×2pt, kinematic lensing, and SPT-3G CMB lensing." mode="laboratory">
   <h1>Research</h1>
-  <p class="subtitle italic text-muted">Weak gravitational lensing</p>
+  <p class="subtitle text-muted">Weak gravitational lensing</p>
 
   <section class="overview">
     <p>
@@ -30,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <article class="card" id="cmb--galaxy-cross-correlations">
       <h2>CMB × Galaxy Cross-correlations</h2>
-      <p class="collab">Euclid + SPT-3G + ACT</p>
+      <p class="collab">Euclid + SPT-3G</p>
       <p>
         380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
       </p>
@@ -39,22 +39,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
       <p>
-        I'm leading the Euclid × SPT-3G cross-correlation paper (6×2pt) and the SPT–Euclid Memorandum of Understanding. The end-to-end blinded analysis combines Euclid shear and galaxy clustering with SPT-3G and ACT CMB lensing, aiming for results by mid-2027. These measurements independently calibrate Euclid's shear and tighten constraints on structure growth.
+        I'm leading a Euclid × SPT-3G cross-correlation paper (6×2pt), a joint effort between the two collaborations. The end-to-end blinded analysis combines Euclid shear and galaxy clustering with SPT-3G CMB lensing, aiming for results by mid-2027. These measurements independently calibrate Euclid's shear and tighten constraints on structure growth.
       </p>
     </article>
 
     <article class="card" id="optical-cosmic-shear">
       <h2>Optical Cosmic Shear</h2>
       <p class="collab">UNIONS</p>
+      <figure class="inset">
+        <img src="/unions-massmap-globe.png" alt="Convergence map of the full UNIONS footprint on a globe" />
+        <figcaption>Convergence map of the full 5,400 deg² UNIONS footprint, reconstructed from galaxy shear.</figcaption>
+      </figure>
       <p>
-        I'm the main postdoc on the first UNIONS cosmic-shear cosmology. The <a href="https://arxiv.org/abs/2604.03227">B-mode validation paper</a> I led is in press at <em>Astronomy &amp; Astrophysics</em>, and I presented the first cosmological constraints at Rencontres de Moriond 2026. I'm running the blinded validation of the next, larger analysis, with <a href="https://unions-wl.github.io/production/status.html">DR6 full-footprint catalogue production</a> under way and cosmological results aimed for mid-2027.
+        I'm leading production of the 5,000 deg² UNIONS tomographic shear catalogue (<a href="https://unions-wl.github.io/production/status.html">live status</a>) and the blinded validation of the cosmic-shear analysis built on it, with cosmological results aimed for mid-2027. The <a href="https://arxiv.org/abs/2604.03227">B-mode validation paper</a> I led for the first UNIONS cosmic-shear analysis is in press at Astronomy &amp; Astrophysics, and I presented its cosmological constraints at Rencontres de Moriond 2026.
       </p>
       <p>
         Before extracting cosmology, the measured signal must be shown to be genuinely astrophysical. Gravitational lensing produces only E-mode (gradient-like) shear patterns; detected B-modes (curl-like) indicate residual contamination from telescope optics, atmosphere, or data processing. We decompose the UNIONS shear measurements into E and B components using three independent methods. B-modes are consistent with zero after PSF corrections, validating systematics control and informing the angular scale cuts for cosmological inference.
       </p>
       <figure>
-        <img src="/unions-eb-modes.png" alt="UNIONS E/B mode decomposition" />
-        <figcaption>Total ξ± (gray), pure E-mode (teal), B-mode (crimson), and ambiguous mode contributions. B-modes consistent with zero validate systematics control.</figcaption>
+        <img src="/unions-eb-modes.png" alt="Pure E/B-mode decomposition of the UNIONS shear correlation functions" />
+        <figcaption>Pure E/B decomposition of the UNIONS shear correlation functions ξ±: total (black), E-mode (blue), B-mode (red) and the ambiguous mode (grey). Inside the fiducial scale cuts (unshaded) the B-modes are consistent with zero. From the B-mode validation paper.</figcaption>
       </figure>
     </article>
 
@@ -66,7 +70,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
       <figure>
         <img src="/kinematic-lensing.png" alt="Kinematic lensing schematic" />
-        <figcaption>Velocity-field symmetry breaking from shear. Figure by M1 intern Jordy Ram.</figcaption>
+        <figcaption>Intensity (top), velocity field (middle) and rotation curve (bottom) for a face-on, an inclined, a tangentially sheared and a cross-sheared galaxy. Only cross shear breaks the symmetry between photometric and kinematic axes. Figure by Jordy Ram.</figcaption>
       </figure>
       <p>
         With master's student Jordy Ram (2024–25), we improved a symmetry-based kinematic lensing method and showed it applies to elliptical galaxies as well as spirals. I'm supervising Serena Nakhle (2025–present) on its first application to integral-field survey data from SAMI and WiFeS.
@@ -112,7 +116,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .collab {
-    font-style: italic;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.04em;
     color: var(--text-muted);
     font-size: 0.9rem;
     margin-bottom: var(--space-sm);
@@ -131,6 +136,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin: var(--space-sm) 0;
   }
 
+  .card figure.inset {
+    float: right;
+    width: 38%;
+    margin: calc(-1 * var(--space-lg)) 0 var(--space-sm) var(--space-md);
+  }
+
+  .card figure.inset img {
+    border-radius: 50%;
+  }
+
+  .card::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  @media (max-width: 560px) {
+    .card figure.inset {
+      float: none;
+      width: 70%;
+      margin: var(--space-sm) auto;
+    }
+  }
+
   figure img {
     width: 100%;
     border-radius: 4px;
@@ -139,14 +168,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   figcaption {
     font-size: 0.9rem;
-    font-style: italic;
+    
     color: var(--text-muted);
     margin-top: var(--space-xs);
   }
 
   .caption {
     font-size: 0.9rem;
-    font-style: italic;
+    
     color: var(--text-muted);
   }
 

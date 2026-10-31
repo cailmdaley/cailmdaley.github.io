@@ -9,7 +9,7 @@ const { Content } = await page.render();
 <BaseLayout title="Home" description="Cail Daley — observational cosmologist at CEA Paris-Saclay, working on UNIONS cosmic shear, Euclid × CMB lensing, and verifiable AI-mediated science." mode={page.data.mode}>
   <section class="hero">
     <h1>{page.data.title}</h1>
-    <p class="tagline italic">{page.data.subtitle}</p>
+    <p class="tagline">{page.data.subtitle}</p>
   </section>
 
   <section class="intro">
@@ -35,8 +35,7 @@ const { Content } = await page.render();
     <p class="links">
       <a href="/cv.pdf">CV</a> ·
       <a href="/publication-list.pdf">Publications</a> ·
-      <a href="https://cailmdaley.github.io/talks/">Talks</a> ·
-      <a href="/tools">Tools</a>
+      <a href="https://cailmdaley.github.io/talks/">Talks</a>
     </p>
   </section>
 </BaseLayout>
