@@ -2,77 +2,139 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import plate from '../../data/almanac-map.json';
 
-// Each tool is one field on the map, in the order of plate.fields.tools.
-const tools = [
+// Each tool is one field on Plate I, in the order of plate.fields.agentic / .science.
+const agentic = [
   { name: 'felt', href: 'https://cailmdaley.github.io/felt/',
     html: `<a href="https://cailmdaley.github.io/felt/">felt</a> — searchable, connected Markdown notes that keep decisions and context across agent sessions.` },
   { name: 'Shuttle', href: 'https://github.com/cailmdaley/shuttle',
     html: `<a href="https://github.com/cailmdaley/shuttle">Shuttle</a> — agent orchestration across machines and HPC centres, with written tasks and a board for following the work.` },
   { name: 'hark', href: 'https://github.com/cailmdaley/hark',
     html: `<a href="https://github.com/cailmdaley/hark">hark</a> — live meeting transcription with speaker labels, written to a file an agent can follow.` },
+];
+
+const science = [
   { name: 'UNIONS dashboard', href: 'https://unions-wl.github.io/production/status.html',
     html: `<a href="https://unions-wl.github.io/production/status.html">UNIONS production dashboard</a> — live progress of DR6 full-footprint shape-catalogue production.` },
   { name: 'ShapePipe', href: 'https://github.com/CosmoStat/shapepipe',
     html: `<a href="https://github.com/CosmoStat/shapepipe">ShapePipe</a> &amp; <a href="https://github.com/CosmoStat/sp_validation">sp_validation</a> — contributions to CosmoStat's galaxy-shape measurement and weak-lensing catalogue validation pipelines.` },
-  { name: 'Lightcone tools', href: 'https://github.com/LightconeResearch',
-    html: `<a href="https://github.com/LightconeResearch">Lightcone Research tools</a> — open-source tools for verifiable AI-mediated science, built with the core team.` },
-  { name: 'B-mode report', href: 'https://github.com/cailmdaley/unions-bmodes-mystra',
-    html: `<a href="https://github.com/cailmdaley/unions-bmodes-mystra">UNIONS B-mode MySTRA report</a> — a public report mirror for the agent-produced B-mode validation paper.` },
+  { name: 'B-mode paper', href: 'https://arxiv.org/abs/2604.03227',
+    html: `<a href="https://arxiv.org/abs/2604.03227">UNIONS B-mode validation paper</a> — also published reproducibly as a <a href="https://myst-viewer.vercel.app/cailmdaley/unions-bmodes-mystra">MySTRA report</a>.` },
 ];
 
-// Dated writing; the newest piece is the planted plot of the orchard.
+// Dated writing; the newest piece is the planted rows of the orchard.
 const writing = [
   { name: 'Science & AI', href: '/almanac/science-ai', date: '2025-12-05', label: 'Dec 2025',
     html: `<a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.` },
 ];
 
+// The title page is reckoned for the year the site was built.
+const year = new Date().getFullYear();
+const sinceLeap = year % 4;
+const ordinal = ['', 'first', 'second', 'third'][sinceLeap];
+const leapLine = sinceLeap ? `being the ${ordinal} after Leap Year` : 'being Leap Year';
+
+// The month ring: January at the top, running clockwise like the year.
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December'];
+const CX = 500, CY = 500, R_TOP = 468, R_BOT = 490;
+const ring = MONTHS.map((m, i) => {
+  const deg = -90 + 30 * i;
+  const top = Math.sin(deg * Math.PI / 180) <= 1e-9;
+  // the top path starts at the bottom and runs clockwise; the bottom one starts at the top and runs back
+  const frac = top ? (((deg - 90) % 360) + 360) % 360 / 360 : (((270 - deg) % 360) + 360) % 360 / 360;
+  return { m, top, offset: `${(frac * 100).toFixed(3)}%` };
+});
+const circle = (r: number, sweep: 0 | 1) => {
+  const y0 = sweep ? CY + r : CY - r, y1 = sweep ? CY - r : CY + r;
+  return `M ${CX},${y0} A ${r} ${r} 0 1 ${sweep} ${CX},${y1} A ${r} ${r} 0 1 ${sweep} ${CX},${y0}`;
+};
+const ticks = MONTHS.map((_, i) => {
+  const a = (-105 + 30 * i) * Math.PI / 180;
+  const [r0, r1] = [447, 458];
+  return `M ${(CX + r0 * Math.cos(a)).toFixed(1)},${(CY + r0 * Math.sin(a)).toFixed(1)} L ${(CX + r1 * Math.cos(a)).toFixed(1)},${(CY + r1 * Math.sin(a)).toFixed(1)}`;
+}).join(' ');
+
 const [W, H] = plate.viewBox;
 const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H * 100).toFixed(2)}%`;
+const fields = [
+  ...plate.fields.agentic.map((f, i) => ({ ...f, item: agentic[i], key: `agentic-${i}` })),
+  ...plate.fields.science.map((f, i) => ({ ...f, item: science[i], key: `science-${i}` })),
+  ...plate.fields.writing.map((f, i) => ({ ...f, item: writing[i], key: `writing-${i}` })),
+];
 ---
 
-<BaseLayout title="Almanac" description="Things Cail Daley makes outside the research papers: tools for scientific pipelines and agent orchestration, and dated writing on AI and science." mode="blended">
-  <figure class="plate" aria-label="A painted map of the almanac: tools and infrastructure as fields west of the creek, writing as an orchard to the east.">
-    <div class="chart">
-    <img src="/paint/almanac-map.webp" alt="" width={W} height={H} />
-    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
-      <path class="uncharted" d={plate.regions.uncharted.d} />
-      <a href="#writing" tabindex="-1"><path class="region" d={plate.regions.writing.d} /></a>
-      {plate.fields.tools.map((f, i) => (
-        <a href={tools[i].href} tabindex="-1"><path class={`field f-tools-${i}`} d={f.d} /></a>
-      ))}
-      {plate.fields.writing.map((f, i) => (
-        <a href={writing[i].href} tabindex="-1"><path class={`field f-writing-${i}`} d={f.d} /></a>
-      ))}
-      <g class="compass" transform={`translate(${W - 120} 92)`}>
-        <circle r="34" />
-        <path d="M0,-52 L7,0 L0,52 L-7,0 Z" />
-        <path class="fill" d="M0,-52 L7,0 L-7,0 Z" />
-        <path d="M-40,0 L40,0" />
-        <text y="-60">N</text>
-      </g>
-    </svg>
+<BaseLayout title="Almanac" description="Cail Daley's almanac: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
+  <header class="title-page">
+    <p class="number">Number One</p>
+    <p class="owner">Cail Daley's</p>
+    <h1>Almanac</h1>
+    <p class="year">
+      <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="5.2" /><circle class="dot" r="1.3" /><path d="M0,-11V-8M0,8V11M-11,0H-8M8,0H11M-7.8,-7.8L-5.7,-5.7M5.7,5.7L7.8,7.8M-7.8,7.8L-5.7,5.7M5.7,-5.7L7.8,-7.8" /></svg>
+      <span>for the Year {year}</span>
+      <svg class="glyph" viewBox="-12 -12 24 24" aria-hidden="true"><path class="fill" d="M3,-7.42 A8,8 0 1,0 3,7.42 A7.69,7.69 0 0,1 3,-7.42 Z" /></svg>
+    </p>
+    <p class="leap">{leapLine}</p>
 
-    <a class="label region-label" href="#tools" style={at(plate.regions.tools.label)}>Tools &amp; infrastructure</a>
-    <a class="label region-label" href="#writing" style={at(plate.regions.writing.label)}>Writing</a>
-    <span class="label uncharted-label" style={at(plate.regions.uncharted.label)}>uncharted</span>
-    {plate.fields.tools.map((f, i) => (
-      <a class={`label field-label l-tools-${i}`} href={tools[i].href} style={at(f.label)}>{tools[i].name}</a>
-    ))}
-    {plate.fields.writing.map((f, i) => (
-      <a class={`label field-label l-writing-${i}`} href={writing[i].href} style={at(f.label)}>
-        {writing[i].name}<span class="year">{writing[i].date.slice(0, 4)}</span>
-      </a>
-    ))}
+    <div class="roundel">
+      <img src="/paint/almanac-cover.webp" width="800" height="800" alt="A painted roundel: the sun rising over misty violet and hemlock ridges, a waning crescent moon still up, seen over a porch rail." />
+      <svg viewBox="0 0 1000 1000" aria-hidden="true">
+        <defs>
+          <path id="ring-top" d={circle(R_TOP, 1)} />
+          <path id="ring-bot" d={circle(R_BOT, 0)} />
+        </defs>
+        <path class="ticks" d={ticks} />
+        {ring.map((r) => (
+          <text><textPath href={r.top ? '#ring-top' : '#ring-bot'} startOffset={r.offset} text-anchor="middle">{r.m}</textPath></text>
+        ))}
+      </svg>
     </div>
-    <h1 class="cartouche">Almanac</h1>
+
+    <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, &amp; sundry Writings</p>
+    <p class="calc">Calculated for the meridian of Paris-Saclay, and will serve without sensible error for the hills of West Virginia.</p>
+  </header>
+
+  <p class="intro">An almanac is a book kept current year by year, setting the sky's calendar beside practical know-how and short pieces of writing; this one holds the tools I build and what I write around the science. I grew up on a farm in West Virginia, and there was always a farmer's almanac lying around.</p>
+
+  <figure class="plate" aria-label="Plate I, a painted map of the holdings: agentic tools and science infrastructure as fields west of the creek, writing as an orchard to the east.">
+    <div class="chart">
+      <img src="/paint/almanac-map.webp" alt="" width={W} height={H} loading="lazy" />
+      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+        {fields.map((f) => (
+          <a href={f.item.href} tabindex="-1"><path class={`field f-${f.key}`} d={f.d} /></a>
+        ))}
+        <g class="compass" transform={`translate(${W - 96} 76)`}>
+          <circle r="26" />
+          <path d="M0,-40 L5.5,0 L0,40 L-5.5,0 Z" />
+          <path class="fill" d="M0,-40 L5.5,0 L-5.5,0 Z" />
+          <path d="M-31,0 L31,0" />
+          <text y="-47">N</text>
+        </g>
+      </svg>
+
+      <a class="label region-label" href="#agentic" style={at(plate.regions.agentic.label)}>Agentic tools</a>
+      <a class="label region-label" href="#science" style={at(plate.regions.science.label)}>Science infrastructure</a>
+      <a class="label region-label" href="#writing" style={at(plate.regions.writing.label)}>Writing</a>
+      <span class="label uncharted-label" style={at(plate.regions.uncharted.label)}>uncharted</span>
+      {fields.map((f) => (
+        <a class={`label field-label l-${f.key}`} href={f.item.href} style={at(f.label)}>
+          {f.item.name}{'date' in f.item && <span class="year">{(f.item as { date: string }).date.slice(0, 4)}</span>}
+        </a>
+      ))}
+    </div>
+    <figcaption><span class="plate-no">Plate I.</span> The holdings: agentic tools and science infrastructure in the fields west of the creek, either side of the lane; writing in the orchard across the ford.</figcaption>
   </figure>
 
-  <p class="intro">What I make around the science: the tools I build to get the work done, and writing on what changes when machines start doing science too.</p>
-
-  <section id="tools">
-    <h2>Tools &amp; infrastructure</h2>
+  <section id="agentic">
+    <h2>Agentic tools</h2>
     <ul class="entries">
-      {tools.map((t) => <li set:html={t.html} />)}
+      {agentic.map((t) => <li set:html={t.html} />)}
+    </ul>
+  </section>
+
+  <section id="science">
+    <h2>Science infrastructure</h2>
+    <ul class="entries">
+      {science.map((t) => <li set:html={t.html} />)}
     </ul>
   </section>
 
@@ -90,9 +152,150 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
 </BaseLayout>
 
 <style>
-  /* The plate: printed onto the sheet, bleeding into its margins */
-  .plate {
+  /* ---- The title page: a rule-boxed almanac cover ---- */
+  .title-page {
     position: relative;
+    text-align: center;
+    margin: 0 0 var(--space-lg);
+    padding: 1.3rem 1.6rem 1.4rem;
+    border: 1px solid rgba(126, 112, 98, 0.55);
+    outline: 1px solid rgba(126, 112, 98, 0.35);
+    outline-offset: 4px;
+    color: var(--text-primary);
+  }
+
+  .title-page p {
+    text-indent: 0;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .number {
+    font-size: 0.82rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.32em;
+    color: var(--text-muted);
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.85rem !important;
+    border-bottom: 1px solid rgba(126, 112, 98, 0.4);
+  }
+
+  .owner {
+    font-size: 1.05rem;
+    letter-spacing: 0.14em;
+    font-variant-caps: small-caps;
+    color: var(--text-secondary);
+  }
+
+  .title-page h1 {
+    font-size: 3.4rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin: 0.1rem 0 0.35rem;
+    padding-left: 0.1em; /* balance the trailing letter-space */
+  }
+
+  .year {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .glyph {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: none;
+    fill: none;
+    stroke: var(--ochre);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+
+  .glyph .dot,
+  .glyph .fill {
+    fill: var(--ochre);
+    stroke: none;
+  }
+
+  .glyph .fill {
+    fill: var(--slate);
+  }
+
+  .leap {
+    font-size: 0.92rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    margin-top: 0.15rem !important;
+  }
+
+  .roundel {
+    position: relative;
+    width: min(21rem, 100%);
+    margin: 0.9rem auto 0.7rem;
+    aspect-ratio: 1;
+  }
+
+  .roundel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: multiply;
+  }
+
+  .roundel svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .roundel text {
+    font-family: var(--font-serif);
+    font-size: 25px;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.22em;
+    fill: var(--text-muted);
+  }
+
+  .roundel .ticks {
+    stroke: rgba(126, 112, 98, 0.7);
+    stroke-width: 1.6;
+    fill: none;
+  }
+
+  .contents {
+    max-width: 24rem;
+    margin: 0 auto !important;
+    font-size: 1.02rem;
+    font-variant-caps: small-caps;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  .calc {
+    max-width: 27rem;
+    margin: 0.85rem auto 0 !important;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(126, 112, 98, 0.4);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .intro {
+    text-indent: 0;
+    margin-bottom: var(--space-lg);
+    color: var(--text-secondary);
+  }
+
+  /* ---- Plate I: printed onto the sheet, bleeding into its margins ---- */
+  .plate {
     margin: 0 -1.6rem var(--space-lg);
   }
 
@@ -118,36 +321,39 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
     border: none;
   }
 
-  /* Fields lift their colour under the pointer, as if glazed once more */
-  .field,
-  .region {
-    fill: rgba(71, 107, 107, 0);
+  .plate figcaption {
+    margin: 0.5rem 1.6rem 0;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+
+  .plate-no {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  /* Fields deepen under the pointer, as if glazed once more */
+  .field {
+    fill: rgba(150, 110, 60, 0);
     stroke: rgba(70, 60, 50, 0);
     stroke-width: 2;
     mix-blend-mode: multiply;
-    transition: fill 0.2s ease, stroke 0.2s ease;
     cursor: pointer;
   }
 
-  .field:hover,
-  .region:hover {
+  .field:hover {
     fill: rgba(150, 110, 60, 0.16);
     stroke: rgba(70, 60, 50, 0.35);
-  }
-
-  .uncharted {
-    fill: none;
-    stroke: rgba(110, 103, 95, 0.5);
-    stroke-width: 2;
-    stroke-dasharray: 2 9;
-    stroke-linecap: round;
   }
 
   .compass circle,
   .compass path {
     fill: none;
     stroke: rgba(70, 60, 50, 0.55);
-    stroke-width: 1.6;
+    stroke-width: 1.5;
   }
 
   .compass .fill {
@@ -156,27 +362,12 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
 
   .compass text {
     font-family: var(--font-serif);
-    font-size: 26px;
+    font-size: 22px;
     text-anchor: middle;
     fill: rgba(46, 42, 38, 0.75);
   }
 
   /* Lettering */
-  .cartouche {
-    position: absolute;
-    left: 5.5%;
-    top: 4.2%;
-    margin: 0;
-    padding: 0.1rem 0.9rem 0.25rem;
-    font-size: 2.1rem;
-    letter-spacing: 0.08em;
-    line-height: 1.1;
-    background: rgba(242, 237, 227, 0.86);
-    border: 1px solid rgba(126, 112, 98, 0.45);
-    outline: 1px solid rgba(126, 112, 98, 0.25);
-    outline-offset: 3px;
-  }
-
   .label {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -191,7 +382,7 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
   }
 
   .region-label {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
     font-weight: 600;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.16em;
@@ -201,8 +392,8 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
   .field-label {
     white-space: normal;
     width: max-content;
-    max-width: 6.5em;
-    font-size: 0.86rem;
+    max-width: 5.4em;
+    font-size: 0.82rem;
     font-weight: 500;
     letter-spacing: 0.02em;
     color: var(--text-primary);
@@ -228,25 +419,18 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
   }
 
   /* A label and its field light together */
-  .plate:has(.l-tools-0:hover) .f-tools-0,
-  .plate:has(.l-tools-1:hover) .f-tools-1,
-  .plate:has(.l-tools-2:hover) .f-tools-2,
-  .plate:has(.l-tools-3:hover) .f-tools-3,
-  .plate:has(.l-tools-4:hover) .f-tools-4,
-  .plate:has(.l-tools-5:hover) .f-tools-5,
-  .plate:has(.l-tools-6:hover) .f-tools-6,
+  .plate:has(.l-agentic-0:hover) .f-agentic-0,
+  .plate:has(.l-agentic-1:hover) .f-agentic-1,
+  .plate:has(.l-agentic-2:hover) .f-agentic-2,
+  .plate:has(.l-science-0:hover) .f-science-0,
+  .plate:has(.l-science-1:hover) .f-science-1,
+  .plate:has(.l-science-2:hover) .f-science-2,
   .plate:has(.l-writing-0:hover) .f-writing-0 {
     fill: rgba(150, 110, 60, 0.16);
     stroke: rgba(70, 60, 50, 0.35);
   }
 
-  /* The lists below are the full account */
-  .intro {
-    text-indent: 0;
-    margin-bottom: var(--space-lg);
-    color: var(--text-secondary);
-  }
-
+  /* ---- The lists: the full account ---- */
   section {
     margin: 0;
     scroll-margin-top: var(--space-lg);
@@ -295,29 +479,40 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
       margin: 0 -0.8rem var(--space-lg);
     }
 
+    .plate figcaption {
+      margin: 0.5rem 0.8rem 0;
+    }
+
     .field-label {
       font-size: 0.72rem;
     }
   }
 
-  /* Phone: the title steps out of the plate, and only the regions are lettered */
+  /* Phone: a narrower cover, and only the regions are lettered on the plate */
   @media (max-width: 600px) {
+    .title-page {
+      padding: 1rem 0.9rem 1.1rem;
+    }
+
+    .title-page h1 {
+      font-size: 2.6rem;
+    }
+
+    .year {
+      font-size: 1.1rem;
+    }
+
+    .roundel text {
+      font-size: 30px;
+      letter-spacing: 0.14em;
+    }
+
     .plate {
-      display: flex;
-      flex-direction: column;
       margin: 0 -0.5rem var(--space-md);
     }
 
-    .cartouche {
-      position: static;
-      order: -1;
-      align-self: flex-start;
-      margin: 0 0.5rem var(--space-md);
-      font-size: 1.8rem;
-      padding: 0;
-      background: none;
-      border: none;
-      outline: none;
+    .plate figcaption {
+      margin: 0.5rem 0.5rem 0;
     }
 
     .field-label,
@@ -326,8 +521,8 @@ const at = ([x, y]: number[]) => `left:${(x / W * 100).toFixed(2)}%;top:${(y / H
     }
 
     .region-label {
-      font-size: 0.82rem;
-      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
     }
 
     .compass {
