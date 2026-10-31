@@ -16,8 +16,8 @@ by the smoothed mask so holes and edges don't bleed in, then rescaled to unit
 standard deviation inside the footprint. The amplitude stays blind: only
 κ/σ is shown, and no colour bar.
 
-Colour is the site's: voids in ridge violet, the mean in morning mist, mass
-peaks in hemlock and creek green.
+Colour is the UNIONS press palette, as in the demo video: pale cyan for
+underdense sky, deep blue for the mass peaks.
 
     uv run scripts/globe.py [--kappa FILE] [--gaia FILE]
 
@@ -46,24 +46,17 @@ SS = 2                         # supersampling while baking
 NSIDE = 512                    # working resolution of the mass map
 SMOOTH_FWHM_ARCMIN = 30.0      # smoothing of the delivered KS map
 DISPLAY_FWHM_ARCMIN = 60.0     # total smoothing of the map shown
-LO, HI = -1.6, 3.5             # display range, in units of the shown map's σ
+LO, HI = -1.5, 3.5             # display range, in units of the shown map's σ
 MAP_ALPHA = 0.94               # opacity of the map over the sky
 
 # The opening view (data-elev, data-phi on /research): camera latitude and the RA it faces.
 ELEV, PHI = 55.0, 195.0
 STILL = 720                    # fallback still, px
 
-# low κ → high κ: voids in ridge violet, the mean in morning mist, mass
-# peaks in hemlock and deep creek green
-STOPS = [
-    (-1.6, "#8578AE"),
-    (-0.7, "#B6ACCF"),
-    (0.0, "#E8E5E6"),
-    (0.7, "#B4C6B8"),
-    (1.5, "#739381"),
-    (2.4, "#476B6B"),
-    (3.5, "#27413F"),
-]
+# low κ → high κ, pale cyan to deep blue: the press palette of the UNIONS map, as in the demo video
+# (massmap_style.STOPS), evenly spaced over LO…HI
+_PRESS = ["#c7fbff", "#a4defa", "#67b1d5", "#2d8ab4", "#0d4885", "#08204f"]
+STOPS = [(-1.5 + 5.0 * i / (len(_PRESS) - 1), c) for i, c in enumerate(_PRESS)]
 
 # J2000 equatorial → galactic rotation
 EQ2GAL = np.array([[-0.0548755604, -0.8734370902, -0.4838350155],

@@ -103,7 +103,7 @@ function mount(root: HTMLElement) {
     draw();
     root.classList.add('live');
     kick();
-  }).catch(() => {});
+  }).catch((err) => console.warn('globe: the sky texture did not load; the still stays', err));
 
   function resize() {
     const dpr = Math.min(devicePixelRatio || 1, 2);

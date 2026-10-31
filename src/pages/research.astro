@@ -18,13 +18,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p class="collab">UNIONS</p>
       <figure class="inset">
         <div class="globe" data-globe data-texture="/globe/sky.webp" data-elev="55" data-phi="195">
-          <img src="/globe/globe.webp" width="720" height="720" loading="lazy" alt="The UNIONS convergence map on a celestial globe, over the Gaia view of the Milky Way" />
+          <img src="/globe/globe.webp" width="720" height="720" loading="lazy" alt="The UNIONS convergence map on a celestial globe, over an all-sky map of the Milky Way from the Gaia survey" />
           <canvas tabindex="0" aria-label="Interactive globe of the UNIONS convergence map. Drag or use the arrow keys to turn it; pinch, plus and minus, or scroll once selected, to zoom."></canvas>
         </div>
-        <figcaption>Convergence map of the full 5,400 deg² UNIONS footprint, reconstructed from galaxy shear and set on the Gaia sky: mass in green, voids in violet, amplitude blinded. Drag to turn it; pinch, or click and scroll, to zoom.</figcaption>
+        <figcaption>Convergence map of the full 5,400 deg² UNIONS footprint, reconstructed from galaxy shear and set on an all-sky map of the Milky Way from the Gaia survey: mass in deep blue, empty regions pale, amplitude blinded. Drag to turn it; pinch, or click and scroll, to zoom.</figcaption>
       </figure>
       <p>
-        I'm leading production of the 5,000 deg² UNIONS tomographic shear catalogue (<a href="https://unions-wl.github.io/production/status.html">live status</a>) and the blinded validation of the cosmic-shear analysis built on it, with cosmological results aimed for mid-2027. The <a href="https://arxiv.org/abs/2604.03227">B-mode validation paper</a> I led for the first UNIONS cosmic-shear analysis is in press at Astronomy &amp; Astrophysics, and I presented its cosmological constraints at Rencontres de Moriond 2026.
+        I'm leading production of a 5,000 deg² tomographic shear catalogue from the UNIONS survey (<a href="https://unions-wl.github.io/production/status.html">live status</a>) and the blinded validation of the cosmic-shear analysis built on it, with cosmological results aimed for mid-2027. The <a href="https://arxiv.org/abs/2604.03227">B-mode validation paper</a> I led for the first UNIONS cosmic-shear analysis is in press at Astronomy &amp; Astrophysics, and I presented its cosmological constraints at Rencontres de Moriond 2026.
       </p>
       <p>
         Before extracting cosmology, the measured signal must be shown to be genuinely astrophysical. Gravitational lensing produces only E-mode (gradient-like) shear patterns; detected B-modes (curl-like) indicate residual contamination from telescope optics, atmosphere, or data processing. We decompose the UNIONS shear measurements into E and B components using three independent methods. B-modes are consistent with zero after PSF corrections, validating systematics control and informing the angular scale cuts for cosmological inference.
@@ -41,7 +41,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p>
         380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
       </p>
-      <div class="panorama">
+      <div class="scroll-reveal">
         <img src="/universe-evolution.png" alt="Evolution of the universe" />
       </div>
       <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
@@ -176,12 +176,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .globe canvas {
-    cursor: grab;
     touch-action: pan-y;
     outline: none;
   }
 
-  .globe canvas:active {
+  .globe.live canvas {
+    cursor: grab;
+  }
+
+  .globe.live canvas:active {
     cursor: grabbing;
   }
 
@@ -211,16 +214,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
-  figure img,
-  .panorama img {
+  figure img {
     width: 100%;
     display: block;
     border-radius: 3px;
     mix-blend-mode: multiply;
   }
 
-  .panorama {
-    margin: var(--space-md) 0 0;
+  .scroll-reveal {
+    overflow: hidden;
+    border-radius: 4px;
+    margin: 0;
+  }
+
+  .scroll-reveal img {
+    width: 240%;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    will-change: transform;
+    transform: translateX(-40%);
   }
 
   .caption {
@@ -231,3 +244,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-bottom: var(--space-md);
   }
 </style>
+
+<script>
+  function initScrollReveal() {
+    const containers = document.querySelectorAll('.scroll-reveal');
+
+    containers.forEach(container => {
+      const img = container.querySelector('img');
+      if (!img) return;
+
+      let currentX = -40;
+      let targetX = -40;
+      const ease = 0.025;
+
+      const updateTarget = () => {
+        const rect = container.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        const rawProgress = 1 - (rect.bottom / (windowHeight + rect.height));
+        // 35% to 50% vertical progress (faster)
+        const progress = (rawProgress - 0.35) / 0.15;
+        const clampedProgress = Math.max(0, Math.min(1, progress));
+
+        // Start at -40%, scroll to -55% (15% travel)
+        targetX = -40 + (clampedProgress * -15);
+      };
+
+      const animate = () => {
+        currentX += (targetX - currentX) * ease;
+        img.style.transform = `translateX(${currentX}%)`;
+        requestAnimationFrame(animate);
+      };
+
+      window.addEventListener('scroll', updateTarget, { passive: true });
+      updateTarget();
+      animate();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>
