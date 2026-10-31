@@ -83,6 +83,7 @@ const { Content } = await page.render();
 
   .work-list {
     list-style: none;
+    margin-left: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
@@ -95,20 +96,15 @@ const { Content } = await page.render();
   }
 
   .work-list .tag {
-    font-family: var(--font-serif);
-    font-size: 0.8rem;
-    font-variant-caps: all-petite-caps;
-    letter-spacing: 0.03em;
-    background: var(--bg-secondary);
-    padding: 0.2em 0.5em;
-    border-radius: 2px;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: background 0.15s ease;
+    min-width: 6.6rem;
+    text-align: center;
+    border-bottom: none;
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
   .work-list .tag:hover {
-    background: var(--border-light);
+    background: rgba(71, 107, 107, 0.18);
+    color: var(--text-primary);
   }
 
   .work-desc {

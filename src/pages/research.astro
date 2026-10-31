@@ -13,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <section class="projects">
-    <article class="card" id="cmb-lensing">
+    <article class="card wash" id="cmb-lensing">
       <h2>CMB Lensing</h2>
       <p class="collab">SPT-3G</p>
       <p>
@@ -28,13 +28,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
     </article>
 
-    <article class="card" id="cmb--galaxy-cross-correlations">
+    <article class="card wash" id="cmb--galaxy-cross-correlations">
       <h2>CMB × Galaxy Cross-correlations</h2>
       <p class="collab">Euclid + SPT-3G</p>
       <p>
         380,000 years after the beginning of the universe, the primordial plasma cooled enough for light to travel freely. CMB lensing traces the matter distribution with a broad redshift kernel peaking around z ~ 2; galaxy surveys probe structure at specific redshifts. Cross-correlating them gives a tomographic view of how matter clustered across cosmic time, breaking degeneracies that neither probe resolves alone.
       </p>
-      <div class="scroll-reveal">
+      <div class="panorama">
         <img src="/universe-evolution.png" alt="Evolution of the universe" />
       </div>
       <p class="caption">The evolving universe: from recombination through the growth of cosmic structure to the galaxies observed today. Credit: ESA.</p>
@@ -43,7 +43,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
     </article>
 
-    <article class="card" id="optical-cosmic-shear">
+    <article class="card wash" id="optical-cosmic-shear">
       <h2>Optical Cosmic Shear</h2>
       <p class="collab">UNIONS</p>
       <figure class="inset">
@@ -62,7 +62,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </figure>
     </article>
 
-    <article class="card" id="kinematic-lensing">
+    <article class="card wash" id="kinematic-lensing">
       <h2>Kinematic Lensing</h2>
       <p class="collab">TOSCA</p>
       <p>
@@ -85,6 +85,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .subtitle {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.08em;
+    font-size: 1.1rem;
     margin-bottom: var(--space-lg);
   }
 
@@ -101,25 +104,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: var(--space-lg);
   }
 
+  /* Each project is a glaze in one pigment from the porch view */
   .card {
-    padding: var(--space-md);
-    border: 1px solid var(--border-light);
-    border-radius: 4px;
-    background: var(--bg-elevated);
-    box-shadow: 2px 3px 8px rgba(46, 42, 38, 0.06);
+    padding: var(--space-md) 1.3rem 1.2rem;
   }
 
+  #cmb-lensing { --wash: 138, 116, 186; }
+  #cmb--galaxy-cross-correlations { --wash: 92, 128, 168; }
+  #optical-cosmic-shear { --wash: 58, 118, 112; }
+  #kinematic-lensing { --wash: 196, 154, 74; }
+
   .card h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-top: 0;
-    margin-bottom: var(--space-xs);
+    margin-bottom: 0.1rem;
+    padding-bottom: 0;
+    background: none;
   }
 
   .collab {
     font-variant-caps: all-small-caps;
-    letter-spacing: 0.04em;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, rgb(var(--wash)) 55%, var(--text-primary));
+    font-weight: 600;
+    font-size: 0.95rem;
     margin-bottom: var(--space-sm);
   }
 
@@ -133,7 +141,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   figure {
-    margin: var(--space-sm) 0;
+    margin: var(--space-md) 0;
   }
 
   .card figure.inset {
@@ -153,6 +161,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   @media (max-width: 560px) {
+    .card {
+      padding: var(--space-sm) var(--space-md) var(--space-md);
+    }
+
     .card figure.inset {
       float: none;
       width: 70%;
@@ -160,78 +172,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
-  figure img {
+  figure img,
+  .panorama img {
     width: 100%;
-    border-radius: 4px;
     display: block;
+    border-radius: 3px;
+    mix-blend-mode: multiply;
   }
 
-  figcaption {
-    font-size: 0.9rem;
-    
-    color: var(--text-muted);
-    margin-top: var(--space-xs);
+  .panorama {
+    margin: var(--space-md) 0 0;
   }
 
   .caption {
-    font-size: 0.9rem;
-    
+    font-size: 0.88rem;
+    line-height: 1.55;
     color: var(--text-muted);
-  }
-
-  .scroll-reveal {
-    overflow: hidden;
-    border-radius: 4px;
-    margin: 0;
-  }
-
-  .scroll-reveal img {
-    width: 240%;
-    max-width: none;
-    margin: 0;
-    border-radius: 0;
-    will-change: transform;
-    transform: translateX(-40%);
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-md);
   }
 </style>
-
-<script>
-  function initScrollReveal() {
-    const containers = document.querySelectorAll('.scroll-reveal');
-
-    containers.forEach(container => {
-      const img = container.querySelector('img');
-      if (!img) return;
-
-      let currentX = -40;
-      let targetX = -40;
-      const ease = 0.025;
-
-      const updateTarget = () => {
-        const rect = container.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        const rawProgress = 1 - (rect.bottom / (windowHeight + rect.height));
-        // 35% to 50% vertical progress (faster)
-        const progress = (rawProgress - 0.35) / 0.15;
-        const clampedProgress = Math.max(0, Math.min(1, progress));
-
-        // Start at -40%, scroll to -55% (15% travel)
-        targetX = -40 + (clampedProgress * -15);
-      };
-
-      const animate = () => {
-        currentX += (targetX - currentX) * ease;
-        img.style.transform = `translateX(${currentX}%)`;
-        requestAnimationFrame(animate);
-      };
-
-      window.addEventListener('scroll', updateTarget, { passive: true });
-      updateTarget();
-      animate();
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', initScrollReveal);
-  document.addEventListener('astro:page-load', initScrollReveal);
-</script>

@@ -1,6 +1,4 @@
 ---
-import RidgeParallax from '../components/RidgeParallax.astro';
-
 interface Props {
   title: string;
   description?: string;
@@ -29,9 +27,11 @@ const currentPath = Astro.url.pathname;
   <meta name="twitter:card" content="summary" />
   <title>{title} — Cail Daley</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preload" as="image" href="/paint/landscape.webp" type="image/webp" />
+  <meta name="theme-color" content="#F2EDE3" />
 </head>
 <body class={mode}>
-  <RidgeParallax />
+  <div class="landscape" aria-hidden="true"></div>
   <div class="container">
     <header>
       <nav>
