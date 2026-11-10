@@ -2,6 +2,8 @@
 // A page of its own, wider than the site's sheet: the instrument library, and its banjo as the worked example.
 // It shares the site's paper, landscape and type through global.css, not BaseLayout's narrow column.
 import '../../styles/global.css';
+// The bench and its seven instruments, lifted out of Claude's drawing.
+import { defs, bench, loose, byFile } from '../../scripts/soundbench-bench';
 
 // The library's repository. Its link goes live only once the repository is public, so the page never points at a 404.
 const library = {
@@ -31,20 +33,34 @@ const description = 'Physical models of instruments that a person or a language 
 <body class="laboratory">
   <div class="landscape" aria-hidden="true"></div>
 
-  <div class="bench">
+  <div class="bench" data-instruments={JSON.stringify(byFile)}>
     <nav class="crumbs">
       <a href="/">Cail Daley</a>
       <span aria-hidden="true">·</span>
       <a href="/almanac#music">Almanac</a>
     </nav>
 
-    <header class="masthead">
-      <h1>{library.name}</h1>
-      <p class="subtitle">Instruments written in code, for a person or a language model to play</p>
-      <p class="dateline">Claude · <time datetime="2026-11-10">November 2026</time></p>
-    </header>
-
     <div class="opening">
+      <header class="masthead">
+        <h1>{library.public ? <a href={library.url}>{library.name}</a> : library.name}</h1>
+        <p class="subtitle">Instruments written in code, for a person or a language model to play</p>
+        <p class="dateline">Claude · <time datetime="2026-11-10">November 2026</time></p>
+        {library.public && <p class="repo-top"><a href={library.url}>{library.url.replace('https://', '')}</a></p>}
+      </header>
+
+      <svg class="drawing-defs" aria-hidden="true" set:html={defs} />
+
+      <figure class="on-bench">
+        <div class="piece" set:html={bench} />
+        <figcaption class="hint" aria-live="polite">Click one to play</figcaption>
+      </figure>
+
+      <div class="loose">
+        {loose.map((p) => <div class="piece" style={`--tilt: ${p.tilt}deg; --lift: ${p.lift}rem; --size: ${p.size}rem`} set:html={p.svg} />)}
+      </div>
+
+      <div class="tag" aria-hidden="true" hidden></div>
+
       <section class="why">
         <p>This began as a way to make music without generative audio models. Every note is written in a score, and every instrument is a physical model in code: a string carrying a travelling wave, a drum head ringing in its own modes, a wooden body, a bow, a breath. The instruments make their own sound from that physics, without samples.</p>
         <p>Out of that work came a library of physical instruments, and with it the tools a composer who can't hear needs in place of ears: spectra, loudness, pitch, and fits that move an instrument's physical parameters to bring its sound toward real recordings.</p>
@@ -57,9 +73,7 @@ const description = 'Physical models of instruments that a person or a language 
           <li><b>Playing.</b> Notes and articulations in, audio out, from Python, the command line or a MIDI file.</li>
           <li><b>Listening.</b> Spectrograms, loudness, pitch and timbre measurements, comparisons, and fitting to recordings.</li>
         </ul>
-        {library.public
-          ? <p class="repo"><a href={library.url}>{library.url.replace('https://', '')}</a></p>
-          : <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
+        {!library.public && <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
       </aside>
     </div>
 
@@ -88,12 +102,8 @@ const description = 'Physical models of instruments that a person or a language 
         <p>I held some recordings back: four pitches the fit never heard, and eight notes played softly at pitches it had only heard played loudly. By the fit's own score it does no worse on those than on the notes it learned from. But it still misses the recordings by about twenty times what their own noise and MP3 coding would leave (the median over every held-out note and region of time and frequency), mostly in the attacks, the sustains, and the exact frequencies of the partials.</p>
         <p>Played beside their recordings, the held-out notes were also heard as different in pitch, for two reasons I could measure. The recorded notes' upper partials sit 6–12 cents (hundredths of a semitone) sharp of whole multiples of the fundamental, while the model's sit almost exactly on them. I had tuned the model to the fundamental, so its upper partials, which carry much of a banjo's tone, ran flat, and an autocorrelation estimate of its pitch came out a median 5 cents low. Retuning those notes to the whole series of partials brings the estimate to about 2 cents without changing anything else; the plate and the study below still play the model tuned to the fundamental. The larger difference is that each recorded note has its own balance of partials, while the model gives every note on a string the same pluck and the same tone. One recorded F♯ has its first and third partials so weak that its waveform repeats as if it were the F♯ an octave up. Nothing about a note the model hasn't heard tells it that.</p>
 
-        <h3>Hear it play</h3>
-        <p>The fitted banjo, dry, playing a sixteen-bar articulation study with hammer-ons, pull-offs, slides, bends and a choke. It's the instrument alone: no room, no microphone.</p>
-        <audio controls preload="none" src="/banjo-plate/etude.mp3">The study, as an MP3: <a href="/banjo-plate/etude.mp3">etude.mp3</a></audio>
-
         <h3>Credits</h3>
-        <p>Built and written by Claude, an AI model made by Anthropic. The fitted recordings are from the <a href="https://philharmonia.co.uk/resources/sound-samples/">Philharmonia Orchestra's sound sample library</a>, used here to fit the model and drawn only as spectra. The study was written by GPT-6.1 Sol as an instrument test. The plate's lettering is IM Fell English and the Hershey vector letters (1967, via the hersheytext package).</p>
+        <p>Built and written by Claude, an AI model made by Anthropic, who also drew the bench and wrote the bars its instruments play. Every instrument there is rendered by the library, with no samples. The banjo's bars are the opening of an articulation study written by GPT-6.1 Sol as an instrument test, played by the fitted banjo with no room or microphone. The fitted recordings are from the <a href="https://philharmonia.co.uk/resources/sound-samples/">Philharmonia Orchestra's sound sample library</a>, used here to fit the model and drawn only as spectra. The plate's lettering is IM Fell English and the Hershey vector letters (1967, via the hersheytext package).</p>
       </section>
     </div>
 
@@ -154,7 +164,8 @@ const description = 'Physical models of instruments that a person or a language 
   }
 
   .masthead {
-    margin: var(--space-lg) 0 var(--space-md);
+    grid-area: head;
+    align-self: end;
   }
 
   .masthead h1 {
@@ -175,12 +186,127 @@ const description = 'Physical models of instruments that a person or a language 
     color: var(--text-muted);
   }
 
+  .masthead h1 a {
+    color: inherit;
+    border-bottom: 2px solid rgba(71, 107, 107, 0.35);
+  }
+
+  .masthead .repo-top {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+
+  /* The instruments: four on the bench at the top right, three loose in the corner under the opening text */
+  .drawing-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  .piece :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .on-bench {
+    grid-area: bench;
+    margin: 0;
+    align-self: end;
+  }
+
+  .loose {
+    grid-area: loose;
+    align-self: end;
+    display: flex;
+    align-items: flex-end;
+    gap: 2.6rem;
+    padding: 0 0 0.4rem 0.5rem;
+  }
+
+  .loose .piece {
+    width: var(--size);
+    transform: rotate(var(--tilt)) translateY(var(--lift));
+  }
+
+  .piece :global(.inst) {
+    cursor: pointer;
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transition: transform 0.25s ease;
+    outline: none;
+  }
+
+  .piece :global(.inst:hover),
+  .piece :global(.inst:focus-visible) {
+    transform: translateY(-6px);
+  }
+
+  .piece :global(.inst.playing) {
+    animation: sway 1.4s ease-in-out infinite;
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: translateY(-6px) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .piece :global(.inst.playing) {
+      animation: none;
+      transform: translateY(-6px);
+    }
+  }
+
+  .hint {
+    text-align: right;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin: 0.2rem 1.5rem 0 0;
+    min-height: 1.5em;
+  }
+
+  .hint::before {
+    content: '♪ ';
+    font-style: normal;
+    color: var(--text-muted);
+  }
+
+  /* The name of the instrument under the pointer, or the one playing */
+  .tag {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -100%);
+    padding: 0.1rem 0.55rem 0.15rem;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 1px 3px rgba(46, 42, 38, 0.12);
+  }
+
   /* Why it exists, beside what the library holds */
   .opening {
     display: grid;
-    grid-template-columns: minmax(0, 42em) minmax(18rem, 30rem);
-    gap: var(--space-lg) 3.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "head bench" "why card" "loose card";
+    gap: var(--space-md) 3.5rem;
     align-items: start;
+    margin-top: var(--space-md);
+  }
+
+  .why {
+    grid-area: why;
+  }
+
+  .card {
+    grid-area: card;
   }
 
   .bench .why p:first-child {
@@ -271,12 +397,6 @@ const description = 'Physical models of instruments that a person or a language 
     margin-top: 0;
   }
 
-  .notes audio {
-    display: block;
-    width: 100%;
-    margin: var(--space-sm) 0 var(--space-md);
-  }
-
   footer {
     margin-top: var(--space-lg);
     padding-top: 0.6rem;
@@ -292,7 +412,11 @@ const description = 'Physical models of instruments that a person or a language 
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .opening .card,
+    .opening {
+      grid-template-areas: "head" "bench" "why" "loose" "card";
+    }
+
+    .opening > *,
     .notes {
       max-width: 42em;
     }
@@ -333,4 +457,62 @@ const description = 'Physical models of instruments that a person or a language 
   };
   // a frame later, so setting the height doesn't re-enter the observer in the same frame
   if (frame) new ResizeObserver(() => requestAnimationFrame(fit)).observe(frame);
+
+  // The instruments: a click plays that one's few bars and a click on the one playing stops it, one at a time.
+  // Its name shows in a tag above it on hover, and stays there while it plays (on a phone, from the tap).
+  const sheet = document.querySelector<HTMLElement>('.bench');
+  if (sheet) {
+    const about: Record<string, { name: string; plays: string }> = JSON.parse(sheet.dataset.instruments!);
+    const hint = sheet.querySelector('.hint')!;
+    const idle = hint.textContent!;
+    const tag = sheet.querySelector<HTMLElement>('.tag')!;
+    const audio = new Audio();
+    let playing: SVGGElement | null = null;
+
+    const show = (inst: SVGGElement | null) => {
+      tag.hidden = !inst;
+      if (!inst) return;
+      const box = inst.getBoundingClientRect(), page = sheet.getBoundingClientRect();
+      tag.textContent = about[inst.dataset.file!].name;
+      tag.style.left = `${box.left + box.width / 2 - page.left}px`;
+      tag.style.top = `${box.top - page.top - 10}px`;
+    };
+    const stop = () => {
+      audio.pause();
+      playing?.classList.remove('playing');
+      playing?.setAttribute('aria-pressed', 'false');
+      playing = null;
+      hint.textContent = idle;
+      show(null);
+    };
+    audio.addEventListener('ended', stop);
+
+    for (const inst of sheet.querySelectorAll<SVGGElement>('.inst')) {
+      const { name, plays } = about[inst.dataset.file!];
+      inst.setAttribute('role', 'button');
+      inst.setAttribute('tabindex', '0');
+      inst.setAttribute('aria-pressed', 'false');
+      inst.setAttribute('aria-label', `Play the ${name}`);
+      const toggle = () => {
+        const again = playing === inst;
+        stop();
+        if (again) return;
+        playing = inst;
+        inst.classList.add('playing');
+        inst.setAttribute('aria-pressed', 'true');
+        hint.textContent = `The ${name}: ${plays}. Click it again to stop.`;
+        show(inst);
+        audio.src = `/soundbench/${inst.dataset.file}.mp3`;
+        audio.play().catch(stop);
+      };
+      inst.addEventListener('click', toggle);
+      inst.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+      inst.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') show(inst); });
+      inst.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') show(playing); });
+      inst.addEventListener('focus', () => show(inst));
+      inst.addEventListener('blur', () => show(playing));
+    }
+  }
 </script>

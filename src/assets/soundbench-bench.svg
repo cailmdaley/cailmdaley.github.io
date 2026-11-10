@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" role="img" aria-label="Seven instruments on a workbench">
+  <!-- The sound bench: seven instruments on a workbench. Drawn by Claude (Fable 5.2).
+       Each instrument is a group with id inst-<name>; the page makes them clickable. -->
+  <defs>
+    <filter id="hand" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/>
+    </filter>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#2b2620" stroke-width="0.7" opacity="0.35"/>
+    </pattern>
+    <style>
+      .ink { fill: none; stroke: #2b2620; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .thin { fill: none; stroke: #2b2620; stroke-width: 1.2; stroke-linecap: round; }
+      .wood { fill: #e6cfa6; stroke: #2b2620; stroke-width: 2.2; stroke-linejoin: round; }
+      .dark { fill: #b98d5a; stroke: #2b2620; stroke-width: 2.2; stroke-linejoin: round; }
+      .skin { fill: #f6efdf; stroke: #2b2620; stroke-width: 2.2; stroke-linejoin: round; }
+      .red  { fill: #c9553f; stroke: #2b2620; stroke-width: 2.2; stroke-linejoin: round; }
+      .shade { fill: url(#hatch); stroke: none; }
+      .inst { cursor: pointer; }
+    </style>
+  </defs>
+
+  <g filter="url(#hand)">
+    <!-- the bench -->
+    <g id="bench">
+      <path class="wood" d="M150 300 L1175 300 L1175 322 L150 322 Z"/>
+      <path class="shade" d="M150 312 L1175 312 L1175 322 L150 322 Z"/>
+      <path class="wood" d="M215 322 L245 322 L232 392 L202 392 Z"/>
+      <path class="wood" d="M1080 322 L1110 322 L1123 392 L1093 392 Z"/>
+      <path class="ink" d="M238 352 L1087 352"/>
+      <path class="thin" d="M190 306 L420 306 M520 307 L840 307 M900 306 L1150 306"/>
+      <!-- a tuning fork and a pencil left on the bench -->
+      <path class="ink" d="M560 298 L560 282 M553 282 L553 262 M567 282 L567 262 M553 282 L567 282"/>
+      <path class="thin" d="M855 297 L893 291 L895 295 L857 301 Z M893 291 L900 292 L895 295"/>
+    </g>
+
+    <!-- upright bass, standing on the floor and leaning on the bench's end -->
+    <g id="inst-bass" class="inst">
+      <path class="dark" d="M78 150 C52 152 40 178 52 204 C60 220 58 232 46 250 C22 290 34 352 84 360 C134 352 146 290 122 250 C110 232 108 220 116 204 C128 178 116 152 90 150 Z"/>
+      <path class="shade" d="M96 152 C124 160 126 184 116 204 C108 220 110 232 122 250 C146 290 134 352 84 360 C120 340 122 290 104 250 C96 232 96 216 102 202 C110 182 108 164 96 152 Z"/>
+      <path class="wood" d="M78 150 L80 50 L88 50 L90 150 Z"/>
+      <path class="ink" d="M84 50 C70 46 68 30 80 26 C92 24 98 36 90 42"/>
+      <path class="ink" d="M72 60 L62 60 M72 74 L62 74 M96 60 L106 60 M96 74 L106 74"/>
+      <path class="thin" d="M81 52 L78 300 M84 52 L83 300 M87 52 L88 300 M90 52 L92 300"/>
+      <path class="ink" d="M70 296 L100 296 M66 262 C62 270 62 280 66 288 M104 262 C108 270 108 280 104 288"/>
+      <path class="ink" d="M76 322 L94 322 L88 340 L82 340 Z M85 360 L85 392"/>
+    </g>
+
+    <!-- banjo, leaning back on the bench -->
+    <g id="inst-banjo" class="inst">
+      <path class="wood" d="M262 232 L340 92 L352 98 L276 240 Z"/>
+      <path class="wood" d="M340 92 L346 62 L366 70 L352 98 Z"/>
+      <path class="ink" d="M342 76 L332 72 M345 66 L336 60 M364 80 L374 84 M362 90 L371 95"/>
+      <path class="ink" d="M300 164 L290 160"/>
+      <circle class="dark" cx="250" cy="256" r="46"/>
+      <circle class="skin" cx="250" cy="256" r="37"/>
+      <path class="thin" d="M250 210 L250 216 M273 216 L270 221 M290 233 L285 236 M296 256 L290 256 M290 279 L285 276 M273 296 L270 291 M250 302 L250 296 M227 296 L230 291 M210 279 L215 276 M204 256 L210 256 M210 233 L215 236 M227 216 L230 221"/>
+      <path class="ink" d="M236 270 L262 284"/>
+      <path class="thin" d="M240 276 L343 90 M245 279 L347 92 M250 282 L350 94 M255 285 L353 97"/>
+      <path class="shade" d="M250 219 A37 37 0 0 1 287 256 A37 37 0 0 1 250 293 A52 52 0 0 0 250 219 Z"/>
+    </g>
+
+    <!-- a very small upright piano, sitting on the bench -->
+    <g id="inst-piano" class="inst">
+      <path class="dark" d="M392 196 L530 196 L530 300 L392 300 Z"/>
+      <path class="wood" d="M386 186 L536 186 L536 198 L386 198 Z"/>
+      <path class="wood" d="M380 246 L542 246 L542 258 L380 258 Z"/>
+      <path class="skin" d="M388 258 L534 258 L534 274 L388 274 Z"/>
+      <path class="thin" d="M400 258 L400 274 M412 258 L412 274 M424 258 L424 274 M436 258 L436 274 M448 258 L448 274 M460 258 L460 274 M472 258 L472 274 M484 258 L484 274 M496 258 L496 274 M508 258 L508 274 M520 258 L520 274"/>
+      <path d="M397 258 h6 v9 h-6 Z M409 258 h6 v9 h-6 Z M433 258 h6 v9 h-6 Z M445 258 h6 v9 h-6 Z M457 258 h6 v9 h-6 Z M481 258 h6 v9 h-6 Z M493 258 h6 v9 h-6 Z M517 258 h6 v9 h-6 Z" fill="#2b2620"/>
+      <path class="skin" d="M432 206 L490 206 L490 236 L432 236 Z"/>
+      <path class="thin" d="M440 214 L482 214 M440 221 L482 221 M440 228 L470 228"/>
+      <path class="ink" d="M452 288 L452 296 M470 288 L470 296"/>
+      <path class="shade" d="M500 198 L530 198 L530 246 L500 246 Z"/>
+    </g>
+
+    <!-- nylon guitar, leaning the other way -->
+    <g id="inst-guitar" class="inst">
+      <path class="wood" d="M690 214 L640 78 L652 74 L704 208 Z"/>
+      <path class="wood" d="M640 78 L630 50 L648 44 L652 74 Z"/>
+      <path class="ink" d="M633 60 L624 63 M631 52 L622 54 M650 54 L659 51 M652 62 L661 60"/>
+      <path class="wood" d="M690 196 C664 196 654 216 664 234 C668 242 664 250 656 260 C640 284 662 304 700 300 C742 304 764 280 748 258 C740 248 738 240 742 230 C750 210 736 194 712 196 Z"/>
+      <circle class="dark" cx="700" cy="232" r="13"/>
+      <path class="ink" d="M682 274 L722 272"/>
+      <path class="thin" d="M694 272 L643 78 M699 272 L646 77 M704 272 L649 76 M709 271 L651 75"/>
+      <path class="shade" d="M722 198 C746 200 750 214 742 230 C738 240 740 248 748 258 C764 280 742 304 700 300 C736 290 738 272 728 258 C720 246 722 236 728 226 C734 212 730 202 722 198 Z"/>
+    </g>
+
+    <!-- xeremia: the Mallorcan bagpipe, resting on the bench -->
+    <g id="inst-xeremia" class="inst">
+      <path class="red" d="M792 262 C786 232 818 214 852 222 C884 228 900 252 890 276 C882 296 846 302 818 298 C802 296 794 282 792 262 Z"/>
+      <path class="thin" d="M806 250 C822 236 850 234 870 246 M812 284 C832 292 860 290 876 280"/>
+      <path class="wood" d="M846 224 L852 148 L862 148 L860 226 Z"/>
+      <path class="wood" d="M848 150 L850 126 L864 126 L866 150 Z"/>
+      <path class="ink" d="M850 180 L861 180 M851 164 L861 164"/>
+      <path class="wood" d="M800 246 L772 214 L780 208 L808 240 Z"/>
+      <path class="wood" d="M884 268 L930 296 L926 304 L880 278 Z"/>
+      <path class="wood" d="M926 290 L940 296 L934 310 L920 304 Z"/>
+      <path d="M896 280 a2 2 0 1 0 0.1 0 M905 285 a2 2 0 1 0 0.1 0 M914 290 a2 2 0 1 0 0.1 0" fill="#2b2620"/>
+      <path class="thin" d="M858 126 C866 112 880 116 876 128 M854 124 C850 110 838 114 842 124"/>
+    </g>
+
+    <!-- ximbomba: a clay pot, a skin, and a reed standing in it -->
+    <g id="inst-ximbomba" class="inst">
+      <path class="dark" d="M968 238 C962 262 968 288 984 300 L1024 300 C1040 288 1046 262 1040 238 Z"/>
+      <ellipse class="skin" cx="1004" cy="238" rx="37" ry="9"/>
+      <path class="ink" d="M968 246 C980 256 1028 256 1040 246"/>
+      <path class="thin" d="M972 250 L976 262 M986 254 L988 266 M1004 255 L1004 267 M1022 254 L1020 266 M1036 250 L1032 262"/>
+      <path class="wood" d="M1001 238 L1003 150 L1008 150 L1008 238 Z"/>
+      <path class="thin" d="M1002 172 L1008 172 M1002 196 L1008 196 M1002 218 L1008 218"/>
+      <path class="thin" d="M1016 176 C1022 182 1022 192 1016 198 M1024 170 C1034 180 1034 194 1024 204 M994 176 C988 182 988 192 994 198"/>
+      <path class="shade" d="M1018 246 C1030 246 1038 244 1040 240 C1046 262 1040 288 1024 300 L1010 300 C1024 286 1026 264 1018 246 Z"/>
+    </g>
+
+    <!-- skinpipe: the invented one. A bore with finger holes and a membrane where a bell would be. -->
+    <g id="inst-skinpipe" class="inst">
+      <path class="wood" d="M1068 290 L1132 196 L1142 203 L1078 297 Z"/>
+      <path d="M1088 266 a2.4 2.4 0 1 0 0.1 0 M1099 250 a2.4 2.4 0 1 0 0.1 0 M1110 234 a2.4 2.4 0 1 0 0.1 0 M1121 218 a2.4 2.4 0 1 0 0.1 0" fill="#2b2620"/>
+      <path class="dark" d="M1056 282 L1076 296 L1068 306 L1050 294 Z"/>
+      <ellipse class="skin" cx="1146" cy="188" rx="24" ry="13" transform="rotate(34 1146 188)"/>
+      <ellipse class="ink" cx="1146" cy="188" rx="15" ry="7" transform="rotate(34 1146 188)"/>
+      <path class="thin" d="M1168 160 C1176 164 1180 172 1178 180 M1174 150 C1186 156 1192 170 1188 182"/>
+      <path class="thin" d="M1140 186 L1152 190"/>
+    </g>
+  </g>
+</svg>
