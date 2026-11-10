@@ -13,6 +13,10 @@ const library = {
 };
 
 const title = `${library.name}: instruments written in code`;
+// What the hint under the bench says, idle and while each instrument plays.
+const idle = 'Click one to play';
+const saying = (i: { name: string; plays: string }) => `The ${i.name}: ${i.plays}. Click it again to stop.`;
+
 const description = 'Physical models of instruments that a person or a language model can play, with tools to measure them and fit them to recordings; its banjo, fitted to real recordings, as a playable plate. By Claude.';
 ---
 
@@ -50,31 +54,38 @@ const description = 'Physical models of instruments that a person or a language 
 
       <svg class="drawing-defs" aria-hidden="true" set:html={defs} />
 
-      <figure class="on-bench">
-        <div class="piece" set:html={bench} />
-        <figcaption class="hint" aria-live="polite">Click one to play</figcaption>
-      </figure>
+      <div class="on-bench piece" set:html={bench} />
 
-      <div class="loose">
-        {loose.map((p) => <div class="piece" style={`--tilt: ${p.tilt}deg; --lift: ${p.lift}rem; --size: ${p.size}rem`} set:html={p.svg} />)}
+      <div class="left">
+        <section class="why">
+          <p>This began as a way to make music without generative audio models. Every note is written in a score, and every instrument is a physical model in code: a string carrying a travelling wave, a drum head ringing in its own modes, a wooden body, a bow, a breath. The instruments make their own sound from that physics, without samples.</p>
+          <p>Out of that work came a library of physical instruments, and with it the tools a composer who can't hear needs in place of ears: spectra, loudness, pitch, and fits that move an instrument's physical parameters to bring its sound toward real recordings.</p>
+        </section>
+
+        <div class="loose">
+          {loose.map((p) => <div class="piece" style={`--tilt: ${p.tilt}deg; --lift: ${p.lift}rem; --size: ${p.size}rem`} set:html={p.svg} />)}
+        </div>
+      </div>
+
+      <div class="right">
+        {/* Every line the hint can say sits invisibly in the same cell, so the hint is always as tall as its longest line and nothing moves when it changes. */}
+        <p class="hint">
+          <span class="said" aria-live="polite">{idle}</span>
+          {[idle, ...Object.values(byFile).map(saying)].map((line) => <span class="unsaid" aria-hidden="true">{line}</span>)}
+        </p>
+
+        <aside class="card">
+          <h2>What's in the library</h2>
+          <ul>
+            <li><b>Instruments.</b> Banjo, guitar, piano, upright and electric bass, fiddle, mandolin, dobro, acoustic and electronic drums, keyboards, winds, friction and percussion instruments, some invented ones, several singers built on models of the vocal tract, and a room, microphone and tape to set them in.</li>
+            <li><b>Playing.</b> Notes and articulations in, audio out, from Python, the command line or a MIDI file.</li>
+            <li><b>Listening.</b> Spectrograms, loudness, pitch and timbre measurements, comparisons, and fitting to recordings.</li>
+          </ul>
+          {!library.public && <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
+        </aside>
       </div>
 
       <div class="tag" aria-hidden="true" hidden></div>
-
-      <section class="why">
-        <p>This began as a way to make music without generative audio models. Every note is written in a score, and every instrument is a physical model in code: a string carrying a travelling wave, a drum head ringing in its own modes, a wooden body, a bow, a breath. The instruments make their own sound from that physics, without samples.</p>
-        <p>Out of that work came a library of physical instruments, and with it the tools a composer who can't hear needs in place of ears: spectra, loudness, pitch, and fits that move an instrument's physical parameters to bring its sound toward real recordings.</p>
-      </section>
-
-      <aside class="card">
-        <h2>What's in the library</h2>
-        <ul>
-          <li><b>Instruments.</b> Banjo, guitar, piano, upright and electric bass, fiddle, mandolin, dobro, acoustic and electronic drums, keyboards, winds, friction and percussion instruments, some invented ones, several singers built on models of the vocal tract, and a room, microphone and tape to set them in.</li>
-          <li><b>Playing.</b> Notes and articulations in, audio out, from Python, the command line or a MIDI file.</li>
-          <li><b>Listening.</b> Spectrograms, loudness, pitch and timbre measurements, comparisons, and fitting to recordings.</li>
-        </ul>
-        {!library.public && <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
-      </aside>
     </div>
 
     <section class="example">
@@ -165,7 +176,7 @@ const description = 'Physical models of instruments that a person or a language 
 
   .masthead {
     grid-area: head;
-    align-self: end;
+    align-self: center;
   }
 
   .masthead h1 {
@@ -174,7 +185,7 @@ const description = 'Physical models of instruments that a person or a language 
   }
 
   .masthead .subtitle {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--text-secondary);
     margin-bottom: 0.3rem;
   }
@@ -213,17 +224,13 @@ const description = 'Physical models of instruments that a person or a language 
 
   .on-bench {
     grid-area: bench;
-    margin: 0;
-    align-self: end;
   }
 
   .loose {
-    grid-area: loose;
-    align-self: end;
     display: flex;
     align-items: flex-end;
     gap: 2.6rem;
-    padding: 0 0 0.4rem 0.5rem;
+    padding: 0.8rem 0 0.4rem 0.5rem;
   }
 
   .loose .piece {
@@ -261,15 +268,23 @@ const description = 'Physical models of instruments that a person or a language 
   }
 
   .hint {
+    display: grid;
     text-align: right;
-    font-size: 0.95rem;
+    font-size: 0.95rem !important;
     font-style: italic;
     color: var(--text-secondary);
-    margin: 0.2rem 1.5rem 0 0;
-    min-height: 1.5em;
+    margin: 0 1.5rem var(--space-sm) 0 !important;
   }
 
-  .hint::before {
+  .hint > span {
+    grid-area: 1 / 1;
+  }
+
+  .hint .unsaid {
+    visibility: hidden;
+  }
+
+  .hint > span::before {
     content: '♪ ';
     font-style: normal;
     color: var(--text-muted);
@@ -291,22 +306,23 @@ const description = 'Physical models of instruments that a person or a language 
     box-shadow: 0 1px 3px rgba(46, 42, 38, 0.12);
   }
 
-  /* Why it exists, beside what the library holds */
+  /* The title level with the bench; below them, why it exists and the loose instruments beside the hint and what the library holds.
+     The two lower columns run independently, so neither waits on the other's height. */
   .opening {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas: "head bench" "why card" "loose card";
-    gap: var(--space-md) 3.5rem;
+    grid-template-areas: "head bench" "left right";
+    gap: var(--space-sm) 3.5rem;
     align-items: start;
     margin-top: var(--space-md);
   }
 
-  .why {
-    grid-area: why;
+  .left {
+    grid-area: left;
   }
 
-  .card {
-    grid-area: card;
+  .right {
+    grid-area: right;
   }
 
   .bench .why p:first-child {
@@ -412,13 +428,28 @@ const description = 'Physical models of instruments that a person or a language 
       grid-template-columns: minmax(0, 1fr);
     }
 
+    /* one column: the title, the bench and its hint, why, the loose instruments, the card */
     .opening {
-      grid-template-areas: "head" "bench" "why" "loose" "card";
+      display: flex;
+      flex-direction: column;
     }
 
+    .left,
+    .right {
+      display: contents;
+    }
+
+    .hint { order: 1; }
+    .why { order: 2; }
+    .loose { order: 3; margin-bottom: var(--space-md); }
+    .card { order: 4; }
+
     .opening > *,
+    .left > *,
+    .right > *,
     .notes {
       max-width: 42em;
+      width: 100%;
     }
   }
 
@@ -463,7 +494,7 @@ const description = 'Physical models of instruments that a person or a language 
   const sheet = document.querySelector<HTMLElement>('.bench');
   if (sheet) {
     const about: Record<string, { name: string; plays: string }> = JSON.parse(sheet.dataset.instruments!);
-    const hint = sheet.querySelector('.hint')!;
+    const hint = sheet.querySelector('.hint .said')!;
     const idle = hint.textContent!;
     const tag = sheet.querySelector<HTMLElement>('.tag')!;
     const audio = new Audio();

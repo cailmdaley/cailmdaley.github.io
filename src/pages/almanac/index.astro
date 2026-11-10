@@ -24,7 +24,8 @@ const writing = [
     html: `<a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.` },
 ];
 
-// The cover is also a map of the year: each entry marked at the time of year it happened, with a small drawing.
+// The cover is also a map of its year: each of the year's entries marked at the time of year it happened, with a small drawing.
+// Earlier years' entries stay off it; they are in the lists below with their year.
 // Glyphs are drawn on a 24-unit square centred on the origin, in the cover's ink.
 const marks = [
   { name: 'felt', href: 'https://cailmdaley.github.io/felt/', date: '2026-01-13',
@@ -37,10 +38,8 @@ const marks = [
     glyph: `<path d="M-2.5,-10 C5,-10 8.5,-4.5 7,1 C6,4.5 2.5,5 2.5,8.5 C2.5,11 -0.5,11.6 -2.5,10.4" /><path d="M-1.5,-4.5 C1.5,-6 4,-3.5 2.6,-0.8 C1.6,1 -0.5,1.4 -0.2,3.4" /><path d="M-6.6,-3.6 C-8.6,-1.4 -8.6,1.4 -6.6,3.6 M-10.2,-6.4 C-13.2,-2.4 -13.2,2.4 -10.2,6.4" class="faint" />` },
   { name: 'Soundbench', href: '/almanac/instruments', date: '2026-11-10',
     glyph: `<path d="M-1.5,-2.2 L9.4,-10.4 M-0.2,-0.6 L10.6,-8.8" /><path d="M9.4,-10.4 L11.6,-12 L12.6,-10.4 L10.6,-8.8" /><circle cx="-4.8" cy="3.6" r="7.4" /><circle cx="-4.8" cy="3.6" r="5.4" class="faint" /><path d="M-7.4,6.6 L-3.2,1.6" />` },
-  { name: 'Science & AI', href: '/almanac/science-ai', date: '2025-12-05',
-    glyph: `<path d="M-8,6 L-2,-6 L7,-3 L1,3 Z M-2,-6 L1,3 M7,-3 L8,8 L1,3" class="faint" /><circle cx="-8" cy="6" r="2" class="dot" /><circle cx="-2" cy="-6" r="2.2" class="dot" /><circle cx="7" cy="-3" r="1.8" class="dot" /><circle cx="1" cy="3" r="2.4" class="dot" /><circle cx="8" cy="8" r="1.6" class="dot" />` },
 ];
-// A mark sits at its day of the year, just outside the month ring; the stylesheet sets how far out.
+// A mark's drawing sits at its day of the year, just outside the month names, with its name further out; the stylesheet sets how far.
 const placed = marks.map((m) => {
   const d = new Date(m.date);
   const month = d.getUTCMonth(), days = new Date(Date.UTC(d.getUTCFullYear(), month + 1, 0)).getUTCDate();
@@ -59,7 +58,7 @@ const leapLine = sinceLeap ? `being the ${ordinal} after Leap Year` : 'being Lea
 // The month ring: January at the top, running clockwise like the year.
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
-const CX = 500, CY = 500, R_TOP = 468, R_BOT = 490;
+const CX = 500, CY = 500, R_TOP = 466, R_BOT = 493;
 const ring = MONTHS.map((m, i) => {
   const deg = -90 + 30 * i;
   const top = Math.sin(deg * Math.PI / 180) <= 1e-9;
@@ -80,7 +79,7 @@ const ticks = MONTHS.map((_, i) => {
 ---
 
 <BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, music by Claude, and dated writing on AI and science." mode="blended">
-  <p class="intro">An almanac is a compendium of useful information: astronomical data, forecasts, recipes, articles on current topics, folklore. When I was growing up on a farm in West Virginia, the farmer's almanac was always lying around. These are mine.</p>
+  <p class="intro">An almanac is a compendium of useful information: astronomical data, forecasts, recipes, articles on current topics, folklore. When I was growing up on a farm in West Virginia, the farmer's almanac was always lying around. Below is my almanac of projects, thoughts, and explorations. Everything here is done in collaboration with, and largely written by, LLMs.</p>
 
   <header class="title-page">
     <p class="number">Number One</p>
@@ -247,26 +246,25 @@ const ticks = MONTHS.map((_, i) => {
     width: min(21rem, 100%);
     margin: 4.6rem auto 1.8rem;
     aspect-ratio: 1;
-    --mark-r: 64%;
+    --mark-r: 56%;
+    --name-gap: 1.2rem;
   }
 
-  /* The year's entries, each at the time of year it happened */
+  /* The year's entries, each at the time of year it happened: the drawing on a ring just outside the months,
+     the name beyond it on the same radius, so names never meet the month ring */
   .mark {
     position: absolute;
     left: calc(50% + var(--mark-r) * var(--cos));
     top: calc(50% + var(--mark-r) * var(--sin));
     transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    width: 5.5rem;
+    display: block;
     color: var(--umber);
     border-bottom: none;
     z-index: 1;
   }
 
   .mark svg {
+    display: block;
     width: 2.1rem;
     height: 2.1rem;
     fill: none;
@@ -288,7 +286,12 @@ const ticks = MONTHS.map((_, i) => {
     stroke: none;
   }
 
+  /* the name's inner edge sits just beyond the drawing, along the radius */
   .mark span {
+    position: absolute;
+    left: calc(50% + var(--name-gap) * var(--cos));
+    top: calc(50% + var(--name-gap) * var(--sin));
+    transform: translate(calc(-50% + 50% * var(--cos)), calc(-50% + 50% * var(--sin)));
     font-size: 0.82rem;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.1em;
@@ -323,7 +326,7 @@ const ticks = MONTHS.map((_, i) => {
 
   .roundel text {
     font-family: var(--font-serif);
-    font-size: 25px;
+    font-size: 30px;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.22em;
     fill: var(--umber);
@@ -408,15 +411,16 @@ const ticks = MONTHS.map((_, i) => {
     }
 
     .roundel {
-      width: 52%;
-      margin-top: 4.6rem;
-      margin-bottom: 2.4rem;
-      --mark-r: 76%;
+      width: 50%;
+      margin-top: 4rem;
+      margin-bottom: 3rem;
+      --mark-r: 61%;
+      --name-gap: 0.95rem;
     }
 
     .roundel text {
-      font-size: 34px;
-      letter-spacing: 0.12em;
+      font-size: 40px;
+      letter-spacing: 0.1em;
     }
 
     .mark svg {
@@ -425,8 +429,8 @@ const ticks = MONTHS.map((_, i) => {
     }
 
     .mark span {
-      font-size: 0.74rem;
-      letter-spacing: 0.06em;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
     }
 
   }
