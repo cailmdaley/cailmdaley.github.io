@@ -24,6 +24,32 @@ const writing = [
     html: `<a href="/almanac/science-ai">Science &amp; AI</a> — what happens when machine scientific output exceeds human verification, with an interactive graph of epistemic claims.` },
 ];
 
+// The cover is also a map of the year: each entry marked at the time of year it happened, with a small drawing.
+// Glyphs are drawn on a 24-unit square centred on the origin, in the cover's ink.
+const marks = [
+  { name: 'felt', href: 'https://cailmdaley.github.io/felt/', date: '2026-01-13',
+    glyph: `<circle r="8" /><path d="M-7,-3.5 C-2,-6.5 3,-6.5 7.4,-2.6 M-8,0.8 C-3,-2.4 3,-2.4 8,1.6 M-6.2,5 C-2,2 2.4,2.2 6,5.6 M-3,-7.4 C-6,-2 -6,3 -3,7.4" /><path d="M6.2,5.2 C8.6,8 10.6,7.6 11,10.6" />` },
+  { name: 'B-modes', href: 'https://arxiv.org/abs/2604.03227', date: '2026-04-03',
+    glyph: `<circle r="10.5" class="faint" /><circle r="1.1" class="fill" /><path d="M5.6,-1.6 L3.8,3.6 M1.6,5.6 L-3.6,3.8 M-5.6,1.6 L-3.8,-3.6 M-1.6,-5.6 L3.6,-3.8 M9.6,-2.2 L7.6,5.2 M2.2,9.6 L-5.2,7.6 M-9.6,2.2 L-7.6,-5.2 M-2.2,-9.6 L5.2,-7.6" />` },
+  { name: 'Shuttle', href: 'https://github.com/cailmdaley/shuttle', date: '2026-05-01',
+    glyph: `<path d="M-11.5,0 C-7,-4.6 7,-4.6 11.5,0 C7,4.6 -7,4.6 -11.5,0 Z" /><path d="M-4.2,-1.4 H4.2 V1.4 H-4.2 Z" /><path d="M-2.6,0 H2.6" class="faint" /><path d="M4.2,0.4 C7,3.4 8,7 6.6,10.8" />` },
+  { name: 'hark', href: 'https://github.com/cailmdaley/hark', date: '2026-09-24',
+    glyph: `<path d="M-2.5,-10 C5,-10 8.5,-4.5 7,1 C6,4.5 2.5,5 2.5,8.5 C2.5,11 -0.5,11.6 -2.5,10.4" /><path d="M-1.5,-4.5 C1.5,-6 4,-3.5 2.6,-0.8 C1.6,1 -0.5,1.4 -0.2,3.4" /><path d="M-6.6,-3.6 C-8.6,-1.4 -8.6,1.4 -6.6,3.6 M-10.2,-6.4 C-13.2,-2.4 -13.2,2.4 -10.2,6.4" class="faint" />` },
+  { name: 'Soundbench', href: '/almanac/instruments', date: '2026-11-10',
+    glyph: `<path d="M-1.5,-2.2 L9.4,-10.4 M-0.2,-0.6 L10.6,-8.8" /><path d="M9.4,-10.4 L11.6,-12 L12.6,-10.4 L10.6,-8.8" /><circle cx="-4.8" cy="3.6" r="7.4" /><circle cx="-4.8" cy="3.6" r="5.4" class="faint" /><path d="M-7.4,6.6 L-3.2,1.6" />` },
+  { name: 'Science & AI', href: '/almanac/science-ai', date: '2025-12-05',
+    glyph: `<path d="M-8,6 L-2,-6 L7,-3 L1,3 Z M-2,-6 L1,3 M7,-3 L8,8 L1,3" class="faint" /><circle cx="-8" cy="6" r="2" class="dot" /><circle cx="-2" cy="-6" r="2.2" class="dot" /><circle cx="7" cy="-3" r="1.8" class="dot" /><circle cx="1" cy="3" r="2.4" class="dot" /><circle cx="8" cy="8" r="1.6" class="dot" />` },
+];
+// A mark sits at its day of the year, just outside the month ring; the stylesheet sets how far out.
+const placed = marks.map((m) => {
+  const d = new Date(m.date);
+  const month = d.getUTCMonth(), days = new Date(Date.UTC(d.getUTCFullYear(), month + 1, 0)).getUTCDate();
+  const deg = -105 + 30 * (month + (d.getUTCDate() - 0.5) / days);
+  const a = deg * Math.PI / 180;
+  const when = d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  return { ...m, when, cos: Math.cos(a).toFixed(4), sin: Math.sin(a).toFixed(4) };
+});
+
 // The title page is reckoned for the year the site was built.
 const year = new Date().getFullYear();
 const sinceLeap = year % 4;
@@ -78,6 +104,12 @@ const ticks = MONTHS.map((_, i) => {
           <text><textPath href={r.top ? '#ring-top' : '#ring-bot'} startOffset={r.offset} text-anchor="middle">{r.m}</textPath></text>
         ))}
       </svg>
+      {placed.map((m) => (
+        <a class="mark" href={m.href} style={`--cos: ${m.cos}; --sin: ${m.sin}`} title={`${m.name}, ${m.when}`}>
+          <svg viewBox="-13 -13 26 26" aria-hidden="true" set:html={m.glyph} />
+          <span>{m.name}</span>
+        </a>
+      ))}
     </div>
 
     <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, a little Music, &amp; sundry Writings</p>
@@ -213,8 +245,65 @@ const ticks = MONTHS.map((_, i) => {
   .roundel {
     position: relative;
     width: min(21rem, 100%);
-    margin: 0.9rem auto 0.7rem;
+    margin: 4.6rem auto 1.8rem;
     aspect-ratio: 1;
+    --mark-r: 64%;
+  }
+
+  /* The year's entries, each at the time of year it happened */
+  .mark {
+    position: absolute;
+    left: calc(50% + var(--mark-r) * var(--cos));
+    top: calc(50% + var(--mark-r) * var(--sin));
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    width: 5.5rem;
+    color: var(--umber);
+    border-bottom: none;
+    z-index: 1;
+  }
+
+  .mark svg {
+    width: 2.1rem;
+    height: 2.1rem;
+    fill: none;
+    stroke: #8A5A1E;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+
+  .mark svg :global(.faint) {
+    stroke-width: 0.9;
+    opacity: 0.7;
+  }
+
+  .mark svg :global(.fill),
+  .mark svg :global(.dot) {
+    fill: #8A5A1E;
+    stroke: none;
+  }
+
+  .mark span {
+    font-size: 0.82rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .mark:hover,
+  .mark:focus-visible {
+    color: var(--text-primary);
+  }
+
+  .mark:hover svg,
+  .mark:focus-visible svg {
+    transform: scale(1.15);
   }
 
   .roundel img {
@@ -224,7 +313,7 @@ const ticks = MONTHS.map((_, i) => {
     height: 100%;
   }
 
-  .roundel svg {
+  .roundel > svg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -318,9 +407,26 @@ const ticks = MONTHS.map((_, i) => {
       font-size: 1.1rem;
     }
 
+    .roundel {
+      width: 52%;
+      margin-top: 4.6rem;
+      margin-bottom: 2.4rem;
+      --mark-r: 76%;
+    }
+
     .roundel text {
-      font-size: 30px;
-      letter-spacing: 0.14em;
+      font-size: 34px;
+      letter-spacing: 0.12em;
+    }
+
+    .mark svg {
+      width: 1.7rem;
+      height: 1.7rem;
+    }
+
+    .mark span {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
     }
 
   }
