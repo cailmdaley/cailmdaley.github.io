@@ -14,12 +14,12 @@ const groups = Object.fromEntries(
 // a few bars rendered by the library itself, served as /soundbench/<file>.mp3.
 const instruments: Record<string, { file: string; name: string; plays: string }> = {
   'inst-bass': { file: 'bass', name: 'upright bass', plays: 'walking in D minor' },
-  'inst-banjo': { file: 'banjo', name: 'banjo', plays: 'the one fitted to recordings below, opening a study of hammer-ons and slides' },
+  'inst-banjo': { file: 'banjo', name: 'banjo', plays: 'the one fitted to recordings below' },
   'inst-piano': { file: 'piano', name: 'piano', plays: 'a small waltz in G' },
   'inst-guitar': { file: 'guitar', name: 'nylon-string guitar', plays: 'fingerpicked' },
   'inst-xeremia': { file: 'xeremia', name: 'xeremia', plays: 'a Mallorcan bagpipe, with a dance tune over its drone' },
   'inst-ximbomba': { file: 'ximbomba', name: 'ximbomba', plays: 'a Mallorcan friction drum' },
-  'inst-skinpipe': { file: 'skinpipe', name: 'skinpipe', plays: 'the made-up one, a pipe whose bell is a drum skin' },
+  'inst-skinpipe': { file: 'skinpipe', name: 'skinpipe', plays: 'a pipe whose bell is a drum skin' },
 };
 
 export const byFile = Object.fromEntries(Object.values(instruments).map((i) => [i.file, i]));
