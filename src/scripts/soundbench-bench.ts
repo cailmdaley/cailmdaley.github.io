@@ -18,8 +18,8 @@ const instruments: Record<string, { file: string; name: string; plays: string }>
   'inst-piano': { file: 'piano', name: 'piano', plays: 'a small waltz in G' },
   'inst-guitar': { file: 'guitar', name: 'nylon-string guitar', plays: 'fingerpicked' },
   'inst-xeremia': { file: 'xeremia', name: 'xeremia', plays: 'a Mallorcan bagpipe, with a dance tune over its drone' },
-  'inst-ximbomba': { file: 'ximbomba', name: 'ximbomba', plays: 'a Mallorcan friction drum, rubbed in threes' },
-  'inst-skinpipe': { file: 'skinpipe', name: 'skinpipe', plays: 'an invented instrument: a pipe whose bell is a drum skin' },
+  'inst-ximbomba': { file: 'ximbomba', name: 'ximbomba', plays: 'a Mallorcan friction drum, and real' },
+  'inst-skinpipe': { file: 'skinpipe', name: 'skinpipe', plays: 'the one that was never built; a pipe whose bell is a drum skin' },
 };
 
 export const byFile = Object.fromEntries(Object.values(instruments).map((i) => [i.file, i]));
