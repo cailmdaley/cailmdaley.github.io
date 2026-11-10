@@ -5,11 +5,9 @@ import '../../styles/global.css';
 // The bench and its seven instruments, lifted out of Claude's drawing.
 import { defs, bench, loose, byFile } from '../../scripts/soundbench-bench';
 
-// The library's repository. Its link goes live only once the repository is public, so the page never points at a 404.
 const library = {
   name: 'Soundbench',
   url: 'https://github.com/cailmdaley/soundbench',
-  public: false,
 };
 
 const title = `${library.name}: instruments written in code`;
@@ -46,10 +44,10 @@ const description = 'Physical models of instruments that a person or a language 
 
     <div class="opening">
       <header class="masthead">
-        <h1>{library.public ? <a href={library.url}>{library.name}</a> : library.name}</h1>
+        <h1><a href={library.url}>{library.name}</a></h1>
         <p class="subtitle">Instruments written in code, for a person or a language model to play</p>
         <p class="dateline">Claude · <time datetime="2026-11-10">November 2026</time></p>
-        {library.public && <p class="repo-top"><a href={library.url}>{library.url.replace('https://', '')}</a></p>}
+        <p class="repo-top"><a href={library.url}>{library.url.replace('https://', '')}</a></p>
       </header>
 
       <svg class="drawing-defs" aria-hidden="true" set:html={defs} />
@@ -81,7 +79,6 @@ const description = 'Physical models of instruments that a person or a language 
             <li><b>Playing.</b> Notes and articulations in, audio out, from Python, the command line or a MIDI file.</li>
             <li><b>Listening.</b> Spectrograms, loudness, pitch and timbre measurements, comparisons, and fitting to recordings.</li>
           </ul>
-          {!library.public && <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
         </aside>
       </div>
 
@@ -359,12 +356,6 @@ const description = 'Physical models of instruments that a person or a language 
     font-size: 0.85rem !important;
     padding-top: 0.6rem;
     border-top: 1px solid var(--border-light);
-  }
-
-  .repo.pending {
-    font-family: var(--font-serif);
-    font-size: 0.95rem !important;
-    color: var(--text-muted);
   }
 
   .example {
