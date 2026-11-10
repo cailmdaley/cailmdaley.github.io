@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const page = await getEntry('pages', 'banjo');
+const { Content } = await page.render();
+const date = page.data.date;
+const dateLabel = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title={page.data.title} description="A banjo written in code, fitted to real recordings by gradient descent: an interactive plate by Claude." mode={page.data.mode} wide>
+  <h1 class="page-title">{page.data.title}</h1>
+  <p class="dateline">Claude{date && <> · <time datetime={date.toISOString().slice(0, 10)}>{dateLabel}</time></>}</p>
+  <p class="subtitle">{page.data.subtitle}</p>
+  <p class="intro" set:html={page.data.demoIntro} />
+
+  <div class="plate-frame">
+    <iframe src="/banjo-plate/index.html" title="The Banjo Learns: an interactive plate of the banjo model and its fit" scrolling="no"></iframe>
+  </div>
+
+  <section class="notes">
+    <Content />
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .dateline {
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+    text-indent: 0;
+  }
+
+  .subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    text-indent: 0;
+  }
+
+  .intro {
+    font-size: 1rem;
+    line-height: 1.65;
+    text-indent: 0;
+    max-width: 42em;
+  }
+
+  /* The plate sizes itself from its width: landscape from 760 px of drawing, portrait below.
+     The frame takes the height the plate will draw at, so the plate never scrolls or letterboxes. */
+  .plate-frame {
+    margin: var(--space-md) 0 var(--space-lg);
+  }
+
+  .plate-frame iframe {
+    display: block;
+    width: 100%;
+    height: 560px;
+    border: none;
+    background: transparent;
+  }
+
+  .notes {
+    max-width: 42em;
+  }
+
+  .notes :global(h2) {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 1rem;
+  }
+
+  .notes :global(p) {
+    font-size: 1rem;
+    line-height: 1.7;
+    text-indent: 0;
+  }
+
+  .notes :global(audio) {
+    display: block;
+    width: 100%;
+    margin: var(--space-sm) 0 var(--space-md);
+  }
+
+  @media (max-width: 768px) {
+    .plate-frame {
+      /* on a phone the plate takes the sheet's full width */
+      margin-left: -1.4rem;
+      margin-right: -1.4rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .plate-frame {
+      margin-left: -1.1rem;
+      margin-right: -1.1rem;
+    }
+  }
+</style>
+
+<script>
+  // Mirror the plate's own layout rule (film.html, layout()): 16 px of table on each side;
+  // landscape at 1600:1000 when the drawing is at least 760 px wide, else portrait at 400:1540.
+  const frame = document.querySelector<HTMLIFrameElement>('.plate-frame iframe');
+  const fit = () => {
+    if (!frame) return;
+    const drawn = frame.clientWidth - 32;
+    const height = drawn >= 760 ? Math.min(drawn, 1900) / 1.6 : drawn * 1540 / 400;
+    frame.style.height = `${Math.ceil(height) + 34}px`;
+  };
+  // a frame later, so setting the height doesn't re-enter the observer in the same frame
+  if (frame) new ResizeObserver(() => requestAnimationFrame(fit)).observe(frame);
+</script>

@@ -13,6 +13,11 @@ const science = [
   { html: `<a href="https://arxiv.org/abs/2604.03227">UNIONS B-mode validation paper</a> — also published reproducibly as a <a href="https://myst-viewer.vercel.app/cailmdaley/unions-bmodes-mystra">MySTRA report</a>.` },
 ];
 
+// Music by Claude: pieces and the instruments it builds to play them.
+const music = [
+  { html: `<a href="/almanac/banjo">The Banjo Learns</a> — a banjo written in code, fitted to real recordings by gradient descent; a plate you can play, by Claude.` },
+];
+
 // Dated writing, newest first.
 const writing = [
   { date: '2025-12-05', label: 'Dec 2025',
@@ -48,7 +53,7 @@ const ticks = MONTHS.map((_, i) => {
 
 ---
 
-<BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, and dated writing on AI and science." mode="blended">
+<BaseLayout title="Almanacs" description="Cail Daley's almanacs, one a year: the agentic tools and science infrastructure he builds, music by Claude, and dated writing on AI and science." mode="blended">
   <p class="intro">An almanac is a compendium of useful information: astronomical data, forecasts, recipes, articles on current topics, folklore. When I was growing up on a farm in West Virginia, the farmer's almanac was always lying around. These are mine.</p>
 
   <header class="title-page">
@@ -75,7 +80,7 @@ const ticks = MONTHS.map((_, i) => {
       </svg>
     </div>
 
-    <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, &amp; sundry Writings</p>
+    <p class="contents">Containing the Tools of the Trade, the Infrastructure of the Sciences, a little Music, &amp; sundry Writings</p>
   </header>
 
 
@@ -90,6 +95,13 @@ const ticks = MONTHS.map((_, i) => {
     <h2>Science infrastructure</h2>
     <ul class="entries">
       {science.map((t) => <li set:html={t.html} />)}
+    </ul>
+  </section>
+
+  <section id="music">
+    <h2>Music</h2>
+    <ul class="entries">
+      {music.map((t) => <li set:html={t.html} />)}
     </ul>
   </section>
 
