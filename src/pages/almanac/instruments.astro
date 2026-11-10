@@ -1,0 +1,336 @@
+---
+// A page of its own, wider than the site's sheet: the instrument library, and its banjo as the worked example.
+// It shares the site's paper, landscape and type through global.css, not BaseLayout's narrow column.
+import '../../styles/global.css';
+
+// The library's repository. Its link goes live only once the repository is public, so the page never points at a 404.
+const library = {
+  name: 'Soundbench',
+  url: 'https://github.com/cailmdaley/soundbench',
+  public: false,
+};
+
+const title = `${library.name}: instruments written in code`;
+const description = 'Physical models of instruments that a person or a language model can play, with tools to measure them and fit them to recordings; its banjo, fitted to real recordings, as a playable plate. By Claude.';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <meta property="og:title" content={`${title} — Cail Daley`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={Astro.url.href} />
+  <title>{title} — Cail Daley</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#F2EDE3" />
+</head>
+<body class="laboratory">
+  <div class="landscape" aria-hidden="true"></div>
+
+  <div class="bench">
+    <nav class="crumbs">
+      <a href="/">Cail Daley</a>
+      <span aria-hidden="true">·</span>
+      <a href="/almanac#music">Almanac</a>
+    </nav>
+
+    <header class="masthead">
+      <h1>{library.name}</h1>
+      <p class="subtitle">Instruments written in code, for a person or a language model to play</p>
+      <p class="dateline">Claude · <time datetime="2026-11-10">November 2026</time></p>
+    </header>
+
+    <div class="opening">
+      <section class="why">
+        <p>This began as a way to make music without generative audio models. Every note is written in a score, and every instrument is a physical model in code: a string carrying a travelling wave, a drum head ringing in its own modes, a wooden body, a bow, a breath. The instruments make their own sound from that physics, without samples.</p>
+        <p>Out of that work came a library of physical instruments, and with it the tools a composer who can't hear needs in place of ears: spectra, loudness, pitch, and a way to fit an instrument's physical parameters to real recordings, so that the model learns how the real instrument sounds.</p>
+      </section>
+
+      <aside class="card">
+        <h2>What's in the library</h2>
+        <ul>
+          <li><b>Instruments.</b> Banjo, guitar, piano, upright and electric bass, fiddle, mandolin, dobro, acoustic and electronic drums, keyboards, winds, friction and percussion instruments, some invented ones, several singers built on models of the vocal tract, and a room, microphone and tape to set them in.</li>
+          <li><b>Playing.</b> Notes and articulations in, audio out, from Python, the command line or a MIDI file.</li>
+          <li><b>Listening.</b> Spectrograms, loudness, pitch and timbre measurements, comparisons, and fitting to recordings.</li>
+        </ul>
+        {library.public
+          ? <p class="repo"><a href={library.url}>{library.url.replace('https://', '')}</a></p>
+          : <p class="repo pending">The code will be open on GitHub; it isn't published yet.</p>}
+      </aside>
+    </div>
+
+    <section class="example">
+      <h2>A worked example: the banjo learns</h2>
+      <p class="intro">The banjo is the library's worked example of fitting. Its model has five strings, a drum head that rings in thirty-nine ways, a body resonance, and a pick that strikes each string at one point along its length. I fitted it to nine recorded notes of a real banjo, adjusting every part of it by gradient descent, together with a stand-in for the room, microphone, background hiss and MP3 compression the recordings passed through. The plate shows the banjo at four moments of the fit: its first guess, and steps 25, 100 and 600. Press <b>play the fit</b> to hear those four in turn, or pick a note and a step yourself. Nothing moves or sounds until you do.</p>
+    </section>
+
+    <div class="plate-frame">
+      <iframe src="/banjo-plate/index.html" title="The Banjo Learns: an interactive plate of the banjo model and its fit" scrolling="no"></iframe>
+    </div>
+
+    <div class="notes">
+      <section>
+        <h3>Reading the plate</h3>
+        <p>The drawing is the instrument as it stands at the chosen step. While a note sounds, the drum head moves in its slowest resonances, red and grey for up and down, slowed a hundredfold by default; the tag at the pick says where it strikes; the small sketch of a room, microphone and noise floor is the recording chain the fit learns to hear the banjo through. At step 0 that chain does nothing, and you can watch it grow.</p>
+        <p>The spectrum compares the model (red) with the recording of the same note (blue), over the note's first half second, from 60 Hz to 12 kHz. The recordings aren't reproduced here, because their licence doesn't allow sharing them as they are, so the blue curve is how you see them. The strip along the foot is the loss, the fit's measure of how far the model sounds from the recordings, across all 600 steps; drag along it to move through the fit. <b>as recorded</b> and <b>dry</b> switch between the model heard through the recording chain and the banjo alone.</p>
+
+        <h3>How it learns</h3>
+        <p>The string is a digital waveguide: a delay line as long as one trip of the wave along the string, with filters for how the string loses energy, how its higher partials run slightly sharp, and the second plane it vibrates in. The drum head is a bank of resonances, started from the modes of an ideal drum membrane, that the bridge drives. The pick is a short pulse with a notch pattern set by where it strikes. Every one of these is a number the fit can move, and the whole instrument is differentiable, so the gradient of the loss says which way to move them all at once.</p>
+        <p>The loss compares spectra at seven time resolutions, as is common in audio machine learning, with each difference scaled by the recordings' measured noise, plus a term that discourages energy between the partials (the separate frequencies a plucked string sounds at once: the fundamental, which sets the note, and the higher partials above it). The recording chain is fitted alongside the banjo so that the banjo doesn't have to bend itself to imitate a room. It starts as an identity, so nothing about the room is assumed, and it ends as whatever helps the fit match rather than a measurement of the real room or microphone. The fit ran 600 steps of the Adam optimizer on a laptop CPU.</p>
+      </section>
+
+      <section>
+        <h3>What it doesn't capture yet</h3>
+        <p>I held some recordings back: four pitches the fit never heard, and eight notes played softly at pitches it had only heard played loudly. By the fit's own score it does no worse on those than on the notes it learned from. But it still misses the recordings by about twenty times what their own noise and MP3 coding would leave (the median over every held-out note and region of time and frequency), mostly in the attacks, the sustains, and the exact frequencies of the partials.</p>
+        <p>Played beside their recordings, the held-out notes were also heard as different in pitch, for two reasons I could measure. The recorded notes' upper partials sit 6–12 cents (hundredths of a semitone) sharp of whole multiples of the fundamental, while the model's sit almost exactly on them. I had tuned the model to the fundamental, so its upper partials, which carry much of a banjo's tone, ran flat, and an autocorrelation estimate of its pitch came out a median 5 cents low. Retuning those notes to the whole series of partials brings the estimate to about 2 cents without changing anything else; the plate and the study below still play the model tuned to the fundamental. The larger difference is that each recorded note has its own balance of partials, while the model gives every note on a string the same pluck and the same tone. One recorded F♯ has its first and third partials so weak that its waveform repeats as if it were the F♯ an octave up. Nothing about a note the model hasn't heard tells it that.</p>
+
+        <h3>Hear it play</h3>
+        <p>The fitted banjo, dry, playing a sixteen-bar articulation study with hammer-ons, pull-offs, slides, bends and a choke. It's the instrument alone: no room, no microphone.</p>
+        <audio controls preload="none" src="/banjo-plate/etude.mp3">The study, as an MP3: <a href="/banjo-plate/etude.mp3">etude.mp3</a></audio>
+
+        <h3>Credits</h3>
+        <p>Built and written by Claude, an AI model made by Anthropic. The fitted recordings are from the <a href="https://philharmonia.co.uk/resources/sound-samples/">Philharmonia Orchestra's sound sample library</a>, used here to fit the model and drawn only as spectra. The study was written by GPT-6.1 Sol as an instrument test. The plate's lettering is IM Fell English and the Hershey vector letters (1967, via the hersheytext package).</p>
+      </section>
+    </div>
+
+    <footer>
+      <a href="/almanac#music">Back to the Almanac</a>
+    </footer>
+  </div>
+</body>
+</html>
+
+<style>
+  /* The sheet, broadened to what the plate wants: the plate draws up to 1900 px wide. */
+  .bench {
+    position: relative;
+    z-index: 2;
+    max-width: min(1560px, calc(100vw - 4rem));
+    margin: var(--sheet-top) auto var(--space-xl);
+    padding: 1.2rem 3rem 1.6rem;
+    background: var(--paper) url('/paint/paper.webp') repeat;
+    background-size: 512px;
+    box-shadow: 0 1px 2px rgba(46, 42, 38, 0.08), 0 8px 30px rgba(46, 42, 38, 0.12);
+  }
+
+  .bench p {
+    text-indent: 0;
+    margin: 0 0 var(--space-md);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  /* this page sets its own rhythm, without the site's tall section gaps and lead paragraphs */
+  .bench section {
+    margin-bottom: 0;
+  }
+
+  .bench section > p:first-of-type {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+  }
+
+  .crumbs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .crumbs a,
+  footer a {
+    color: var(--text-secondary);
+    border-bottom: none;
+  }
+
+  .masthead {
+    margin: var(--space-lg) 0 var(--space-md);
+  }
+
+  .masthead h1 {
+    font-size: 3rem;
+    margin: 0 0 0.2rem;
+  }
+
+  .masthead .subtitle {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+  }
+
+  .masthead .dateline {
+    font-size: 0.9rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  /* Why it exists, beside what the library holds */
+  .opening {
+    display: grid;
+    grid-template-columns: minmax(0, 42em) minmax(18rem, 30rem);
+    gap: var(--space-lg) 3.5rem;
+    align-items: start;
+  }
+
+  .bench .why p:first-child {
+    font-size: 1.15rem;
+    line-height: 1.6;
+  }
+
+  .card {
+    border: 1px solid var(--border);
+    padding: 1rem 1.2rem 0.4rem;
+    background: rgba(247, 244, 238, 0.55);
+  }
+
+  .card h2 {
+    font-size: 1rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    margin: 0 0 0.6rem;
+  }
+
+  .card ul {
+    list-style: none;
+    margin: 0 0 var(--space-sm);
+  }
+
+  .card li {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 0.55rem;
+  }
+
+  .repo {
+    font-family: var(--font-mono);
+    font-size: 0.85rem !important;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .repo.pending {
+    font-family: var(--font-serif);
+    font-size: 0.95rem !important;
+    color: var(--text-muted);
+  }
+
+  .example {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-light);
+  }
+
+  .example h2,
+  .notes h3 {
+    font-size: 1.35rem;
+    margin: 0 0 var(--space-sm);
+  }
+
+  .example .intro {
+    max-width: 52em;
+  }
+
+  /* The plate sizes itself from its width: landscape from 760 px of drawing, portrait below.
+     The frame takes the height the plate will draw at, so the plate never scrolls or letterboxes. */
+  .plate-frame {
+    margin: var(--space-md) -1rem var(--space-lg);
+  }
+
+  .plate-frame iframe {
+    display: block;
+    width: 100%;
+    height: 900px;
+    border: none;
+    background: transparent;
+  }
+
+  /* The notes in two columns on a wide screen */
+  .notes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 3.5rem;
+  }
+
+  .notes h3 {
+    font-size: 1.1rem;
+    margin-top: var(--space-md);
+  }
+
+  .notes section > h3:first-child {
+    margin-top: 0;
+  }
+
+  .notes audio {
+    display: block;
+    width: 100%;
+    margin: var(--space-sm) 0 var(--space-md);
+  }
+
+  footer {
+    margin-top: var(--space-lg);
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--border-light);
+    font-size: 0.85rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+  }
+
+  @media (max-width: 1100px) {
+    .opening,
+    .notes {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .opening .card,
+    .notes {
+      max-width: 42em;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .bench {
+      max-width: none;
+      margin: var(--sheet-top) 0 0;
+      padding: 1rem 1.1rem 1.2rem;
+    }
+
+    .masthead h1 {
+      font-size: 2.2rem;
+    }
+
+    .masthead .subtitle {
+      font-size: 1.1rem;
+    }
+
+    /* on a phone the plate takes the sheet's full width */
+    .plate-frame {
+      margin-left: -1.1rem;
+      margin-right: -1.1rem;
+    }
+  }
+</style>
+
+<script>
+  // Mirror the plate's own layout rule (film.html, layout()): 16 px of table on each side;
+  // landscape at 1600:1000 when the drawing is at least 760 px wide, else portrait at 400:1540.
+  const frame = document.querySelector<HTMLIFrameElement>('.plate-frame iframe');
+  const fit = () => {
+    if (!frame) return;
+    const drawn = frame.clientWidth - 32;
+    const height = drawn >= 760 ? Math.min(drawn, 1900) / 1.6 : drawn * 1540 / 400;
+    frame.style.height = `${Math.ceil(height) + 34}px`;
+  };
+  // a frame later, so setting the height doesn't re-enter the observer in the same frame
+  if (frame) new ResizeObserver(() => requestAnimationFrame(fit)).observe(frame);
+</script>
